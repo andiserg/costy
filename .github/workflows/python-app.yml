@@ -13,12 +13,27 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.TEST_DB_NAME }}
+        ports: [ '5432:5432' ]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    - name: Set env variables
+      run: |
+        echo "DB_USER=${{ env.DB_USER }}" >> $GITHUB_ENV
+        echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> $GITHUB_ENV
+        echo "TEST_DB_NAME=${{ env.TEST_DB_NAME }}" >> $GITHUB_ENV
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
