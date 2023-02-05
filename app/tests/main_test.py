@@ -8,7 +8,7 @@ from httpx import AsyncClient
 from app.main import app
 
 # Імпорт потрібний для роботи @pytest.mark.anyio
-from app.tests.config import anyio_backend
+from app.tests.config import anyio_backend, precents_evn_variables
 
 
 @pytest.mark.anyio
@@ -23,6 +23,7 @@ async def test_root():
 
 
 @pytest.mark.anyio
+@precents_evn_variables
 async def test_db_version():
     """
     Тестування app.main.say_db_version
