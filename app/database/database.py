@@ -41,9 +41,8 @@ class Database:
         self.engine = create_async_engine(_get_url(test), echo=True)
         self.sessionmaker = async_sessionmaker(self.engine, expire_on_commit=False)
 
-        # В test режимі база створюється під час ініціалізації.
-        # db_created використовується як прапорець того, створена база чи ні
         self.test = test
+        # db_created використовується як прапорець того, створена база чи ні
         self.db_created = False
 
     async def init_models(self):
@@ -65,13 +64,13 @@ class Database:
         Увага:
             Призначена для FastApi Depends, тому що сесія повертається через yield
             В якості Depends метод відпрацює правильно,
-            але виклили з інших мість можуть створити неочікувані наслідки
+            але виклили з інших мість можуть створити неочікувані наслідки.
+            Використовуйте наступний шаблон для правильного отримання сесії
 
                 database = Database()
                 async with database.sessionmaker() as session:
                     <code>
 
-            для правильного отримання сесії
         :return: sqlalchemy.ext.asyncio.AsyncSession
         """
         if self.test and not self.db_created:
