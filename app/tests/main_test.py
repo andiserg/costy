@@ -7,14 +7,8 @@ from httpx import AsyncClient
 
 from app.main import app
 
-
-@pytest.fixture
-def anyio_backend():
-    """
-    За замовчуванням, async тест обернутий в @pytest.mark.anyio
-    намагається виконатись також у trio, альтернативі asyncio, і видає failed тест
-    """
-    return "asyncio"
+# Імпорт потрібний для роботи @pytest.mark.anyio
+from app.tests.config import anyio_backend
 
 
 @pytest.mark.anyio
