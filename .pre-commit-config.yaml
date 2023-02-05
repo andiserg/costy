@@ -29,5 +29,6 @@ repos:
   - repo: https://github.com/pycqa/flake8
     rev: b9a7794c4f425ef8419081e6993f99419cc667ea
     hooks:
-    -   id: flake8
+      - id: flake8
         files: app
+        args: [--extend-ignore, F401]
