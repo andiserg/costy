@@ -80,5 +80,5 @@ class Database:
             # то далі робота з ORM буде неможлива
             await self.init_models()
             self.db_created = True
-        with self.sessionmaker() as session:
+        async with self.sessionmaker() as session:
             yield session
