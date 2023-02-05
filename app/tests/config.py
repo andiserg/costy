@@ -17,13 +17,7 @@ precents_evn_variables = pytest.mark.skipif(
             not all(
                 [
                     os.getenv(key, False)
-                    for key in [
-                        "DB_USER",
-                        "DB_PASSWORD",
-                        "DB_HOST",
-                        "DB_NAME",
-                        "TEST_DB_NAME",
-                    ]
+                    for key in ["DB_USER", "DB_PASSWORD", "DB_HOST", "TEST_DB_NAME"]
                 ]
             ),
         ]
