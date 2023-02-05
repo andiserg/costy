@@ -16,7 +16,7 @@ jobs:
     env:
       DB_USER: postgres
       DB_PASSWORD: 123456
-      DB_NAME: test_database
+      TEST_DB_NAME: test_database
 
     services:
       postgres:
@@ -45,8 +45,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Print env variables
-      run: python env.py
     - name: Test with pytest
       run: |
         pytest app
