@@ -1,18 +1,31 @@
 """
 Фікстури і інші структури, які використовуються у тестах
 """
+import asyncio
 import os
 
 import pytest
+import pytest_asyncio
+
+from app.database.database import Database
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """
+    Фікстура потрібна для функціонування pytest-asyncio тестів
+    """
+    return asyncio.get_event_loop()
+
 
 # Декоратор-перевірка на те, чи існує файл "pytest.ini"
 # або існують потрібні ENV параметри
-# pytest.ini включений у .gitignore,
-# тому такі CI як Github Actions не зможуть корректно
-# провести тести і вони пропускаються.
+# Перевірка для того, щоб тести не крашились якщо не має потрібних env параметрів.
 precents_evn_variables = pytest.mark.skipif(
     all(
         [
+            # Якщо результат буде True то тест пропуститься.
+            # Тому перед умовами добавлені not
             not os.path.exists("pytest.ini"),
             not all(
                 [
@@ -26,11 +39,14 @@ precents_evn_variables = pytest.mark.skipif(
 )
 
 
-@pytest.fixture
-def anyio_backend():
+@pytest_asyncio.fixture
+async def database() -> Database:
     """
-    За замовчуванням, async тест який обернутий в @pytest.mark.anyio
-    намагається виконатись також у trio, альтернативі asyncio, і видає failed результат.
-    Фікстура вказує, що потрібно перевіряти тільки за допомогою asyncio
+    Фікстура яка створює об'єкт Database для модульних тестів
+    :return: Database object
     """
-    return "asyncio"
+    database = Database(test=True)
+
+    # Знищує стару тестову базу та створює нову
+    await database.init_models()
+    return database
