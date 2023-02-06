@@ -8,7 +8,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.database import Database
 
 database = Database()
+get_session = database.get_session_depends
+
 app = FastAPI()
+
+# Імопрти роутерів нижче ніж створення бази і додатку тому що вони їх імпортують у себе.
+# Тому якщо імпорти поставити вище, то буде помилка Cyclic Import Error
+from app.views.users import router as users_router  # noqa: E402;
+
+app.include_router(users_router, tags=["users"])
 
 
 @app.get("/")
