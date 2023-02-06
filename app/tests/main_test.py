@@ -5,12 +5,11 @@ Testing app.main
 import pytest
 from httpx import AsyncClient
 
-from app.database.database import Database
 from app.main import app
 from app.main import database as default_database
 
 # event_loop, database потрібні для правильного функціонування тестів
-from app.tests.config import database, event_loop, precents_evn_variables
+from app.tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio
@@ -26,7 +25,7 @@ async def test_root():
 
 @pytest.mark.asyncio
 @precents_evn_variables
-async def test_db_version(database):
+async def test_db_version(database):  # noqa: F811;
     """
     Тестування app.main.say_db_version
     """
