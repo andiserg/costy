@@ -17,7 +17,7 @@ from app.tests.config import (  # noqa: F401;
 @pytest.mark.asyncio
 async def test_create_user_endpoint(client_db: AsyncClient):  # noqa: F811;
     """
-    ...
+    Testing app.views.users.create_user_view
     """
     data = {"email": "test@mail.test", "password": "123456"}  # nosec B106
     result = await client_db.post("/users/create/", json=data)
