@@ -42,10 +42,10 @@ async def test_auth_user(database):  # noqa: F811;
         assert incorrect_password_auth is None
 
         # Перевірка з неправильним email & password
-        incorrect_password_auth = await authenticate_user(
+        incorrect_email_password_auth = await authenticate_user(
             session, "incorrect", "incorrect"
         )
-        assert incorrect_password_auth is None
+        assert incorrect_email_password_auth is None
 
 
 @pytest.mark.asyncio
@@ -61,11 +61,9 @@ async def test_jwt_work(database):  # noqa: F811;
 
         token = create_access_token({"sub": created_user.email})
         decode_user = await get_current_user(session, token)
-
         assert isinstance(decode_user, User)
         assert decode_user.id == created_user.id
 
         # Спроба розшифрувати неправильний токен. Результат повинен бути None
         decode_result = await get_current_user(session, "incorrect")
-
         assert decode_result is None
