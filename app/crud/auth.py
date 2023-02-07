@@ -3,6 +3,7 @@ CRUD auth methods
 """
 from datetime import datetime, timedelta
 
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud.users import get_user_by_email
 from app.crypt.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from app.crypt.password import verify_password
+from app.main import get_session
 from app.models.users import User
 from app.schemas.auth import TokenData
 
@@ -70,3 +72,29 @@ async def get_current_user(session: AsyncSession, token: str) -> User | None:
     except JWTError:
         return
     return await get_user_by_email(session, email=token_data.email)
+
+
+async def get_current_user_depend(
+    session: AsyncSession = Depends(get_session), token: str = Depends(oauth2_scheme)
+) -> User:
+    """
+    Обгортка над get_current_user для використання в якості FastApi Depends
+    :return: app.models.user.User
+    """
+    result = await get_current_user(session, token)
+    if result is None:
+        raise_credentials_exception()
+    return result
+
+
+def raise_credentials_exception():
+    """
+    Піднімає HTTPException.
+    Викликається, якщо JWT, переданий в headers - невалідний
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    raise credentials_exception
