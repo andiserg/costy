@@ -1,18 +1,36 @@
 """
 Фікстури і інші структури, які використовуються у тестах
 """
+import asyncio
 import os
 
 import pytest
+import pytest_asyncio
+from httpx import AsyncClient
+
+from app.database.database import Database
+from app.main import app
+from app.main import database as default_database
+
+# from app.main import database as default_database
+
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """
+    Фікстура потрібна для функціонування pytest-asyncio тестів
+    """
+    return asyncio.get_event_loop()
+
 
 # Декоратор-перевірка на те, чи існує файл "pytest.ini"
 # або існують потрібні ENV параметри
-# pytest.ini включений у .gitignore,
-# тому такі CI як Github Actions не зможуть корректно
-# провести тести і вони пропускаються.
+# Перевірка для того, щоб тести не крашились якщо не має потрібних env параметрів.
 precents_evn_variables = pytest.mark.skipif(
     all(
         [
+            # Якщо результат буде True то тест пропуститься.
+            # Тому перед умовами добавлені not
             not os.path.exists("pytest.ini"),
             not all(
                 [
@@ -26,11 +44,32 @@ precents_evn_variables = pytest.mark.skipif(
 )
 
 
-@pytest.fixture
-def anyio_backend():
+@pytest_asyncio.fixture
+async def database() -> Database:
     """
-    За замовчуванням, async тест який обернутий в @pytest.mark.anyio
-    намагається виконатись також у trio, альтернативі asyncio, і видає failed результат.
-    Фікстура вказує, що потрібно перевіряти тільки за допомогою asyncio
+    Фікстура яка створює об'єкт Database для модульних тестів
+    :return: Database object
     """
-    return "asyncio"
+    database = Database(test=True)
+
+    # Знищує стару тестову базу та створює нову
+    await database.init_models()
+    return database
+
+
+@pytest_asyncio.fixture
+async def client_db(database) -> AsyncClient:  # noqa: F401, F811;
+    """
+    Створює і повертає httpx.AsyncClient зі створеною тестовою базою
+    :return: httpx.AsyncClient
+    """
+    # перезапис функції, яка буде викликатись у Depends(get_session_depends).
+    # За замовчуванням, буде виконуватись метод основої бази.
+    # Але тут потрібно використовувати тестову базу, тому залежності перезаписуються
+    app.dependency_overrides[
+        default_database.get_session_depends
+    ] = database.get_session_depends
+    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as session:
+        # yield для того, щоб після тесту відбулоась "чистка" фікстури.
+        # В цьому випадку це вихід з контекстного менеджера, який закриє клієнт
+        yield session

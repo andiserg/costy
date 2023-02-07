@@ -4,17 +4,16 @@
 import pytest
 from sqlalchemy import text
 
-from app.database.database import Database
-from app.tests.config import anyio_backend, precents_evn_variables
+# event_loop, database потрібні для правильного функціонування тестів
+from app.tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
 
 
-@pytest.mark.anyio
+@pytest.mark.asyncio
 @precents_evn_variables
-async def test_db_connect():
+async def test_db_connect(database):  # noqa: F811;
     """
     Перевірка працездібності бази даних та підключення до неї
     """
-    database = Database(test=True)
     async with database.sessionmaker() as session:
         result = await session.scalar(text("SELECT version();"))
         assert isinstance(result, str)

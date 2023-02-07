@@ -1,3 +1,4 @@
+exclude: 'requirements.txt'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
@@ -31,4 +32,4 @@ repos:
     hooks:
       - id: flake8
         files: app
-        args: [--extend-ignore, F401]
+        args: ["--extend-ignore=B008"]
