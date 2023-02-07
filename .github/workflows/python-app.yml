@@ -17,6 +17,9 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: 123456
       TEST_DB_NAME: test_database
+      SECRET_KEY: ${{ secrets.CRYPT_SECRET_KEY }}
+      ALGORITHM: ${{ secrets.CRYPT_ALGORITHM }}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.CRYPT_ACCESS_TOKEN_EXPIRE_MINUTES }}
 
     services:
       postgres:

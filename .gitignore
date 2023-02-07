@@ -131,4 +131,3 @@ dmypy.json
 
 .idea
 /pytest.ini
-/app/crypt/config.py
