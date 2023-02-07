@@ -1,9 +1,7 @@
 """
 Головний файл програми
 """
-from fastapi import Depends, FastAPI
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI
 
 from app.database.database import Database
 
@@ -17,13 +15,3 @@ app = FastAPI()
 from app.views.users import router as users_router  # noqa: E402;
 
 app.include_router(users_router, tags=["users"])
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/database_info/")
-async def say_db_verion(session: AsyncSession = Depends(database.get_session_depends)):
-    return {"message": await session.scalar(text("SELECT version();"))}
