@@ -10,6 +10,7 @@ from httpx import AsyncClient
 
 from app.database.database import Database
 from app.main import app
+from app.main import database as default_database
 
 # from app.main import database as default_database
 
@@ -66,7 +67,7 @@ async def client_db(database) -> AsyncClient:  # noqa: F401, F811;
     # За замовчуванням, буде виконуватись метод основої бази.
     # Але тут потрібно використовувати тестову базу, тому залежності перезаписуються
     app.dependency_overrides[
-        Database.get_session_depends
+        default_database.get_session_depends
     ] = database.get_session_depends
     async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as session:
         # yield для того, щоб після тесту відбулоась "чистка" фікстури.
