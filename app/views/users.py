@@ -8,10 +8,10 @@ from app.crud.users import create_user
 from app.main import get_session
 from app.schemas.users import UserCreateSchema, UserSchema
 
-router = APIRouter()
+router = APIRouter(prefix="/users")
 
 
-@router.post("/users/create/", response_model=UserSchema)
+@router.post("/create/", response_model=UserSchema)
 async def create_user_view(
     user: UserCreateSchema,
     session: AsyncSession = Depends(get_session),
