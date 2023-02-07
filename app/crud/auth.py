@@ -9,7 +9,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 async def authenticate_user(email: str, password: str, session: AsyncSession):
     """
-    Аутентифікація користувача. По даним для входу шукається та вертається user
+    Аутентифікація користувача.
+    По даним для входу шукається, перевіряється на співпадіння паролів
+    та вертається User модель
+
     :param email: email
     :param password: password
     :param session: сесія ДБ
