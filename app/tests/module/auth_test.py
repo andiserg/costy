@@ -1,5 +1,5 @@
 """
-Auth modal tests
+Auth module tests
 """
 import pytest
 
