@@ -23,4 +23,8 @@ class Operation(Base):
     # Код виду операції
     mcc: Mapped[Optional[int]] = Column(Integer)
 
+    # Тип джерела. "manual" | "<bank_name>"
+    # Операція може бути або додана вручну або за допомогою API банку
+    source_type: Mapped[str] = Column(String)
+
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
