@@ -1,3 +1,5 @@
+import time
+
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,7 +18,7 @@ async def create_operation(
     :param schema: схема операції OperationCreateSchema
     :return: Operation якщо user_id існує в базі. None, якщо ні
     """
-    operation = Operation(**schema.dict(), user_id=user_id)
+    operation = Operation(**schema.dict(), unix_time=time.time(), user_id=user_id)
     session.add(operation)
     try:
         await session.commit()
@@ -33,6 +35,6 @@ async def get_all_operations(session: AsyncSession, user_id: int) -> list[Operat
     :return: список об'єктів моделі Opetation. Якщо операцій немає, то пустий список
     """
     result = await session.scalars(
-        select(Operation).filter(Operation.user_id == user_id + 1)
+        select(Operation).filter(Operation.user_id == user_id)
     )
     return list(result)
