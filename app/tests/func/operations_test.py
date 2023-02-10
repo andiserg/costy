@@ -36,6 +36,12 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
     for key, value in operation_data.items():
         assert created_operation[key] == value
 
+    # Запит з невірними даними
+    incorrect_response = await client_db.post(
+        "/operations/create/", json={}, headers=headers
+    )
+    assert incorrect_response.status_code == 400
+
 
 @pytest.mark.asyncio
 async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
