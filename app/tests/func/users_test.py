@@ -12,6 +12,7 @@ from app.tests.config import (  # noqa: F401;
     event_loop,
     precents_evn_variables,
 )
+from app.tests.patterns import create_and_auth_func_user
 
 
 @pytest.mark.asyncio
@@ -30,14 +31,11 @@ async def test_read_user(client_db: AsyncClient):  # noqa: F811;
     """
     Testing app.views.users.read_me
     """
-    data = {"email": "test", "username": "test", "password": "test"}  # nosec B106
-    await client_db.post("/users/create/", json=data)
-
-    auth_result = await client_db.post("/token/", data=data)
-    token = f"Bearer {auth_result.json()['access_token']}"
+    auth_result = await create_and_auth_func_user(client_db)
+    created_user, token = auth_result["user"], auth_result["token"]
 
     read_result = await client_db.get("/users/me/", headers={"Authorization": token})
     assert read_result.status_code == 200
 
     user_data = read_result.json()
-    assert user_data["email"] == data["email"]
+    assert user_data["email"] == created_user["email"]
