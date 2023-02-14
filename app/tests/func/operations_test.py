@@ -40,7 +40,7 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
     incorrect_response = await client_db.post(
         "/operations/create/", json={}, headers=headers
     )
-    assert incorrect_response.status_code == 400
+    assert incorrect_response.status_code == 422
 
 
 @pytest.mark.asyncio
