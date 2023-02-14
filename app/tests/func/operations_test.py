@@ -44,7 +44,7 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
 
 
 @pytest.mark.asyncio
-async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
+async def test_read_operations_endpoint(client_db: AsyncClient):  # noqa: F811;
     """
     Testing app.views.operations.read_operations_view
     """
