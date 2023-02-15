@@ -3,9 +3,9 @@ users methods test
 """
 import pytest
 
-from app.crud.users import create_user, get_user, get_user_by_email
-from app.models.users import User
-from app.schemas.users import UserCreateSchema
+from app.apps.account.users.models import User
+from app.apps.account.users.schemas import UserCreateSchema
+from app.apps.account.users.services import create_user, get_user, get_user_by_email
 
 # event_loop, database потрібні для правильного функціонування тестів
 from app.tests.config import database, event_loop, precents_evn_variables  # noqa: F401;

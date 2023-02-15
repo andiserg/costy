@@ -4,9 +4,9 @@ CRUD операції з User сутностями
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crypt.password import get_password_hash
-from app.models.users import User
-from app.schemas.users import UserCreateSchema
+from app.apps.account.auth.password import get_password_hash
+from app.apps.account.users.models import User
+from app.apps.account.users.schemas import UserCreateSchema
 
 
 async def create_user(session: AsyncSession, user: UserCreateSchema) -> User:

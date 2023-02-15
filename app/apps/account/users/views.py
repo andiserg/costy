@@ -4,19 +4,18 @@ Users endpoints
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.auth import get_current_user_depend
-from app.crud.users import create_user
+from app.apps.account.auth.services import get_current_user_depend
+from app.apps.account.users.models import User
+from app.apps.account.users.schemas import UserCreateSchema, UserSchema
+from app.apps.account.users.services import create_user
 from app.main import get_session
-from app.models.users import User
-from app.schemas.users import UserCreateSchema, UserSchema
 
 router = APIRouter(prefix="/users")
 
 
 @router.post("/create/", response_model=UserSchema, status_code=201)
 async def create_user_view(
-    user: UserCreateSchema,
-    session: AsyncSession = Depends(get_session),
+    user: UserCreateSchema, session: AsyncSession = Depends(get_session)
 ):
     """
     Створення і повернення користувача
