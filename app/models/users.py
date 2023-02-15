@@ -4,7 +4,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Mapped
 
-from app.database.database import Base
+from app.core.database import Base
 
 
 class User(Base):

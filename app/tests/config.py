@@ -8,7 +8,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from app.database.database import Database
+from app.core.database import Database
 from app.main import app
 from app.main import database as default_database
 

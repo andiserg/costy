@@ -6,7 +6,7 @@ from typing import Optional
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped
 
-from app.database.database import Base
+from app.core.database import Base
 
 
 class Operation(Base):

@@ -3,7 +3,7 @@
 """
 from fastapi import FastAPI
 
-from app.database.database import Database
+from app.core.database import Database
 
 database = Database()
 get_session = database.get_session_depends
