@@ -8,10 +8,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.account.auth.password import verify_password
-from app.account.auth.schemas import TokenData
-from app.account.users.models import User
-from app.account.users.services import get_user_by_email
+from app.apps.account.auth.password import verify_password
+from app.apps.account.auth.schemas import TokenData
+from app.apps.account.users.models import User
+from app.apps.account.users.services import get_user_by_email
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from app.main import get_session
 

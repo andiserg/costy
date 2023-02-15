@@ -3,14 +3,14 @@ Auth module tests
 """
 import pytest
 
-from app.account.auth.services import (
+from app.apps.account.auth.services import (
     authenticate_user,
     create_access_token,
     get_current_user,
 )
-from app.account.users.models import User
-from app.account.users.schemas import UserCreateSchema
-from app.account.users.services import create_user
+from app.apps.account.users.models import User
+from app.apps.account.users.schemas import UserCreateSchema
+from app.apps.account.users.services import create_user
 from app.tests.config import database  # noqa: F401;
 
 
