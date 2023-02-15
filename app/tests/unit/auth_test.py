@@ -1,5 +1,5 @@
 """
-Auth module tests
+Auth unit tests
 """
 import pytest
 
