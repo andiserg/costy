@@ -3,17 +3,21 @@ Auth module tests
 """
 import pytest
 
-from app.auth.services import authenticate_user, create_access_token, get_current_user
-from app.crud.users import create_user
-from app.models.users import User
-from app.schemas.users import UserCreateSchema
+from app.account.auth.services import (
+    authenticate_user,
+    create_access_token,
+    get_current_user,
+)
+from app.account.users.models import User
+from app.account.users.schemas import UserCreateSchema
+from app.account.users.services import create_user
 from app.tests.config import database  # noqa: F401;
 
 
 @pytest.mark.asyncio
 async def test_auth_user(database):  # noqa: F811;
     """
-    Testing user auth func
+    Testing user account func
     authenticate_user(email, password) ->
         User: якщо email є в базі і password сходиться
         None: якщо email немає в базі або password не сходиться
