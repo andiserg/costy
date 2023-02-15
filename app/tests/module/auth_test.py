@@ -3,7 +3,7 @@ Auth module tests
 """
 import pytest
 
-from app.crud.auth import authenticate_user, create_access_token, get_current_user
+from app.auth.services import authenticate_user, create_access_token, get_current_user
 from app.crud.users import create_user
 from app.models.users import User
 from app.schemas.users import UserCreateSchema
