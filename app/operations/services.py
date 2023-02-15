@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.operations import Operation
-from app.schemas.operations import OperationCreateSchema
+from app.operations.models import Operation
+from app.operations.schemas import OperationCreateSchema
 
 
 async def create_operation(

@@ -15,7 +15,7 @@ app = FastAPI()
 # Тому якщо імпорти поставити вище, то буде помилка Cyclic Import Error
 from app.account.auth.views import router as auth_router  # noqa: E402;
 from app.account.users.views import router as users_router  # noqa: E402;
-from app.views.operations import router as operations_router  # noqa: E402;
+from app.operations.views import router as operations_router  # noqa: E402;
 
 app.include_router(users_router, tags=["users"])
 app.include_router(auth_router, tags=["account"])

@@ -5,9 +5,9 @@ import pytest
 
 from app.account.users.schemas import UserCreateSchema
 from app.account.users.services import create_user
-from app.crud.operations import create_operation, get_all_operations
-from app.models.operations import Operation
-from app.schemas.operations import OperationCreateSchema
+from app.operations.models import Operation
+from app.operations.schemas import OperationCreateSchema
+from app.operations.services import create_operation, get_all_operations
 from app.tests.config import database, precents_evn_variables  # noqa: F401;
 
 
