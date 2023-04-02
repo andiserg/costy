@@ -5,9 +5,9 @@
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.apps.account.users.models import User
-from app.apps.account.users.schemas import UserCreateSchema
-from app.apps.account.users.services import create_user
+from src.app.account.users.models import User
+from src.app.account.users.schemas import UserCreateSchema
+from src.app.account.users.services import create_user
 
 
 async def create_model_user(session: AsyncSession) -> User:

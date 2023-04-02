@@ -8,16 +8,16 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.apps.account.auth.config import (
+from src.app.account.auth.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
     SECRET_KEY,
 )
-from app.apps.account.auth.password import verify_password
-from app.apps.account.auth.schemas import TokenData
-from app.apps.account.users.models import User
-from app.apps.account.users.services import get_user_by_email
-from app.main import get_session
+from src.app.account.auth.password import verify_password
+from src.app.account.auth.schemas import TokenData
+from src.app.account.users.models import User
+from src.app.account.users.services import get_user_by_email
+from src.main import get_session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -83,7 +83,7 @@ async def get_current_user_depend(
 ) -> User:
     """
     Обгортка над get_current_user для використання в якості FastApi Depends
-    :return: app.models.user.User
+    :return: src.models.user.User
     """
     result = await get_current_user(session, token)
     if result is None:

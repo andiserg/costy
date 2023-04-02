@@ -4,11 +4,11 @@ Users endpoints
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.apps.account.auth.services import get_current_user_depend
-from app.apps.account.users.models import User
-from app.apps.account.users.schemas import UserCreateSchema, UserSchema
-from app.apps.account.users.services import create_user
-from app.main import get_session
+from src.app.account.auth.services import get_current_user_depend
+from src.app.account.users.models import User
+from src.app.account.users.schemas import UserCreateSchema, UserSchema
+from src.app.account.users.services import create_user
+from src.main import get_session
 
 router = APIRouter(prefix="/users")
 

@@ -31,5 +31,5 @@ repos:
     rev: b9a7794c4f425ef8419081e6993f99419cc667ea
     hooks:
       - id: flake8
-        files: app
+        files: src
         args: ["--extend-ignore=B008"]

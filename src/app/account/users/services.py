@@ -4,16 +4,16 @@ CRUD операції з User сутностями
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.apps.account.auth.password import get_password_hash
-from app.apps.account.users.models import User
-from app.apps.account.users.schemas import UserCreateSchema
+from src.app.account.auth.password import get_password_hash
+from src.app.account.users.models import User
+from src.app.account.users.schemas import UserCreateSchema
 
 
 async def create_user(session: AsyncSession, user: UserCreateSchema) -> User:
     """
-    :param session: Сесія ДБ. Див. app.database.database.Database
+    :param session: Сесія ДБ. Див. src.database.database.Database
     :param user: Схема для створення користувача
-    :return: app.models.users.User
+    :return: src.models.users.User
     """
     hashed_password = get_password_hash(user.password)
     db_user = User(email=user.email, hashed_password=hashed_password)
@@ -24,9 +24,9 @@ async def create_user(session: AsyncSession, user: UserCreateSchema) -> User:
 
 async def get_user(session: AsyncSession, user_id: int) -> User | None:
     """
-    :param session: Сесія ДБ. Див. app.database.database.Database
+    :param session: Сесія ДБ. Див. src.database.database.Database
     :param user_id: ID користувача
-    :return: app.models.users.User
+    :return: src.models.users.User
     :return: None, якщо користувача з таким ID не існує
     """
     return await session.scalar(select(User).filter(User.id == user_id))
@@ -34,9 +34,9 @@ async def get_user(session: AsyncSession, user_id: int) -> User | None:
 
 async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
     """
-    :param session: Сесія ДБ. Див. app.database.database.Database
+    :param session: Сесія ДБ. Див. src.database.database.Database
     :param email: Email користувача
-    :return: app.models.users.User
+    :return: src.models.users.User
     :return: None, якщо користувача з таким email не існує
     """
     return await session.scalar(select(User).filter(User.email == email))

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class OperationCreateSchema(BaseModel):
     """
-    Схема операції. Модель: app.models.operations.Operation
+    Схема операції. Модель: src.models.operations.Operation
     """
 
     amount: int
