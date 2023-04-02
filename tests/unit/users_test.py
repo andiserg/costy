@@ -5,7 +5,8 @@ import pytest
 
 from src.app.account.users.models import User
 from src.app.account.users.schemas import UserCreateSchema
-from src.app.account.users.services import create_user, get_user, get_user_by_email
+from src.app.account.users.services import create_user
+from src.app.adapters.repository import UserRepository
 
 # event_loop, database потрібні для правильного функціонування тестів
 from tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
@@ -38,23 +39,25 @@ async def test_user_read(database):  # noqa: F401, F811;
         email="test@test.com", password="123456"
     )
     async with database.sessionmaker() as session:
+        users = UserRepository(session)
+
         # Створення користувача
         created_user: User = await create_user(session, user_schema)
 
         # Запит існуючого користувача по ID
-        user = await get_user(session, created_user.id)
+        user = await users.get("id", created_user.id)
         assert isinstance(user, User)
         assert user.email == created_user.email
 
         # Запит існуючого користувача по ID
-        user = await get_user_by_email(session, created_user.email)
+        user = await users.get("email", created_user.email)
         assert isinstance(user, User)
         assert user.email == created_user.email
 
         # Запит неіснуючого користувача по ID
-        user = await get_user(session, 9999)
+        user = await users.get("id", 9999)
         assert user is None
 
         # Запит неіснуючого користувача по ID
-        user = await get_user_by_email(session, "incorrect@test.com")
+        user = await users.get("email", "incorrect@test.com")
         assert user is None

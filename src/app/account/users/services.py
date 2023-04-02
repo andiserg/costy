@@ -1,7 +1,6 @@
 """
 CRUD операції з User сутностями
 """
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.account.auth.password import get_password_hash
@@ -20,23 +19,3 @@ async def create_user(session: AsyncSession, user: UserCreateSchema) -> User:
     session.add(db_user)
     await session.commit()
     return db_user
-
-
-async def get_user(session: AsyncSession, user_id: int) -> User | None:
-    """
-    :param session: Сесія ДБ. Див. src.database.database.Database
-    :param user_id: ID користувача
-    :return: src.models.users.User
-    :return: None, якщо користувача з таким ID не існує
-    """
-    return await session.scalar(select(User).filter(User.id == user_id))
-
-
-async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
-    """
-    :param session: Сесія ДБ. Див. src.database.database.Database
-    :param email: Email користувача
-    :return: src.models.users.User
-    :return: None, якщо користувача з таким email не існує
-    """
-    return await session.scalar(select(User).filter(User.email == email))

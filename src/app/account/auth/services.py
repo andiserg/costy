@@ -16,7 +16,7 @@ from src.app.account.auth.config import (
 from src.app.account.auth.password import verify_password
 from src.app.account.auth.schemas import TokenData
 from src.app.account.users.models import User
-from src.app.account.users.services import get_user_by_email
+from src.app.adapters.repository import UserRepository
 from src.main import get_session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -35,7 +35,8 @@ async def authenticate_user(
     :param password: password
     :return: User якщо аутентифікація вдала, None якщо ні
     """
-    user = await get_user_by_email(session=session, email=email)
+    users = UserRepository(session)
+    user = await users.get("email", email)
     if not user or not verify_password(password, user.hashed_password):
         return
     return user
@@ -67,6 +68,7 @@ async def get_current_user(session: AsyncSession, token: str) -> User | None:
     :param token: зашифрований JWT.
     :return: User якщо інформація валідна, інакше None
     """
+    users = UserRepository(session)
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
@@ -75,7 +77,7 @@ async def get_current_user(session: AsyncSession, token: str) -> User | None:
         token_data = TokenData(email=email)
     except JWTError:
         return
-    return await get_user_by_email(session, email=token_data.email)
+    return await users.get("email", token_data.email)
 
 
 async def get_current_user_depend(
