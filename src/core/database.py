@@ -4,9 +4,9 @@
 import os
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import registry
 
-Base = declarative_base()
+mapper_registry = registry()
 
 
 def _get_url(test: bool = False) -> str:
@@ -55,8 +55,8 @@ class Database:
         тому ці методи виконуються у синхронному режимі за допомогою run_sync
         """
         async with self.engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(mapper_registry.metadata.drop_all)
+            await conn.run_sync(mapper_registry.metadata.create_all)
 
     async def get_session_depends(self) -> AsyncSession:
         """

@@ -3,10 +3,12 @@
 """
 from fastapi import FastAPI
 
-from app.core.database import Database
+from src.app.adapters.orm import start_mappers
+from src.core.database import Database
 
 database = Database()
 get_session = database.get_session_depends
+start_mappers()
 
 app = FastAPI()
 
