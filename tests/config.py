@@ -8,11 +8,11 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from app.core.database import Database
-from app.main import app
-from app.main import database as default_database
+from src.core.database import Database
+from src.main import app
+from src.main import database as default_database
 
-# from app.main import database as default_database
+# from src.main import database as default_database
 
 
 @pytest.fixture(scope="session")

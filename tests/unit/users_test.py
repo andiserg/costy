@@ -3,19 +3,19 @@ users methods test
 """
 import pytest
 
-from app.apps.account.users.models import User
-from app.apps.account.users.schemas import UserCreateSchema
-from app.apps.account.users.services import create_user, get_user, get_user_by_email
+from src.app.account.users.models import User
+from src.app.account.users.schemas import UserCreateSchema
+from src.app.account.users.services import create_user, get_user, get_user_by_email
 
 # event_loop, database потрібні для правильного функціонування тестів
-from app.tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
+from tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio
 @precents_evn_variables
 async def test_user_create(database):  # noqa: F401, F811;
     """
-    Перевірка методу app.crud.users.create_user
+    Перевірка методу src.crud.users.create_user
     create_user повинен зберегти об'єкт User в БД та повернути його
     """
     user_schema = UserCreateSchema(  # nosec B106
@@ -31,8 +31,8 @@ async def test_user_create(database):  # noqa: F401, F811;
 async def test_user_read(database):  # noqa: F401, F811;
     """
     Перевірка методів
-        app.crud.users.get_user
-        app.crud.users.get_user_by_email
+        src.crud.users.get_user
+        src.crud.users.get_user_by_email
     """
     user_schema = UserCreateSchema(  # nosec B106
         email="test@test.com", password="123456"

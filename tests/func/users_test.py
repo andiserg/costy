@@ -6,19 +6,19 @@ import pytest
 from httpx import AsyncClient
 
 # event_loop, database потрібні для правильного функціонування тестів
-from app.tests.config import (  # noqa: F401;
+from tests.config import (  # noqa: F401;
     client_db,
     database,
     event_loop,
     precents_evn_variables,
 )
-from app.tests.patterns import create_and_auth_func_user
+from tests.patterns import create_and_auth_func_user
 
 
 @pytest.mark.asyncio
 async def test_create_user_endpoint(client_db: AsyncClient):  # noqa: F811;
     """
-    Testing app.views.users.create_user_view
+    Testing src.views.users.create_user_view
     """
     data = {"email": "test@mail.test", "password": "123456"}  # nosec B106
     result = await client_db.post("/users/create/", json=data)
@@ -29,7 +29,7 @@ async def test_create_user_endpoint(client_db: AsyncClient):  # noqa: F811;
 @pytest.mark.asyncio
 async def test_read_user(client_db: AsyncClient):  # noqa: F811;
     """
-    Testing app.views.users.read_me
+    Testing src.views.users.read_me
     """
     auth_result = await create_and_auth_func_user(client_db)
     created_user, token = auth_result["user"], auth_result["token"]

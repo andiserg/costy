@@ -3,19 +3,19 @@ import random
 import pytest
 from httpx import AsyncClient
 
-from app.tests.config import (  # noqa: F401;
+from tests.config import (  # noqa: F401;
     client_db,
     database,
     event_loop,
     precents_evn_variables,
 )
-from app.tests.patterns import create_and_auth_func_user
+from tests.patterns import create_and_auth_func_user
 
 
 @pytest.mark.asyncio
 async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
     """
-    Testing app.views.operations.create_operation_view
+    Testing src.views.operations.create_operation_view
     """
     auth_data = await create_and_auth_func_user(client_db)
     token = auth_data["token"]
@@ -46,7 +46,7 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
 @pytest.mark.asyncio
 async def test_read_operations_endpoint(client_db: AsyncClient):  # noqa: F811;
     """
-    Testing app.views.operations.read_operations_view
+    Testing src.views.operations.read_operations_view
     """
     auth_data = await create_and_auth_func_user(client_db)
     token = auth_data["token"]
