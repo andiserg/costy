@@ -50,7 +50,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
-        pytest app
+        pytest src
     - name: Build sphinx doc
       run: |
         sphinx-build -b html docs/source/ docs/build/html
