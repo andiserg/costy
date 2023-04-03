@@ -1,9 +1,9 @@
 import time
 
-from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.app.adapters.repository import OperationRepository
 from src.app.operations.models import Operation
 from src.app.operations.schemas import OperationCreateSchema
 
@@ -34,7 +34,5 @@ async def get_all_operations(session: AsyncSession, user_id: int) -> list[Operat
     :param user_id: ID користувача, операції якого потрібно отримати
     :return: список об'єктів моделі Opetation. Якщо операцій немає, то пустий список
     """
-    result = await session.scalars(
-        select(Operation).filter(Operation.user_id == user_id)
-    )
-    return list(result)
+    operations = OperationRepository(session)
+    return await operations.get_all_by_user(user_id)
