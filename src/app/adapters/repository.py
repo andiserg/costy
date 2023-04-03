@@ -1,3 +1,8 @@
+"""
+Реалізаця паттерну "Репозиторій".
+Абстрактний шар між сервісним шаром та ORM
+"""
+
 from abc import ABC, abstractmethod
 
 from sqlalchemy import select

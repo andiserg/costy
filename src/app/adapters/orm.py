@@ -1,3 +1,7 @@
+"""
+Технічні особливості побудови таблиць в ORM
+"""
+
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 
 from src.app.account.users.models import User
@@ -32,5 +36,10 @@ operations = Table(
 
 
 def start_mappers():
+    """
+    Прив'язка класів до таблиць. ORM буде з ними працювати як з моделями
+    Такий підхід відповідє SOLID, інверсуючи залежності.
+    Таким чином, частини програми нижчого рівня стають залежними від вищого рівня
+    """
     mapper_registry.map_imperatively(User, users)
     mapper_registry.map_imperatively(Operation, operations)
