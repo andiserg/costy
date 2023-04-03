@@ -14,10 +14,10 @@ from src.app.account.auth.config import (
     SECRET_KEY,
 )
 from src.app.account.auth.password import verify_password
-from src.app.account.auth.schemas import TokenData
 from src.app.account.users.models import User
 from src.app.adapters.repository import UserRepository
 from src.main import get_session
+from src.schemas.auth import TokenData
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

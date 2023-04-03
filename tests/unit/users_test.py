@@ -4,9 +4,9 @@ users methods test
 import pytest
 
 from src.app.account.users.models import User
-from src.app.account.users.schemas import UserCreateSchema
 from src.app.account.users.services import create_user
 from src.app.adapters.repository import UserRepository
+from src.schemas.users import UserCreateSchema
 
 # event_loop, database потрібні для правильного функціонування тестів
 from tests.config import database, event_loop, precents_evn_variables  # noqa: F401;

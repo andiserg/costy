@@ -9,8 +9,8 @@ from src.app.account.auth.services import (
     get_current_user,
 )
 from src.app.account.users.models import User
-from src.app.account.users.schemas import UserCreateSchema
 from src.app.account.users.services import create_user
+from src.schemas.users import UserCreateSchema
 from tests.config import database  # noqa: F401;
 
 

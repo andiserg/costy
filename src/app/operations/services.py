@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.adapters.repository import OperationRepository
 from src.app.operations.models import Operation
-from src.app.operations.schemas import OperationCreateSchema
+from src.schemas.operations import OperationCreateSchema
 
 
 async def create_operation(

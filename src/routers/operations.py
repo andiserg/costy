@@ -3,9 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.account.auth.services import get_current_user_depend
 from src.app.account.users.models import User
-from src.app.operations.schemas import OperationCreateSchema, OperationSchema
 from src.app.operations.services import create_operation, get_all_operations
 from src.main import get_session
+from src.schemas.operations import OperationCreateSchema, OperationSchema
 
 router = APIRouter(prefix="/operations")
 

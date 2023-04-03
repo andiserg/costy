@@ -3,11 +3,11 @@ import time
 
 import pytest
 
-from src.app.account.users.schemas import UserCreateSchema
 from src.app.account.users.services import create_user
 from src.app.operations.models import Operation
-from src.app.operations.schemas import OperationCreateSchema
 from src.app.operations.services import create_operation, get_all_operations
+from src.schemas.operations import OperationCreateSchema
+from src.schemas.users import UserCreateSchema
 from tests.config import database, precents_evn_variables  # noqa: F401;
 
 
