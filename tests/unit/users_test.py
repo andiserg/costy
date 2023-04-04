@@ -6,6 +6,7 @@ import pytest
 from src.app.account.users.models import User
 from src.app.account.users.services import create_user
 from src.app.adapters.repository import UserRepository
+from src.app.unit_of_work import SqlAlchemyUnitOfWork
 from src.schemas.users import UserCreateSchema
 
 # event_loop, database потрібні для правильного функціонування тестів
@@ -23,7 +24,8 @@ async def test_user_create(database):  # noqa: F401, F811;
         email="test@test.com", password="123456"
     )
     async with database.sessionmaker() as session:
-        result = await create_user(session, user_schema)
+        uow = SqlAlchemyUnitOfWork(session)
+        result = await create_user(uow, user_schema)
         assert isinstance(result, User)
 
 
@@ -39,10 +41,11 @@ async def test_user_read(database):  # noqa: F401, F811;
         email="test@test.com", password="123456"
     )
     async with database.sessionmaker() as session:
+        uow = SqlAlchemyUnitOfWork(session)
         users = UserRepository(session)
 
         # Створення користувача
-        created_user: User = await create_user(session, user_schema)
+        created_user: User = await create_user(uow, user_schema)
 
         # Запит існуючого користувача по ID
         user = await users.get("id", created_user.id)
