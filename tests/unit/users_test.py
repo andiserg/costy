@@ -8,9 +8,7 @@ from src.app.account.users.services import create_user
 from src.app.adapters.repository import UserRepository
 from src.app.unit_of_work import SqlAlchemyUnitOfWork
 from src.schemas.users import UserCreateSchema
-
-# event_loop, database потрібні для правильного функціонування тестів
-from tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
+from tests.conftest import precents_evn_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio

@@ -4,8 +4,6 @@ Functional account tests
 import pytest
 from httpx import AsyncClient
 
-from tests.config import client_db, database, event_loop  # noqa: F401;
-
 
 @pytest.mark.asyncio
 async def test_auth_token(client_db: AsyncClient):  # noqa: F811;

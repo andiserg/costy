@@ -4,8 +4,7 @@
 import pytest
 from sqlalchemy import text
 
-# event_loop, database потрібні для правильного функціонування тестів
-from tests.config import database, event_loop, precents_evn_variables  # noqa: F401;
+from tests.conftest import precents_evn_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio
