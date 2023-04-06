@@ -87,6 +87,16 @@ class SingletonMeta(type):
 
 
 class DatabaseFactory(metaclass=SingletonMeta):
+    """
+    Фабрика для бази даних.
+
+    Для налаштування бази даних, потрібно прив'язати класи до таблиць.
+    Таку операцію потрібно проводити один раз за сесію,
+     тому що ОРМ не дасть повторно прив'язати одні і ті самі класи.
+     Фабрика реалізує патерн "Singleton", що дозволяє їй один раз провести прив'язку
+     та за потребності повертати об'єкти бази даних.
+    """
+
     def __init__(self):
         self.mapper_registry = registry()
         self._bootstrap_tables()
@@ -100,6 +110,13 @@ class DatabaseFactory(metaclass=SingletonMeta):
 
 
 def bind_database_to_app(app: FastAPI, database: Database):
+    """
+    Перезапис залежності сесії бази даних.
+    В цілях уникнення глобальних змінних, в коді використовується функція-заглушка
+     для залежності сесії
+    А під час налаштування, викликається ця функція, яка перезаписує залежність
+     на працюючу функцію
+    """
     app.dependency_overrides[get_session_depend] = database.get_session
 
 

@@ -5,9 +5,7 @@ from pydantic import BaseModel
 
 
 class UserBaseSchema(BaseModel):
-    """
-    User base class
-    """
+    """User base class"""
 
     email: str
 
@@ -16,16 +14,12 @@ class UserBaseSchema(BaseModel):
 
 
 class UserCreateSchema(UserBaseSchema):
-    """
-    Class used for user create
-    """
+    """Class used for user create"""
 
     password: str
 
 
 class UserSchema(UserBaseSchema):
-    """
-    Class used for read user info
-    """
+    """Class used for read user info"""
 
     id: int

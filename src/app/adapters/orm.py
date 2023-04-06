@@ -41,6 +41,5 @@ def start_mappers(mapper_registry, tables):
     Такий підхід відповідє SOLID, інверсуючи залежності.
     Таким чином, частини програми нижчого рівня стають залежними від вищого рівня
     """
-    mapper_registry
     mapper_registry.map_imperatively(User, tables["users"])
     mapper_registry.map_imperatively(Operation, tables["operations"])
