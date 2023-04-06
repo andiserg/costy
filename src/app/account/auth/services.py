@@ -3,8 +3,6 @@ CRUD account methods
 """
 from datetime import datetime, timedelta
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from src.app.account.auth.config import (
@@ -15,10 +13,7 @@ from src.app.account.auth.config import (
 from src.app.account.auth.password import verify_password
 from src.app.account.users.models import User
 from src.app.unit_of_work import AbstractUnitOfWork
-from src.depends import get_uow
 from src.schemas.auth import TokenData
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 async def authenticate_user(
@@ -80,29 +75,3 @@ async def decode_token_data(token: str) -> TokenData | None:
         return TokenData(email=email)
     except JWTError:
         return
-
-
-async def get_current_user_depend(
-    uow: AbstractUnitOfWork = Depends(get_uow), token: str = Depends(oauth2_scheme)
-) -> User:
-    """
-    Обгортка над get_current_user для використання в якості FastApi Depends
-    :return: User
-    """
-    result = await get_current_user(uow, token)
-    if result is None:
-        raise_credentials_exception()
-    return result
-
-
-def raise_credentials_exception():
-    """
-    Піднімає HTTPException.
-    Викликається, якщо JWT, переданий в headers - невалідний
-    """
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    raise credentials_exception
