@@ -5,13 +5,7 @@ Functional users tests
 import pytest
 from httpx import AsyncClient
 
-# event_loop, database потрібні для правильного функціонування тестів
-from tests.config import (  # noqa: F401;
-    client_db,
-    database,
-    event_loop,
-    precents_evn_variables,
-)
+from tests.conftest import precents_evn_variables  # noqa: F401;
 from tests.patterns import create_and_auth_func_user
 
 

@@ -8,11 +8,8 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from src.core.database import Database
-from src.main import app
-from src.main import database as default_database
-
-# from src.main import database as default_database
+from src.core.database import Database, DatabaseFactory
+from src.main import bootstrap_fastapi_app
 
 
 @pytest.fixture(scope="session")
@@ -44,32 +41,32 @@ precents_evn_variables = pytest.mark.skipif(
 )
 
 
+@pytest.fixture(scope="session")
+def database_factory() -> DatabaseFactory:
+    return DatabaseFactory()
+
+
 @pytest_asyncio.fixture
-async def database() -> Database:
+async def database(database_factory) -> Database:
     """
     Фікстура яка створює об'єкт Database для модульних тестів
     :return: Database object
     """
-    database = Database(test=True)
-
-    # Знищує стару тестову базу та створює нову
-    await database.init_models()
-    return database
+    db = database_factory.get_database(test=True)
+    await db.init_models()
+    return db
 
 
 @pytest_asyncio.fixture
-async def client_db(database) -> AsyncClient:  # noqa: F401, F811;
+async def client_db(database_factory) -> AsyncClient:  # noqa: F401, F811;
     """
     Створює і повертає httpx.AsyncClient зі створеною тестовою базою
     :return: httpx.AsyncClient
     """
-    # перезапис функції, яка буде викликатись у Depends(get_session_depends).
-    # За замовчуванням, буде виконуватись метод основої бази.
-    # Але тут потрібно використовувати тестову базу, тому залежності перезаписуються
-    app.dependency_overrides[
-        default_database.get_session_depends
-    ] = database.get_session_depends
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as session:
+    async with AsyncClient(
+        app=bootstrap_fastapi_app(database_factory, test=True),
+        base_url="http://127.0.0.1:8000",
+    ) as session:
         # yield для того, щоб після тесту відбулоась "чистка" фікстури.
         # В цьому випадку це вихід з контекстного менеджера, який закриє клієнт
         yield session

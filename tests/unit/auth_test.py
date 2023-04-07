@@ -10,8 +10,8 @@ from src.app.account.auth.services import (
 )
 from src.app.account.users.models import User
 from src.app.account.users.services import create_user
+from src.app.unit_of_work import SqlAlchemyUnitOfWork
 from src.schemas.users import UserCreateSchema
-from tests.config import database  # noqa: F401;
 
 
 @pytest.mark.asyncio
@@ -24,30 +24,32 @@ async def test_auth_user(database):  # noqa: F811;
     """
     user_schema = UserCreateSchema(email="test", password="test")  # nosec B106
     async with database.sessionmaker() as session:
-        created_user = await create_user(session, user_schema)
+        uow = SqlAlchemyUnitOfWork(session)
+
+        created_user = await create_user(uow, user_schema)
 
         # Перевірка з правильним даними
         correct_auth = await authenticate_user(
-            session, user_schema.email, user_schema.password
+            uow, user_schema.email, user_schema.password
         )
         assert isinstance(correct_auth, User)
         assert created_user.email == correct_auth.email
 
         # Перевірка з неправильним email
         incorrect_email_auth = await authenticate_user(
-            session, "incorrect", user_schema.password
+            uow, "incorrect", user_schema.password
         )
         assert incorrect_email_auth is None
 
         # Перевірка з неправильним password
         incorrect_password_auth = await authenticate_user(
-            session, user_schema.email, "incorrect"
+            uow, user_schema.email, "incorrect"
         )
         assert incorrect_password_auth is None
 
         # Перевірка з неправильним email & password
         incorrect_email_password_auth = await authenticate_user(
-            session, "incorrect", "incorrect"
+            uow, "incorrect", "incorrect"
         )
         assert incorrect_email_password_auth is None
 
@@ -60,14 +62,16 @@ async def test_jwt_work(database):  # noqa: F811;
     Якщо на виході отриманий той самий користувач що був на вході - test passed.
     """
     async with database.sessionmaker() as session:
+        uow = SqlAlchemyUnitOfWork(session)
+
         user_schema = UserCreateSchema(email="test", password="test")  # nosec B106
-        created_user = await create_user(session, user_schema)
+        created_user = await create_user(uow, user_schema)
 
         token = create_access_token({"sub": created_user.email})
-        decode_user = await get_current_user(session, token)
+        decode_user = await get_current_user(uow, token)
         assert isinstance(decode_user, User)
         assert decode_user.id == created_user.id
 
         # Спроба розшифрувати неправильний токен. Результат повинен бути None
-        decode_result = await get_current_user(session, "incorrect")
+        decode_result = await get_current_user(uow, "incorrect")
         assert decode_result is None

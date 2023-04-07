@@ -3,23 +3,23 @@
 Створені для того, щоб писати одинакового коду у різних файлах (DRY)
 """
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.account.users.models import User
 from src.app.account.users.services import create_user
+from src.app.unit_of_work import AbstractUnitOfWork
 from src.schemas.users import UserCreateSchema
 
 
-async def create_model_user(session: AsyncSession) -> User:
+async def create_model_user(uow: AbstractUnitOfWork) -> User:
     """
     Створення та повернення юзера за допомогою AsyncSession
-    :param session: AsyncSession
+    :param uow: Unit of Work
     :return: User
     """
     user_schema = UserCreateSchema(  # nosec B106
         email="test@test.com", password="123456"
     )
-    return await create_user(session, user_schema)
+    return await create_user(uow, user_schema)
 
 
 async def create_func_user(client: AsyncClient) -> dict:

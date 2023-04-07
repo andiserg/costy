@@ -3,22 +3,28 @@
 """
 from fastapi import FastAPI
 
-from src.app.adapters.orm import start_mappers
-from src.core.database import Database
-
-database = Database()
-get_session = database.get_session_depends
-start_mappers()
-
-app = FastAPI()
+from src.core.database import DatabaseFactory, bind_database_to_app
 
 
-# Імопрти роутерів нижче ніж створення бази і додатку тому що вони їх імпортують у себе.
-# Тому якщо імпорти поставити вище, то буде помилка Cyclic Import Error
-from src.routers.auth import router as auth_router  # noqa: E402;
-from src.routers.operations import router as operations_router  # noqa: E402;
-from src.routers.users import router as users_router  # noqa: E402;
+def bootstrap_fastapi_app(db_factory=DatabaseFactory(), test=False) -> FastAPI:
+    """Налаштування FastApi для початку роботи, включаючи базу"""
+    fastapi_app = FastAPI()
+    include_routers(fastapi_app)
+    database = db_factory.get_database(test=test)
+    bind_database_to_app(fastapi_app, database)
+    # Прив'язка залежності, яка віддає сесію бази
+    return fastapi_app
 
-app.include_router(users_router, tags=["users"])
-app.include_router(auth_router, tags=["account"])
-app.include_router(operations_router, tags=["operations"])
+
+def include_routers(fastapi_app):
+    """Підключення роутерів"""
+    from src.routers.auth import router as auth_router  # noqa: E402;
+    from src.routers.operations import router as operations_router  # noqa: E402;
+    from src.routers.users import router as users_router  # noqa: E402;
+
+    fastapi_app.include_router(users_router, tags=["users"])
+    fastapi_app.include_router(auth_router, tags=["account"])
+    fastapi_app.include_router(operations_router, tags=["operations"])
+
+
+app = bootstrap_fastapi_app()
