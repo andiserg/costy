@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.account.users.models import User
+from src.app.bank_managers.models import Manager, ManagerProperty
 from src.app.operations.models import Operation
 
 
@@ -47,4 +48,32 @@ class OperationRepository(SqlAlchemyRepository):
     async def get_all_by_user(self, user_id) -> list[Operation]:
         return list(
             await self.session.scalars(select(Operation).filter_by(user_id=user_id))
+        )
+
+
+class ManagerRepository(SqlAlchemyRepository):
+    async def get(self, field, value) -> Manager:
+        return await self._get(Manager, field, value)
+
+    async def get_properties(
+        self, manager: Manager
+    ) -> list[dict[str, str | int | float]]:
+        return [
+            property.as_dict
+            for property in list(
+                await self.session.scalars(
+                    select(ManagerProperty).filter_by(manager_id=manager.id)
+                )
+            )
+        ]
+
+    async def add_property(self, manager: Manager, name: str, value: str | int | float):
+        types = {str: "str", int: "int", float: "float"}
+        self.session.add(
+            ManagerProperty(
+                name=name,
+                value=str(value),
+                type=types[type(value)],
+                manager_id=manager.id,
+            )
         )

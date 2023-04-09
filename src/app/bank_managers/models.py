@@ -14,4 +14,12 @@ class ManagerProperty:
 
     name: str
     value: str
-    type: int
+    type: int  # str | int | float
+    manager_id: int
+
+    def as_dict(self):
+        types = {"str": str, "int": int, "float": float}
+        return {
+            "name": self.name,
+            "value": types[self.type](self.value),
+        }
