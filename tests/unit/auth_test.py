@@ -8,9 +8,10 @@ from src.app.account.auth.services import (
     create_access_token,
     get_current_user,
 )
-from src.app.account.users.models import User
-from src.app.account.users.services import UserCreateSchema, create_user
+from src.app.models.users import User
+from src.app.services.users import create_user
 from src.app.unit_of_work import SqlAlchemyUnitOfWork
+from src.schemas.users import UserCreateSchema
 
 
 @pytest.mark.asyncio

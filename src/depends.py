@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.account.auth.services import get_current_user
-from src.app.account.users.models import User
+from src.app.models.users import User
 from src.app.unit_of_work import AbstractUnitOfWork, SqlAlchemyUnitOfWork
 from src.core.database import get_session_depend
 
