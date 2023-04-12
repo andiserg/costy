@@ -11,12 +11,15 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app.adapters.repository import OperationRepository, UserRepository
+from src.app.account.users.repositories import UserRepository
+from src.app.bank_managers.repositories import ManagerRepository
+from src.app.operations.repositories import OperationRepository
 
 
 class AbstractUnitOfWork(ABC):
     users: UserRepository
     operations: OperationRepository
+    managers: ManagerRepository
 
     async def __aenter__(self):
         return self
