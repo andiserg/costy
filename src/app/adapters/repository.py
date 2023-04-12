@@ -9,9 +9,6 @@ from abc import ABC, abstractmethod
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app.account.users.models import User
-from src.app.operations.models import Operation
-
 
 class AbstractRepository(ABC):
     @abstractmethod
@@ -33,18 +30,3 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
 
     async def _get(self, model, field, value):
         return await self.session.scalar(select(model).filter_by(**{field: value}))
-
-
-class UserRepository(SqlAlchemyRepository):
-    async def get(self, field, value) -> User:
-        return await self._get(User, field, value)
-
-
-class OperationRepository(SqlAlchemyRepository):
-    async def get(self, field, value) -> Operation:
-        return await self._get(Operation, field, value)
-
-    async def get_all_by_user(self, user_id) -> list[Operation]:
-        return list(
-            await self.session.scalars(select(Operation).filter_by(user_id=user_id))
-        )

@@ -5,9 +5,8 @@
 from httpx import AsyncClient
 
 from src.app.account.users.models import User
-from src.app.account.users.services import create_user
+from src.app.account.users.services import UserCreateSchema, create_user
 from src.app.unit_of_work import AbstractUnitOfWork
-from src.schemas.users import UserCreateSchema
 
 
 async def create_model_user(uow: AbstractUnitOfWork) -> User:
