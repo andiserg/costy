@@ -2,7 +2,7 @@
 CRUD операції з User сутностями
 """
 from src.app.account.auth.password import get_password_hash
-from src.app.account.users.models import User
+from src.app.models.users import User
 from src.app.unit_of_work import AbstractUnitOfWork
 from src.schemas.users import UserCreateSchema
 
