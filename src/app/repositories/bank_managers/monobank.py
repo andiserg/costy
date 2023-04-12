@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 import aiohttp
 
-from src.app.bank_managers.services import BankManagerRepository
-from src.app.operations.models import Operation
+from src.app.models.operations import Operation
+from src.app.services.bank_managers import BankManagerRepository
 
 
 class MonobankManagerRepository(BankManagerRepository):

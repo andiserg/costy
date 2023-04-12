@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
-from src.app.adapters.repository import SqlAlchemyRepository
-from src.app.bank_managers.models import Manager, ManagerProperty
+from src.app.models.bank_managers import Manager, ManagerProperty
+from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class ManagerRepository(SqlAlchemyRepository):

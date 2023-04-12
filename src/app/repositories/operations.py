@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
-from src.app.adapters.repository import SqlAlchemyRepository
-from src.app.operations.models import Operation
+from src.app.models.operations import Operation
+from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class OperationRepository(SqlAlchemyRepository):
