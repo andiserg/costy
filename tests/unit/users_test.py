@@ -4,10 +4,9 @@ users methods test
 import pytest
 
 from src.app.account.users.models import User
-from src.app.account.users.services import create_user
-from src.app.adapters.repository import UserRepository
+from src.app.account.users.repositories import UserRepository
+from src.app.account.users.services import UserCreateSchema, create_user
 from src.app.unit_of_work import SqlAlchemyUnitOfWork
-from src.schemas.users import UserCreateSchema
 from tests.conftest import precents_evn_variables  # noqa: F401;
 
 
