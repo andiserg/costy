@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.app.models.bank_managers import Manager
+from src.app.domain.bank_managers import Manager
 from src.app.repositories.absctract.base import AbstractRepository
 
 

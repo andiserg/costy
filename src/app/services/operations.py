@@ -1,6 +1,6 @@
 import time
 
-from src.app.models.operations import Operation
+from src.app.domain.operations import Operation
 from src.app.unit_of_work import AbstractUnitOfWork
 from src.schemas.operations import OperationCreateSchema
 

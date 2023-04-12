@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from src.app.models.operations import Operation
+from src.app.domain.operations import Operation
 from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 

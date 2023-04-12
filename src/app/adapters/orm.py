@@ -5,9 +5,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
 
-from src.app.models.bank_managers import Manager, ManagerProperty
-from src.app.models.operations import Operation
-from src.app.models.users import User
+from src.app.domain.bank_managers import Manager, ManagerProperty
+from src.app.domain.operations import Operation
+from src.app.domain.users import User
 
 
 def create_tables(mapper_registry) -> dict[str, Table]:

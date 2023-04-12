@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class OperationCreateSchema(BaseModel):
-    """Схема операції. Модель: src.models.operations.Operation"""
+    """Схема операції. Модель: src.domain.operations.Operation"""
 
     amount: int
     description: str | None

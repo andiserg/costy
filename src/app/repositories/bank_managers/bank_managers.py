@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from src.app.models.bank_managers import Manager, ManagerProperty
+from src.app.domain.bank_managers import Manager, ManagerProperty
 from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 

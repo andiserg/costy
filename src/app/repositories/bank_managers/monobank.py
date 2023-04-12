@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import aiohttp
 
-from src.app.models.operations import Operation
+from src.app.domain.operations import Operation
 from src.app.services.bank_managers import BankManagerRepository
 
 

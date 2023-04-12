@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.app.models.operations import Operation
+from src.app.domain.operations import Operation
 from src.app.repositories.absctract.base import AbstractRepository
 
 
