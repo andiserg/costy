@@ -3,14 +3,14 @@ Auth unit tests
 """
 import pytest
 
-from src.app.account.auth.services import (
+from src.app.domain.users import User
+from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
+from src.app.services.users import create_user
+from src.routers.authentication.services import (
     authenticate_user,
     create_access_token,
     get_current_user,
 )
-from src.app.domain.users import User
-from src.app.services.users import create_user
-from src.app.unit_of_work import SqlAlchemyUnitOfWork
 from src.schemas.users import UserCreateSchema
 
 

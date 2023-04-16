@@ -1,9 +1,9 @@
 """
 CRUD операції з User сутностями
 """
-from src.app.account.auth.password import get_password_hash
 from src.app.domain.users import User
-from src.app.unit_of_work import AbstractUnitOfWork
+from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.routers.authentication.password import get_password_hash
 from src.schemas.users import UserCreateSchema
 
 

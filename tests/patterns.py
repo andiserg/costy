@@ -5,8 +5,8 @@
 from httpx import AsyncClient
 
 from src.app.domain.users import User
+from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.users import create_user
-from src.app.unit_of_work import AbstractUnitOfWork
 from src.schemas.users import UserCreateSchema
 
 

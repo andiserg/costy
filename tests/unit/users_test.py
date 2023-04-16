@@ -5,8 +5,8 @@ import pytest
 
 from src.app.domain.users import User
 from src.app.repositories.users import UserRepository
+from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.app.services.users import create_user
-from src.app.unit_of_work import SqlAlchemyUnitOfWork
 from src.schemas.users import UserCreateSchema
 from tests.conftest import precents_evn_variables  # noqa: F401;
 

@@ -5,14 +5,14 @@ from datetime import datetime, timedelta
 
 from jose import JWTError, jwt
 
-from src.app.account.auth.config import (
+from src.app.domain.users import User
+from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.routers.authentication.config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
     SECRET_KEY,
 )
-from src.app.account.auth.password import verify_password
-from src.app.domain.users import User
-from src.app.unit_of_work import AbstractUnitOfWork
+from src.routers.authentication.password import verify_password
 from src.schemas.auth import TokenData
 
 
