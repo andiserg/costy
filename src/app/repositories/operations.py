@@ -1,10 +1,11 @@
 from sqlalchemy import select
 
-from src.app.adapters.repository import SqlAlchemyRepository
-from src.app.operations.models import Operation
+from src.app.domain.operations import Operation
+from src.app.repositories.absctract.operations import AOperationRepository
+from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
-class OperationRepository(SqlAlchemyRepository):
+class OperationRepository(SqlAlchemyRepository, AOperationRepository):
     async def get(self, field, value) -> Operation:
         return await self._get(Operation, field, value)
 

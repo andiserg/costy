@@ -3,7 +3,7 @@ class Operation:
         self,
         amount: int,
         description: str | None,
-        unix_time: int,
+        time: int,
         mcc: int | None,
         source_type: str,
         user_id: int,
@@ -12,7 +12,7 @@ class Operation:
     ):
         self.amount = amount
         self.description = description
-        self.unix_time = unix_time
+        self.time = time
         self.mcc = mcc
         self.source_type = source_type
         self.user_id = user_id

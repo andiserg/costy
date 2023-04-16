@@ -1,9 +1,9 @@
 """
 CRUD операції з User сутностями
 """
-from src.app.account.auth.password import get_password_hash
-from src.app.account.users.models import User
-from src.app.unit_of_work import AbstractUnitOfWork
+from src.app.domain.users import User
+from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.routers.authentication.password import get_password_hash
 from src.schemas.users import UserCreateSchema
 
 
@@ -11,7 +11,7 @@ async def create_user(uow: AbstractUnitOfWork, user: UserCreateSchema) -> User:
     """
     :param uow: Unit of Work
     :param user: Схема для створення користувача
-    :return: src.models.users.User
+    :return: src.domain.users.User
     """
     hashed_password = get_password_hash(user.password)
     async with uow:

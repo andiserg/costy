@@ -8,7 +8,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from src.core.database import Database, DatabaseFactory
+from src.database import Database, DatabaseFactory
 from src.main import bootstrap_fastapi_app
 
 

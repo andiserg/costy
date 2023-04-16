@@ -5,9 +5,9 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
 
-from src.app.account.users.models import User
-from src.app.bank_managers.models import Manager, ManagerProperty
-from src.app.operations.models import Operation
+from src.app.domain.bank_api import BankInfo, BankInfoProperty
+from src.app.domain.operations import Operation
+from src.app.domain.users import User
 
 
 def create_tables(mapper_registry) -> dict[str, Table]:
@@ -25,7 +25,7 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("id", Integer, primary_key=True),
             Column("amount", Integer, nullable=False),
             Column("description", String),
-            Column("unix_time", Integer, nullable=False),
+            Column("time", Integer, nullable=False),
             Column("mcc", Integer),
             # mcc - код виду операції
             Column("source_type", String, nullable=False),
@@ -34,21 +34,21 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             # Операція може бути або додана вручну або за допомогою API банку
             Column("user_id", Integer, ForeignKey("users.id")),
         ),
-        "managers": Table(
-            "managers",
+        "banks_info": Table(
+            "banks_info",
             mapper_registry.metadata,
             Column("id", Integer, primary_key=True),
             Column("bank_name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id")),
         ),
-        "manager_properties": Table(
-            "manager_properties",
+        "banks_info_properties": Table(
+            "banks_info_properties",
             mapper_registry.metadata,
             Column("id", Integer, primary_key=True),
             Column("name", String, nullable=False),
             Column("value", String, nullable=False),
             Column("type", String, nullable=False),
-            Column("manager_id", Integer, ForeignKey("managers.id")),
+            Column("manager_id", Integer, ForeignKey("banks_info.id")),
         ),
     }
 
@@ -62,12 +62,16 @@ def start_mappers(mapper_registry: registry, tables: dict[str, Table]):
     mapper_registry.map_imperatively(
         User,
         tables["users"],
-        properties={"managers": relationship(Manager, backref="user")},
+        properties={"managers": relationship(BankInfo, backref="user")},
     )
     mapper_registry.map_imperatively(Operation, tables["operations"])
     mapper_registry.map_imperatively(
-        Manager,
-        tables["managers"],
-        properties={"properties": relationship(ManagerProperty, backref="manager")},
+        BankInfo,
+        tables["banks_info"],
+        properties={"properties": relationship(BankInfoProperty)},
     )
-    mapper_registry.map_imperatively(ManagerProperty, tables["manager_properties"])
+    mapper_registry.map_imperatively(
+        BankInfoProperty,
+        tables["banks_info_properties"],
+        properties={"manager": relationship(BankInfo)},
+    )

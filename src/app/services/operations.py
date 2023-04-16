@@ -1,7 +1,7 @@
 import time
 
-from src.app.operations.models import Operation
-from src.app.unit_of_work import AbstractUnitOfWork
+from src.app.domain.operations import Operation
+from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.schemas.operations import OperationCreateSchema
 
 
@@ -16,7 +16,7 @@ async def create_operation(
     :return: Operation якщо user_id існує в базі. None, якщо ні
     """
     async with uow:
-        operation = Operation(**schema.dict(), unix_time=time.time(), user_id=user_id)
+        operation = Operation(**schema.dict(), time=int(time.time()), user_id=user_id)
         await uow.operations.add(operation)
         await uow.commit()
         return operation

@@ -7,19 +7,22 @@ Unit of Work: Паттерн проектування, який дозволяє
 Натомість, він зберігає множину записів в рамках однієї транзакції
 """
 
+
 from abc import ABC, abstractmethod
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.app.account.users.repositories import UserRepository
-from src.app.bank_managers.repositories import ManagerRepository
-from src.app.operations.repositories import OperationRepository
+from src.app.repositories.absctract.bank_api import (
+    ABankInfoRepository,
+    ABankManagerRepository,
+)
+from src.app.repositories.absctract.operations import AOperationRepository
+from src.app.repositories.absctract.users import AUserRepository
 
 
 class AbstractUnitOfWork(ABC):
-    users: UserRepository
-    operations: OperationRepository
-    managers: ManagerRepository
+    users: AUserRepository
+    operations: AOperationRepository
+    banks_info: ABankInfoRepository
+    bank_managers: dict[str, ABankManagerRepository]
 
     async def __aenter__(self):
         return self
@@ -38,24 +41,3 @@ class AbstractUnitOfWork(ABC):
     @abstractmethod
     async def rollback(self):
         raise NotImplementedError
-
-
-class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
-    async def __aenter__(self):
-        self.users = UserRepository(self.session)
-        self.operations = OperationRepository(self.session)
-        return await super().__aenter__()
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await super().__aexit__(exc_type, exc_val, exc_tb)
-        await self.session.close()
-        return True
-
-    async def _commit(self):
-        await self.session.commit()
-
-    async def rollback(self):
-        await self.session.rollback()

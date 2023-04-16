@@ -3,7 +3,7 @@
 """
 from fastapi import FastAPI
 
-from src.core.database import DatabaseFactory, bind_database_to_app
+from src.database import DatabaseFactory, bind_database_to_app
 
 
 def bootstrap_fastapi_app(db_factory=DatabaseFactory(), test=False) -> FastAPI:

@@ -2,10 +2,11 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.app.account.auth.services import get_current_user
-from src.app.account.users.models import User
-from src.app.unit_of_work import AbstractUnitOfWork, SqlAlchemyUnitOfWork
-from src.core.database import get_session_depend
+from src.app.domain.users import User
+from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
+from src.database import get_session_depend
+from src.routers.authentication.services import get_current_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

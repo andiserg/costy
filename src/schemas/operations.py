@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class OperationCreateSchema(BaseModel):
-    """Схема операції. Модель: src.models.operations.Operation"""
+    """Схема операції. Модель: src.domain.operations.Operation"""
 
     amount: int
     description: str | None
@@ -17,7 +17,7 @@ class OperationSchema(OperationCreateSchema):
     """Схема операції, яка виокристовується під час завантаження даних з БД"""
 
     id: int
-    unix_time: int
+    time: int
 
     class Config:
         orm_mode = True

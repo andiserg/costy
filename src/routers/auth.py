@@ -4,9 +4,9 @@ Authentication endpoints
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.app.account.auth.services import authenticate_user, create_access_token
-from src.app.unit_of_work import AbstractUnitOfWork
+from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.depends import get_uow
+from src.routers.authentication.services import authenticate_user, create_access_token
 from src.schemas.auth import Token
 
 router = APIRouter()
