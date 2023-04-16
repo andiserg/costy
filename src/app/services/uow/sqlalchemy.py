@@ -19,6 +19,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)
         await self.session.close()
+        return True
 
     async def _commit(self):
         await self.session.commit()

@@ -17,7 +17,7 @@ class OperationSchema(OperationCreateSchema):
     """Схема операції, яка виокристовується під час завантаження даних з БД"""
 
     id: int
-    unix_time: int
+    time: int
 
     class Config:
         orm_mode = True
