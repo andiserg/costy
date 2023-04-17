@@ -51,6 +51,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: Build sphinx doc
-      run: |
-        sphinx-build -b html docs/source/ docs/build/html
