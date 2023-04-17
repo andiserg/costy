@@ -1,10 +1,34 @@
 from datetime import datetime, timedelta
 
+from src.app.domain.bank_api import BankInfo, BankInfoProperty
 from src.app.repositories.absctract.bank_api import (
     ABankManagerRepository,
     BankManagerRepositoryFactory,
 )
 from src.app.services.uow.abstract import AbstractUnitOfWork
+
+
+async def add_bank_info(uow: AbstractUnitOfWork, user_id: int, props: dict):
+    """
+    Сторерння BankInfo екземпляра та збереження у базу
+    :param uow: Unit of Work
+    :param user_id: id користувача
+    :param props: властивості. Обов'язко повинні містити bank_name
+    :return: BankInfo instance
+    """
+    async with uow:
+        bank_info = BankInfo(props.get("bank_name"), user_id)
+        await uow.banks_info.add(bank_info)
+        del props["bank_name"]
+        for key, value in props.items():
+            # Всі інші властивості, крім bank_name,
+            # записуються у вигляді BankInfoProperty із зовнішнім ключем до BankInfo
+            await uow.banks_info.add(
+                BankInfoProperty(
+                    name=key, value=value, value_type="str", manager=bank_info
+                )
+            )
+        await uow.commit()
 
 
 async def get_bank_managers_by_user(
