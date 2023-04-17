@@ -1,4 +1,6 @@
-from sqlalchemy import select
+from datetime import datetime
+
+from sqlalchemy import select, update
 from sqlalchemy.orm import subqueryload
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
@@ -42,4 +44,14 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
                 value_type=types[type(value)],
                 manager_id=manager.id,
             )
+        )
+
+    async def set_update_time_to_managers(self, ids: list[int]):
+        await self.session.execute(
+            update(BankInfoProperty)
+            .filter(
+                BankInfoProperty.manager.in_(ids),
+                BankInfoProperty.name == "updated_time",
+            )
+            .values(updated_time=datetime.now().timestamp())
         )

@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import select, update
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
 from src.app.services.bank_api import get_bank_managers_by_user, update_banks_costs

@@ -40,6 +40,10 @@ class ABankInfoRepository(AbstractRepository):
     ):
         raise NotImplementedError
 
+    @abstractmethod
+    async def set_update_time_to_managers(self, ids: list[int]):
+        raise NotImplementedError
+
 
 class ABankManagerRepository(ABC):
     __bankname__ = None

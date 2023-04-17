@@ -54,13 +54,19 @@ async def update_banks_costs(
 ):
     async with uow:
         costs = []
+        updated_managers = []
         for manager in managers:
             updated_time = get_updated_time(manager)
             if updated_time:
                 costs.append(*await manager.get_costs(from_time=updated_time))
+                updated_managers.append(manager)
         for cost in costs:
             await uow.operations.add(cost)
         await uow.commit()
+
+        await uow.banks_info.set_update_time_to_managers(
+            [manager.properties["id"] for manager in updated_managers]
+        )
 
 
 def get_updated_time(manager: ABankManagerRepository) -> int | None:
