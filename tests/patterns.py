@@ -2,6 +2,8 @@
 Поширені функції, які перевикористовуються в багатьох тестах.
 Створені для того, щоб писати одинакового коду у різних файлах (DRY)
 """
+import random
+
 from httpx import AsyncClient
 
 from src.app.domain.users import User
@@ -50,3 +52,14 @@ async def create_and_auth_func_user(client: AsyncClient) -> dict:
     ).json()
     token_result = f"{token_response['token_type']} {token_response['access_token']}"
     return {"token": token_result, "user": created_user}
+
+
+async def create_operations(headers: dict, client: AsyncClient):
+    for _ in range(10):
+        operation_data = {
+            "amount": random.randint(-10000, -10),
+            "description": "description",
+            "mcc": random.randint(1000, 9999),
+            "source_type": "manual",
+        }
+        await client.post("/operations/create/", json=operation_data, headers=headers)

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.app.domain.users import User
-from src.app.services.operations import create_operation, get_all_operations
+from src.app.services.operations import create_operation, get_operations
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.depends import get_current_user_depend, get_uow
 from src.schemas.operations import OperationCreateSchema, OperationSchema
@@ -43,4 +43,4 @@ async def read_operations_view(
      який розшифровується з токену у заголовку Authorization
     :return: Operation list
     """
-    return await get_all_operations(uow, current_user.id)
+    return await get_operations(uow, current_user.id)
