@@ -24,7 +24,7 @@ async def create_operation(
         return operation
 
 
-async def get_all_operations(uow: AbstractUnitOfWork, user_id: int) -> list[Operation]:
+async def get_operations(uow: AbstractUnitOfWork, user_id: int) -> list[Operation]:
     """
     Повертає всі операції які містять переданий user_id в полі user_id
     :param uow: Unit of Work
