@@ -10,5 +10,7 @@ class AOperationRepository(AbstractRepository):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_all_by_user(self, user_id) -> list[Operation]:
+    async def get_all_by_user(
+        self, user_id, from_time: int = None, to_time: int = None
+    ) -> list[Operation]:
         raise NotImplementedError

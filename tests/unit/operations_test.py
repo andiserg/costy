@@ -1,5 +1,6 @@
 import random
 import time
+from datetime import datetime
 
 import pytest
 
@@ -53,7 +54,7 @@ async def test_read_operations(database):  # noqa: F811;
             operation_schema = OperationCreateSchema(
                 amount=random.randint(-10000, -10),
                 description="description",
-                unix_time=time.time(),
+                unix_time=datetime.now().timestamp(),
                 mcc=random.randint(1000, 9999),
                 source_type="manual",
             )
