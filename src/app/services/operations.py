@@ -1,4 +1,4 @@
-import time
+from datetime import datetime
 
 from src.app.domain.operations import Operation
 from src.app.services.uow.abstract import AbstractUnitOfWork
@@ -16,13 +16,15 @@ async def create_operation(
     :return: Operation якщо user_id існує в базі. None, якщо ні
     """
     async with uow:
-        operation = Operation(**schema.dict(), time=int(time.time()), user_id=user_id)
+        operation = Operation(
+            **schema.dict(), time=int(datetime.now().timestamp()), user_id=user_id
+        )
         await uow.operations.add(operation)
         await uow.commit()
         return operation
 
 
-async def get_all_operations(uow: AbstractUnitOfWork, user_id: int) -> list[Operation]:
+async def get_operations(uow: AbstractUnitOfWork, user_id: int) -> list[Operation]:
     """
     Повертає всі операції які містять переданий user_id в полі user_id
     :param uow: Unit of Work
