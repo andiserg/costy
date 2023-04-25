@@ -23,3 +23,12 @@ async def test_get_statistic():
     ]
     get_statistic(operations)
     assert True
+
+
+@pytest.mark.asyncio
+async def test_get_statistic_with_empty_operations():
+    operations = []
+    statictic = get_statistic(operations)
+
+    assert statictic.costs_sum == 0
+    assert statictic.categories_costs == {}
