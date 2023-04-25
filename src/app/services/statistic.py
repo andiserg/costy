@@ -10,7 +10,6 @@ def get_statistic(operations: list[Operation]) -> Statistic:
     """
     statistic = Statistic(
         costs_sum=get_costs_sum(operations),
-        most_popular_category=get_most_popular_category(operations),
         categories_costs=get_categories_costs(operations),
     )
     return statistic
@@ -19,11 +18,6 @@ def get_statistic(operations: list[Operation]) -> Statistic:
 def get_costs_sum(operations: list[Operation]) -> int:
     """Сума витрат"""
     return sum(operation.amount for operation in operations)
-
-
-def get_most_popular_category(operations: list[Operation]) -> int:
-    """Категорія з найбільшою витратою"""
-    return max(operations, key=lambda operation: operation.amount).mcc
 
 
 def get_categories_costs(operations: list[Operation]) -> dict[int, int]:
