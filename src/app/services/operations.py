@@ -36,5 +36,4 @@ async def get_operations(
     :return: список об'єктів моделі Opetation. Якщо операцій немає, то пустий список
     """
     async with uow:
-        operations = await uow.operations.get_all_by_user(user_id, from_time, to_time)
-        return list(operations)
+        return await uow.operations.get_all_by_user(user_id, from_time, to_time)
