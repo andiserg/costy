@@ -24,13 +24,17 @@ async def create_operation(
         return operation
 
 
-async def get_operations(uow: AbstractUnitOfWork, user_id: int) -> list[Operation]:
+async def get_operations(
+    uow: AbstractUnitOfWork, user_id: int, from_time=None, to_time=None
+) -> list[Operation]:
     """
-    Повертає всі операції які містять переданий user_id в полі user_id
+    Повертнення всих операцій, які містять переданий user_id в полі user_id
     :param uow: Unit of Work
     :param user_id: ID користувача, операції якого потрібно отримати
+    :param from_time: початковий момент часу
+    :param to_time: кінцевий момент часу
     :return: список об'єктів моделі Opetation. Якщо операцій немає, то пустий список
     """
     async with uow:
-        operations = await uow.operations.get_all_by_user(user_id)
+        operations = await uow.operations.get_all_by_user(user_id, from_time, to_time)
         return list(operations)
