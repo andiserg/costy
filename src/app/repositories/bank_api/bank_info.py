@@ -50,7 +50,7 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
         await self.session.execute(
             update(BankInfoProperty)
             .filter(
-                BankInfoProperty.manager.in_(ids),
+                BankInfoProperty.manager_id.in_(ids),
                 BankInfoProperty.name == "updated_time",
             )
             .values(updated_time=datetime.now().timestamp())
