@@ -11,13 +11,13 @@ class OperationCreateSchema(BaseModel):
     description: str | None
     mcc: int
     source_type: str
+    time: int | None
 
 
 class OperationSchema(OperationCreateSchema):
     """Схема операції, яка виокристовується під час завантаження даних з БД"""
 
     id: int
-    time: int
 
     class Config:
         orm_mode = True

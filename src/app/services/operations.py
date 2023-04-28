@@ -16,9 +16,8 @@ async def create_operation(
     :return: Operation якщо user_id існує в базі. None, якщо ні
     """
     async with uow:
-        operation = Operation(
-            **schema.dict(), time=int(datetime.now().timestamp()), user_id=user_id
-        )
+        schema.time = schema.time if schema.time else int(datetime.now().timestamp())
+        operation = Operation(**schema.dict(), user_id=user_id)
         await uow.operations.add(operation)
         await uow.commit()
         return operation

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends
 
 from src.app.domain.users import User
@@ -34,6 +36,8 @@ async def create_operation_view(
 async def read_operations_view(
     current_user: User = Depends(get_current_user_depend),
     uow: AbstractUnitOfWork = Depends(get_uow),
+    from_time: int | None = None,
+    to_time: int | None = None,
 ):
     """
     Повертає список операцій поточного користувача.
@@ -41,6 +45,12 @@ async def read_operations_view(
     :param uow: Unit of Work
     :param current_user: Користувач,
      який розшифровується з токену у заголовку Authorization
+    :param from_time: з якого часу в unix форматі
+    :param to_time: по який час в unix форматі
     :return: Operation list
     """
-    return await get_operations(uow, current_user.id)
+    from_time = from_time if from_time else int(datetime.today().timestamp())
+    to_time = (
+        to_time if to_time else int((datetime.today() + timedelta(days=1)).timestamp())
+    )
+    return await get_operations(uow, current_user.id, from_time, to_time)
