@@ -10,7 +10,7 @@ from sqlalchemy.orm import registry
 from src.app.adapters.orm import create_tables, start_mappers
 
 
-def _get_url(test: bool = False) -> str:
+def _get_url(test: bool = False, async_: bool = True) -> str:
     """
     :param test: Якщо True, то підставляє назву тестової бази в URL
     :return: URL для підлключення до БД
@@ -21,7 +21,11 @@ def _get_url(test: bool = False) -> str:
         os.getenv("DB_PASSWORD"),
         os.getenv("DB_HOST"),
     )
-    return f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}/{db_name}"
+    return (
+        f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}/{db_name}"
+        if async_
+        else f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}/{db_name}"
+    )
 
 
 class Database:

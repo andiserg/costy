@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends
 
 from src.app.domain.users import User
@@ -14,6 +16,10 @@ router = APIRouter(prefix="/statistic")
 async def get_statistic_view(
     current_user: User = Depends(get_current_user_depend),
     uow: AbstractUnitOfWork = Depends(get_uow),
+    from_time: int = None,
+    to_time: int = None,
 ):
-    operations = await get_operations(uow, current_user.id)
+    from_time = from_time if from_time else datetime.today().timestamp()
+    to_time = to_time if to_time else (datetime.today() + timedelta(days=1)).timestamp()
+    operations = await get_operations(uow, current_user.id, from_time, to_time)
     return get_statistic(operations)

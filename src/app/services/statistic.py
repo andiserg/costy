@@ -1,3 +1,6 @@
+from collections import Counter
+from datetime import datetime
+
 from src.app.domain.operations import Operation
 from src.app.domain.statistic import Statistic
 
@@ -10,8 +13,8 @@ def get_statistic(operations: list[Operation]) -> Statistic:
     """
     statistic = Statistic(
         costs_sum=get_costs_sum(operations),
-        most_popular_category=get_most_popular_category(operations),
         categories_costs=get_categories_costs(operations),
+        costs_num_by_days=get_costs_num_by_days(operations),
     )
     return statistic
 
@@ -19,11 +22,6 @@ def get_statistic(operations: list[Operation]) -> Statistic:
 def get_costs_sum(operations: list[Operation]) -> int:
     """Сума витрат"""
     return sum(operation.amount for operation in operations)
-
-
-def get_most_popular_category(operations: list[Operation]) -> int:
-    """Категорія з найбільшою витратою"""
-    return max(operations, key=lambda operation: operation.amount).mcc
 
 
 def get_categories_costs(operations: list[Operation]) -> dict[int, int]:
@@ -35,3 +33,12 @@ def get_categories_costs(operations: list[Operation]) -> dict[int, int]:
         )
         for mcc in operations_mcc
     }
+
+
+def get_costs_num_by_days(operations: list[Operation]) -> dict[str, int]:
+    costs_num_by_days = Counter()
+    for operation in operations:
+        costs_num_by_days[
+            datetime.fromtimestamp(operation.time).strftime("%Y-%m-%d")
+        ] += 1
+    return dict(costs_num_by_days)

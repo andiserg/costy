@@ -52,6 +52,8 @@ async def get_bank_managers_by_user(
 async def update_banks_costs(
     uow: AbstractUnitOfWork, managers: list[ABankManagerRepository]
 ):
+    if len(managers) == 0:
+        return
     async with uow:
         costs = []
         updated_managers = []

@@ -4,12 +4,14 @@
 from fastapi import FastAPI
 
 from src.database import DatabaseFactory, bind_database_to_app
+from src.middlewares import set_cors_middleware
 
 
 def bootstrap_fastapi_app(db_factory=DatabaseFactory(), test=False) -> FastAPI:
     """Налаштування FastApi для початку роботи, включаючи базу"""
     fastapi_app = FastAPI()
     include_routers(fastapi_app)
+    set_cors_middleware(fastapi_app)
     database = db_factory.get_database(test=test)
     bind_database_to_app(fastapi_app, database)
     # Прив'язка залежності, яка віддає сесію бази
