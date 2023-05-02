@@ -83,7 +83,7 @@ def get_updated_time(manager: ABankManagerRepository) -> int | None:
     max_update_period = datetime.now() - manager.MAX_UPDATE_PERIOD
     if updated_time_prop:
         updated_time = datetime.fromtimestamp(updated_time_prop)
-        if not datetime.now() - updated_time < max_update_period:
+        if not datetime.now() - updated_time < manager.MAX_UPDATE_PERIOD:
             # Якщо остання дата оновлення перевищує максимальний період оновлення
             updated_time = max_update_period
             # У кожного банка є максиммальна дата, на яку можна запитувати витрати
