@@ -45,9 +45,9 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             "banks_info_properties",
             mapper_registry.metadata,
             Column("id", Integer, primary_key=True),
-            Column("name", String, nullable=False),
-            Column("value", String, nullable=False),
-            Column("type", String, nullable=False),
+            Column("prop_name", String, nullable=False),
+            Column("prop_value", String, nullable=False),
+            Column("prop_type", String, nullable=False),
             Column("manager_id", Integer, ForeignKey("banks_info.id")),
         ),
     }

@@ -15,9 +15,9 @@ async def create_monobank_manager(uow: AbstractUnitOfWork, user_id: int):
         await uow.banks_info.add(bank_info)
         await uow.banks_info.add(
             BankInfoProperty(
-                name="X-Token",
-                value="uZFOvRJNeXoVHYTUA_8NgHneWUz8IsG8dRPUbx60mbM4",
-                value_type="str",
+                prop_name="X-Token",
+                prop_value="uZFOvRJNeXoVHYTUA_8NgHneWUz8IsG8dRPUbx60mbM4",
+                prop_type="str",
                 manager=bank_info,
             )
         )

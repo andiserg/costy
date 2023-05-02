@@ -25,7 +25,7 @@ async def add_bank_info(uow: AbstractUnitOfWork, user_id: int, props: dict):
             # записуються у вигляді BankInfoProperty із зовнішнім ключем до BankInfo
             await uow.banks_info.add(
                 BankInfoProperty(
-                    name=key, value=value, value_type="str", manager=bank_info
+                    prop_name=key, prop_value=value, prop_type="str", manager=bank_info
                 )
             )
         await uow.commit()
@@ -64,11 +64,10 @@ async def update_banks_costs(
                 updated_managers.append(manager)
         for cost in costs:
             await uow.operations.add(cost)
-        await uow.commit()
-
         await uow.banks_info.set_update_time_to_managers(
             [manager.properties["id"] for manager in updated_managers]
         )
+        await uow.commit()
 
 
 def get_updated_time(manager: ABankManagerRepository) -> int | None:

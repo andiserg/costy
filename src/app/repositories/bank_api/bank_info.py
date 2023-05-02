@@ -39,9 +39,9 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
         types = {str: "str", int: "int", float: "float"}
         self.session.add(
             BankInfoProperty(
-                name=name,
-                value=str(value),
-                value_type=types[type(value)],
+                prop_name=name,
+                prop_value=str(value),
+                prop_type=types[type(value)],
                 manager_id=manager.id,
             )
         )
@@ -51,7 +51,7 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
             update(BankInfoProperty)
             .filter(
                 BankInfoProperty.manager_id.in_(ids),
-                BankInfoProperty.name == "updated_time",
+                BankInfoProperty.prop_name == "updated_time",
             )
-            .values(updated_time=datetime.now().timestamp())
+            .values(prop_value=str(int(datetime.now().timestamp())))
         )
