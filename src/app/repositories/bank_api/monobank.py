@@ -23,8 +23,10 @@ class MonobankManagerRepository(ABankManagerRepository):
             while from_time:
                 response = await session.get(f"{url}/{from_time}/{to_time}")
                 operations = await response.json()
+                if not operations:
+                    return []
                 costs = self.validate_operations(operations)
-                result_operations.append(*costs)
+                result_operations += costs
                 from_time = operations[-1]["time"] if len(operations) == 500 else None
                 # В одного запиту до Monobank API обмеження - 500 операцій
                 # Тому, якщо вийшло 500 операцій то можливо, ще є операції
