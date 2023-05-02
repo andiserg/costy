@@ -30,3 +30,13 @@ async def update_costs_view(
     managers = await get_bank_managers_by_user(uow, user_id=current_user.id)
     await update_banks_costs(uow, managers)
     return
+
+
+@router.get("/list/", status_code=200)
+async def get_connected_banks_names(
+    current_user: User = Depends(get_current_user_depend),
+    uow: AbstractUnitOfWork = Depends(get_uow),
+) -> list[str]:
+    async with uow:
+        managers = await uow.banks_info.get_all_by_user(current_user.id)
+        return [manager.bank_name for manager in managers]
