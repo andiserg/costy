@@ -60,11 +60,15 @@ async def test_read_operations(database):  # noqa: F811;
             )
             await create_operation(uow, created_user.id, operation_schema)
 
-        async with uow:
-            operations = await uow.operations.get_all_by_user(created_user.id)
-            assert isinstance(operations, list)
-            assert isinstance(operations[0], Operation)
-            assert len(operations) == 10
+        operations = await get_operations(
+            uow,
+            created_user.id,
+            from_time=int((datetime.now() - timedelta(minutes=1)).timestamp()),
+            to_time=int(datetime.now().timestamp()),
+        )
+        assert isinstance(operations, list)
+        assert isinstance(operations[0], Operation)
+        assert len(operations) == 10
 
 
 @pytest.mark.asyncio
