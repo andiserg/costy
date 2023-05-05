@@ -60,8 +60,10 @@ async def update_banks_costs(
         for manager in managers:
             updated_time = get_updated_time(manager)
             if updated_time:
-                costs += await manager.get_costs(from_time=updated_time)
-                updated_managers.append(manager)
+                bank_costs = await manager.get_costs(from_time=updated_time)
+                if bank_costs:
+                    costs += bank_costs
+                    updated_managers.append(manager)
         for cost in costs:
             await uow.operations.add(cost)
         await uow.banks_info.set_update_time_to_managers(

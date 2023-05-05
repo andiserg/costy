@@ -26,6 +26,8 @@ class MonobankManagerRepository(ABankManagerRepository):
                 operations = await response.json()
                 if not operations:
                     return []
+                if "errorDescription" in operations:
+                    return None
                 costs = self.validate_operations(operations)
                 result_operations += costs
                 from_time = operations[-1]["time"] if len(operations) == 500 else None
