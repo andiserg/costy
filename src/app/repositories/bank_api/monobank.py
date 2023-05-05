@@ -48,6 +48,8 @@ class MonobankManagerRepository(ABankManagerRepository):
     def validate_operations(self, operations: list[dict]) -> list[dict]:
         costs = list(filter(lambda operation: operation["amount"] < 0, operations))
         for cost in costs:
+            cost["amount"] *= -1
+            # Сума витрати в програмі оперуються як додатні величини
             del cost["id"]
             # Видалення id з операції, яке йому надає monobank
         return costs
