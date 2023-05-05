@@ -5,8 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.app.domain.users import User
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
+from src.app.services.users import get_user_by_email
+from src.auth.services import decode_token_data
 from src.database import get_session_depend
-from src.routers.authentication.services import decode_token_data
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -25,8 +26,7 @@ async def get_current_user(
     token_data = decode_token_data(token)
     if token_data is None:
         raise_credentials_exception()
-    async with uow:
-        return await uow.users.get("email", token_data.email)
+    return await get_user_by_email(uow, token_data.email)
 
 
 def raise_credentials_exception():

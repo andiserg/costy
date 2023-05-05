@@ -5,11 +5,7 @@ from datetime import datetime, timedelta
 
 from jose import JWTError, jwt
 
-from src.routers.authentication.config import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    ALGORITHM,
-    SECRET_KEY,
-)
+from src.auth.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from src.schemas.auth import TokenData
 
 

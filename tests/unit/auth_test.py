@@ -1,5 +1,5 @@
-from src.routers.authentication.password import get_password_hash, verify_password
-from src.routers.authentication.services import create_access_token, decode_token_data
+from src.auth.password import get_password_hash, verify_password
+from src.auth.services import create_access_token, decode_token_data
 
 
 def test_jwt_full_work():

@@ -6,9 +6,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.users import get_user_by_email
+from src.auth.password import verify_password
+from src.auth.services import create_access_token
 from src.depends import get_uow
-from src.routers.authentication.password import verify_password
-from src.routers.authentication.services import create_access_token
 from src.schemas.auth import Token
 
 router = APIRouter()
@@ -31,7 +31,7 @@ async def login_for_access_token(
 
     """
     user = await get_user_by_email(uow, form_data.username)
-    if not user or not verify_password(user.hashed_password, form_data.password):
+    if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
