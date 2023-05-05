@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from src.app.domain.users import User
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.users import create_user
-from src.depends import get_current_user_depend, get_uow
+from src.depends import get_current_user, get_uow
 from src.schemas.users import UserCreateSchema, UserSchema
 
 router = APIRouter(prefix="/users")
@@ -24,7 +24,7 @@ async def create_user_view(
 
 
 @router.get("/me/", response_model=UserSchema)
-async def read_me(current_user: User = Depends(get_current_user_depend)):
+async def read_me(current_user: User = Depends(get_current_user)):
     """
     Повертає залогіненого юзера, або 401, якщо юзер не вказав заголовок Authorization
     """

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from src.app.domain.users import User
 from src.app.services.operations import create_operation, get_operations
 from src.app.services.uow.abstract import AbstractUnitOfWork
-from src.depends import get_current_user_depend, get_uow
+from src.depends import get_current_user, get_uow
 from src.schemas.operations import OperationCreateSchema, OperationSchema
 
 router = APIRouter(prefix="/operations")
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/operations")
 @router.post("/create/", response_model=OperationSchema, status_code=201)
 async def create_operation_view(
     operation_schema: OperationCreateSchema,
-    current_user: User = Depends(get_current_user_depend),
+    current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
@@ -34,7 +34,7 @@ async def create_operation_view(
 
 @router.get("/list/", response_model=list[OperationSchema])
 async def read_operations_view(
-    current_user: User = Depends(get_current_user_depend),
+    current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
     from_time: int | None = None,
     to_time: int | None = None,
