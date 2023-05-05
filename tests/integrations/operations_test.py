@@ -40,9 +40,6 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
 
 @pytest.mark.asyncio
 async def test_read_operations_endpoint(client_db: AsyncClient):  # noqa: F811;
-    """
-    Testing src.views.operations.read_operations_view
-    """
     auth_data = await create_and_auth_func_user(client_db)
     token = auth_data["token"]
     headers = {"Authorization": token}

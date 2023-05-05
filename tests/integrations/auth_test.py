@@ -8,7 +8,6 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_auth_token(client_db: AsyncClient):  # noqa: F811;
     """
-    Тест src.views.account.login_for_access_token
     Функція повинна вернути JWT, якщо введені дані користувача вірні.
     Якщо ні, то повернути помилку 401.
     """
