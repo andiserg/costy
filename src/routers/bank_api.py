@@ -7,7 +7,7 @@ from src.app.services.bank_api import (
     update_banks_costs,
 )
 from src.app.services.uow.abstract import AbstractUnitOfWork
-from src.depends import get_current_user_depend, get_uow
+from src.depends import get_current_user, get_uow
 
 router = APIRouter(prefix="/bankapi")
 
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/bankapi")
 @router.post("/add/", status_code=201)
 async def add_bank_info_view(
     props: dict,
-    current_user: User = Depends(get_current_user_depend),
+    current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     await add_bank_info(uow, current_user.id, props)
@@ -24,7 +24,7 @@ async def add_bank_info_view(
 
 @router.put("/update_costs/", status_code=200)
 async def update_costs_view(
-    current_user: User = Depends(get_current_user_depend),
+    current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     managers = await get_bank_managers_by_user(uow, user_id=current_user.id)
@@ -34,7 +34,7 @@ async def update_costs_view(
 
 @router.get("/list/", status_code=200)
 async def get_connected_banks_names(
-    current_user: User = Depends(get_current_user_depend),
+    current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ) -> list[str]:
     async with uow:
