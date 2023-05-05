@@ -51,21 +51,7 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
 
 
-async def get_current_user(uow: AbstractUnitOfWork, token: str) -> User | None:
-    """
-    Отримати User на основі JWT.
-
-    :param uow: Unit of Work
-    :param token: зашифрований JWT.
-    :return: User якщо інформація валідна, інакше None
-    """
-    token_data = await decode_token_data(token)
-    if token_data:
-        async with uow:
-            return await uow.users.get("email", token_data.email)
-
-
-async def decode_token_data(token: str) -> TokenData | None:
+def decode_token_data(token: str) -> TokenData | None:
     """Розшифровка JWT"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
