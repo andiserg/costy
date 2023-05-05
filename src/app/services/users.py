@@ -19,3 +19,7 @@ async def create_user(uow: AbstractUnitOfWork, user: UserCreateSchema) -> User:
         await uow.users.add(db_user)
         await uow.commit()
         return db_user
+
+
+async def get_user_by_email(uow: AbstractUnitOfWork, email: str) -> User | None:
+    return await uow.users.get(email, "email")
