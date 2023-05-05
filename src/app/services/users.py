@@ -3,7 +3,7 @@ CRUD операції з User сутностями
 """
 from src.app.domain.users import User
 from src.app.services.uow.abstract import AbstractUnitOfWork
-from src.routers.authentication.password import get_password_hash
+from src.auth.password import get_password_hash
 from src.schemas.users import UserCreateSchema
 
 
@@ -22,4 +22,5 @@ async def create_user(uow: AbstractUnitOfWork, user: UserCreateSchema) -> User:
 
 
 async def get_user_by_email(uow: AbstractUnitOfWork, email: str) -> User | None:
-    return await uow.users.get(email, "email")
+    async with uow:
+        return await uow.users.get("email", email)
