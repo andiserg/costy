@@ -5,22 +5,25 @@
 import random
 
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.domain.users import User
 from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.app.services.users import create_user
 from src.schemas.users import UserCreateSchema
 
 
-async def create_model_user(uow: AbstractUnitOfWork) -> User:
+async def create_user_with_orm(session: AsyncSession) -> User:
     """
     Створення та повернення юзера за допомогою AsyncSession
-    :param uow: Unit of Work
+    :param session: SqlAlchemy session
     :return: User
     """
     user_schema = UserCreateSchema(  # nosec B106
         email="test@test.com", password="123456"
     )
+    uow = SqlAlchemyUnitOfWork(session)
     return await create_user(uow, user_schema)
 
 
