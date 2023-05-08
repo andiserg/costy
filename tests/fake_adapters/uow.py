@@ -4,13 +4,15 @@ from tests.fake_adapters.users import FakeUserRepository
 
 
 class FakeUnitOfWork(AbstractUnitOfWork):
-    async def __aenter__(self):
+    def __init__(self):
         self.users = FakeUserRepository()
         self.operations = FakeOperationRepository()
+
+    async def __aenter__(self):
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        return True
+        pass
 
     async def _commit(self):
         pass
