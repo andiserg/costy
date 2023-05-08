@@ -14,6 +14,6 @@ class FakeRepository(ABC):
 
     async def _get(self, prop, value):
         result = list(
-            filter(lambda instance: instance.__dict__()[prop] == value, self.instances)
+            filter(lambda instance: instance.__dict__[prop] == value, self.instances)
         )
         return result[0] if result else None
