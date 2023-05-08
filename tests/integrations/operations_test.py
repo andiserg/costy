@@ -31,7 +31,13 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
     for key, value in operation_data.items():
         assert created_operation[key] == value
 
-    # Запит з невірними даними
+
+@pytest.mark.asyncio
+async def test_create_operation_with_incorrect_data(client_db: AsyncClient):
+    auth_data = await create_and_auth_func_user(client_db)
+    token = auth_data["token"]
+    headers = {"Authorization": token}
+
     incorrect_response = await client_db.post(
         "/operations/create/", json={}, headers=headers
     )
