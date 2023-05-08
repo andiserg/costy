@@ -9,10 +9,10 @@ class FakeRepository(ABC):
     def get(self, prop, value):
         raise NotImplementedError
 
-    def add(self, instance):
+    async def add(self, instance):
         self.instances.append(instance)
 
-    def _get(self, prop, value):
+    async def _get(self, prop, value):
         result = list(
             filter(lambda instance: instance.__dict__()[prop] == value, self.instances)
         )
