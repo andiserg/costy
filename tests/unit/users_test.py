@@ -8,14 +8,13 @@ from src.app.repositories.users import UserRepository
 from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.app.services.users import create_user
 from src.schemas.users import UserCreateSchema
-from tests.conftest import precents_evn_variables  # noqa: F401;
+from tests.conftest import precents_env_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio
-@precents_evn_variables
+@precents_env_variables
 async def test_user_create(database):  # noqa: F401, F811;
     """
-    Перевірка методу src.crud.users.create_user
     create_user повинен зберегти об'єкт User в БД та повернути його
     """
     user_schema = UserCreateSchema(  # nosec B106
@@ -28,12 +27,10 @@ async def test_user_create(database):  # noqa: F401, F811;
 
 
 @pytest.mark.asyncio
-@precents_evn_variables
+@precents_env_variables
 async def test_user_read(database):  # noqa: F401, F811;
     """
     Перевірка методів
-        src.crud.users.get_user
-        src.crud.users.get_user_by_email
     """
     user_schema = UserCreateSchema(  # nosec B106
         email="test@test.com", password="123456"
