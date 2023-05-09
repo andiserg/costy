@@ -6,7 +6,7 @@ from src.app.services.bank_api import get_bank_managers_by_user, update_banks_co
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.database import Database
-from tests.patterns import create_and_auth_func_user, create_model_user
+from tests.patterns import create_and_auth_func_user, create_user_with_orm
 
 
 async def create_monobank_manager(uow: AbstractUnitOfWork, user_id: int):
@@ -29,7 +29,7 @@ async def test_update_costs_with_banks(database: Database):
     async with database.sessionmaker() as session:
         # КРОК 1: Створення менеджерів
         uow = SqlAlchemyUnitOfWork(session)
-        user = await create_model_user(uow)
+        user = await create_user_with_orm(session)
         await create_monobank_manager(uow, user_id=user.id)
 
         # КРОК 2: Запис в базу даних витрат за допомогою менеджерів
