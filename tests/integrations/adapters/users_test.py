@@ -15,8 +15,8 @@ async def test_create_and_read_user_by_all_fields(database):
         await session.commit()
 
         results = [
-            await repository.get("id", user.id),
-            await repository.get("email", user.email),
+            await repository.get(id=user.id),
+            await repository.get(email=user.email),
         ]
         assert all(results)
 
@@ -25,5 +25,5 @@ async def test_create_and_read_user_by_all_fields(database):
 async def test_read_user_with_incorrect_data(database):
     async with database.sessionmaker() as session:
         repository = UserRepository(session)
-        assert await repository.get("id", 100000) is None
-        assert await repository.get("email", "incorrect") is None
+        assert await repository.get(id=100000) is None
+        assert await repository.get(email="incorrect") is None

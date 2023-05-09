@@ -6,8 +6,8 @@ from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class CategoryRepository(SqlAlchemyRepository, ACategoryRepository):
-    async def get(self, field, value) -> Category:
-        return await self._get(Category, field, value)
+    async def get(self, **kwargs) -> Category:
+        return await self._get(Category, **kwargs)
 
     async def get_availables(self, user_id) -> list[Category]:
         return list(

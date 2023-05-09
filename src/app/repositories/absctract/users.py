@@ -6,5 +6,5 @@ from src.app.repositories.absctract.base import AbstractRepository
 
 class AUserRepository(AbstractRepository):
     @abstractmethod
-    async def get(self, field, value) -> User:
+    async def get(self, **kwargs) -> User:
         raise NotImplementedError

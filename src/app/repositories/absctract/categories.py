@@ -6,7 +6,7 @@ from src.app.repositories.absctract.base import AbstractRepository
 
 class ACategoryRepository(AbstractRepository):
     @abstractmethod
-    async def get(self, field, value) -> Category:
+    async def get(self, **kwargs) -> Category:
         raise NotImplementedError
 
     @abstractmethod

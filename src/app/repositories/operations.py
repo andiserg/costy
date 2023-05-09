@@ -6,8 +6,8 @@ from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class OperationRepository(SqlAlchemyRepository, AOperationRepository):
-    async def get(self, field, value) -> Operation:
-        return await self._get(Operation, field, value)
+    async def get(self, **kwargs) -> Operation:
+        return await self._get(Operation, **kwargs)
 
     async def get_all_by_user(
         self, user_id, from_time: int, to_time: int

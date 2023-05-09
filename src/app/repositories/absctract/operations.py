@@ -6,7 +6,7 @@ from src.app.repositories.absctract.base import AbstractRepository
 
 class AOperationRepository(AbstractRepository):
     @abstractmethod
-    async def get(self, field, value) -> Operation:
+    async def get(self, **kwargs) -> Operation:
         raise NotImplementedError
 
     @abstractmethod

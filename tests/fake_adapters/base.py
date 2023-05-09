@@ -6,14 +6,22 @@ class FakeRepository(ABC):
         self.instances = []
 
     @abstractmethod
-    def get(self, prop, value):
+    async def get(self, **kwargs):
         raise NotImplementedError
 
     async def add(self, instance):
         self.instances.append(instance)
 
-    async def _get(self, prop, value):
+    async def _get(self, **kwargs):
         result = list(
-            filter(lambda instance: instance.__dict__[prop] == value, self.instances)
+            filter(
+                lambda instance: all(
+                    [
+                        instance.__dict__[prop] == value
+                        for (prop, value) in kwargs.items()
+                    ]
+                ),
+                self.instances,
+            )
         )
         return result[0] if result else None

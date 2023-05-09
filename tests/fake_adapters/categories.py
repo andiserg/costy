@@ -4,8 +4,8 @@ from tests.fake_adapters.base import FakeRepository
 
 
 class FakeCategoryRepository(FakeRepository, ACategoryRepository):
-    async def get(self, prop, value) -> Category | None:
-        return await self._get(prop, value)
+    async def get(self, **kwargs) -> Category | None:
+        return await self._get(**kwargs)
 
     async def get_availables(self, user_id) -> list[Category]:
         return list(
