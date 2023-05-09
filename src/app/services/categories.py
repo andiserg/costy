@@ -5,7 +5,7 @@ from src.schemas.categories import CategoryCreateSchema
 
 async def create_category(
     uow: AbstractUnitOfWork, user_id: int, schema: CategoryCreateSchema
-) -> Category | None:
+) -> Category:
     async with uow:
         created_category = await uow.categories.get(name=schema.name, user_id=user_id)
         if created_category:

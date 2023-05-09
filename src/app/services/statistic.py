@@ -26,12 +26,15 @@ def get_costs_sum(operations: list[Operation]) -> int:
 
 def get_categories_costs(operations: list[Operation]) -> dict[int, int]:
     """Словник у форматі {<категорія>: <сума витрат по категорії>}"""
-    operations_mcc = [operation.mcc for operation in operations]
+    categories_id = [operation.category_id for operation in operations]
     return {
-        mcc: sum(
-            operation.amount for operation in filter(lambda x: x.mcc == mcc, operations)
+        category_id: sum(
+            operation.amount
+            for operation in filter(
+                lambda op: op.category_id == category_id, operations
+            )
         )
-        for mcc in operations_mcc
+        for category_id in categories_id
     }
 
 

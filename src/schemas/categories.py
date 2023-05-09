@@ -8,3 +8,6 @@ class CategoryCreateSchema(BaseModel):
 class CategorySchema(CategoryCreateSchema):
     id: int
     user_id: int | None
+
+    class Config:
+        orm_mode = True

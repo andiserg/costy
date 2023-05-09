@@ -19,7 +19,6 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
     operation_data = {
         "amount": random.randint(-10000, -10),
         "description": "description",
-        "mcc": random.randint(1000, 9999),
         "source_type": "manual",
     }
     response = await client_db.post(
@@ -54,7 +53,6 @@ async def test_read_operations_endpoint(client_db: AsyncClient):  # noqa: F811;
         operation_data = {
             "amount": random.randint(-10000, -10),
             "description": "description",
-            "mcc": random.randint(1000, 9999),
             "source_type": "manual",
         }
         await client_db.post(

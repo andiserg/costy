@@ -27,13 +27,13 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("amount", Integer, nullable=False),
             Column("description", String),
             Column("time", Integer, nullable=False),
-            Column("mcc", Integer),
             # mcc - код виду операції
             Column("source_type", String, nullable=False),
             # Тип джерела.
             # value: "manual" | "<bank_name>"
             # Операція може бути або додана вручну або за допомогою API банку
             Column("user_id", Integer, ForeignKey("users.id")),
+            Column("category_id", Integer, ForeignKey("categories.id"), nullable=True),
         ),
         "banks_info": Table(
             "banks_info",
