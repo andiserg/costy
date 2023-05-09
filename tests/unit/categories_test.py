@@ -16,11 +16,16 @@ async def test_create_category():
 
 @pytest.mark.asyncio
 async def test_create_dublicate_category():
+    """
+    Якщо відбувається спроба створити категорію-дублікат,
+    то категорія не створюється, а метод повинен повернути категорію-оригінал
+    :return:
+    """
     uow = FakeUnitOfWork()
     schema = CategoryCreateSchema(name="Test category")
-    await create_category(uow, 1, schema)
+    created_category = await create_category(uow, 1, schema)
     category = await create_category(uow, 1, schema)
-    assert category is None
+    assert category == created_category
 
 
 @pytest.mark.asyncio

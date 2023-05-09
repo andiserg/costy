@@ -7,6 +7,9 @@ async def create_category(
     uow: AbstractUnitOfWork, user_id: int, schema: CategoryCreateSchema
 ) -> Category | None:
     async with uow:
+        created_category = await uow.categories.get(name=schema.name, user_id=user_id)
+        if created_category:
+            return created_category
         category = Category(name=schema.name, user_id=user_id)
         await uow.categories.add(category)
         await uow.commit()
