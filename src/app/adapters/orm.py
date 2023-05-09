@@ -6,6 +6,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry, relationship
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
+from src.app.domain.categories import Category
 from src.app.domain.operations import Operation
 from src.app.domain.users import User
 
@@ -50,6 +51,13 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("prop_type", String, nullable=False),
             Column("manager_id", Integer, ForeignKey("banks_info.id")),
         ),
+        "categories": Table(
+            "categories",
+            mapper_registry.metadata,
+            Column("id", Integer, primary_key=True),
+            Column("name", String, nullable=False),
+            Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
+        ),
     }
 
 
@@ -75,3 +83,4 @@ def start_mappers(mapper_registry: registry, tables: dict[str, Table]):
         tables["banks_info_properties"],
         properties={"manager": relationship(BankInfo)},
     )
+    mapper_registry.map_imperatively(Category, tables["categories"])

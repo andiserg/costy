@@ -1,4 +1,5 @@
 from src.app.services.uow.abstract import AbstractUnitOfWork
+from tests.fake_adapters.categories import FakeCategoryRepository
 from tests.fake_adapters.operations import FakeOperationRepository
 from tests.fake_adapters.users import FakeUserRepository
 
@@ -7,6 +8,7 @@ class FakeUnitOfWork(AbstractUnitOfWork):
     def __init__(self):
         self.users = FakeUserRepository()
         self.operations = FakeOperationRepository()
+        self.categories = FakeCategoryRepository()
 
     async def __aenter__(self):
         return self

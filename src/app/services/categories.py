@@ -1,0 +1,20 @@
+from src.app.domain.categories import Category
+from src.app.services.uow.abstract import AbstractUnitOfWork
+from src.schemas.categories import CategoryCreateSchema
+
+
+async def create_category(
+    uow: AbstractUnitOfWork, user_id: int, schema: CategoryCreateSchema
+) -> Category | None:
+    async with uow:
+        category = Category(name=schema.name, user_id=user_id)
+        await uow.categories.add(category)
+        await uow.commit()
+        return category
+
+
+async def get_availables_categories(
+    uow: AbstractUnitOfWork, user_id: int
+) -> list[Category]:
+    async with uow:
+        return await uow.categories.get_availables(user_id)
