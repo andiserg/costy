@@ -1,55 +1,45 @@
-from datetime import datetime, timedelta
-
 from fastapi import APIRouter, Depends
 
 from src.app.domain.users import User
-from src.app.services.operations import create_operation, get_operations
+from src.app.services.categories import create_category, get_availables_categories
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.depends import get_current_user, get_uow
-from src.schemas.operations import OperationCreateSchema, OperationSchema
+from src.schemas.categories import CategoryCreateSchema, CategorySchema
 
-router = APIRouter(prefix="/operations")
+router = APIRouter(prefix="/categories")
 
 
-@router.post("/create/", response_model=OperationSchema, status_code=201)
+@router.post("/create/", response_model=CategorySchema, status_code=201)
 async def create_operation_view(
-    operation_schema: OperationCreateSchema,
+    category_schema: CategoryCreateSchema,
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
     Створює в БД та повертає операцію
     :param uow: Unit of Work
-    :param operation_schema: JSON, який буде спаршений у OperationCretaeSchema
+    :param category_schema: JSON, який буде спаршений у CategoryCretaeSchema
     :param current_user: Користувач,
      який розшифровується з токену у заголовку Authorization
-    :return: Operation | Error 400
+    :return: Category | Error 400
     """
-    # Результат create_operation не може бути None,
+    # Результат create_category не може бути None,
     # тому що user_id не може бути не правильним.
     # У випадку помилки під час розшифровки токену
     # буде повернута помилка 401 перед виконанням тіла.
-    return await create_operation(uow, current_user.id, operation_schema)
+    return await create_category(uow, current_user.id, category_schema)
 
 
-@router.get("/list/", response_model=list[OperationSchema])
+@router.get("/list/", response_model=list[CategorySchema])
 async def read_operations_view(
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
-    from_time: int | None = None,
-    to_time: int | None = None,
 ):
     """
     Повертає список операцій поточного користувача.
     :param uow: Unit of Work
     :param current_user: Користувач,
      який розшифровується з токену у заголовку Authorization
-    :param from_time: з якого часу в unix форматі
-    :param to_time: по який час в unix форматі
-    :return: Operation list
+    :return: Category list
     """
-    from_time = from_time if from_time else int(datetime.today().timestamp())
-    to_time = (
-        to_time if to_time else int((datetime.today() + timedelta(days=1)).timestamp())
-    )
-    return await get_operations(uow, current_user.id, from_time, to_time)
+    return await get_availables_categories(uow, current_user.id)

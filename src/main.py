@@ -22,6 +22,7 @@ def include_routers(fastapi_app):
     """Підключення роутерів"""
     from src.routers.auth import router as auth_router  # noqa: E402;
     from src.routers.bank_api import router as bankapi_router  # noqa: E402;
+    from src.routers.categories import router as categories_router  # noqa: E402;
     from src.routers.operations import router as operations_router  # noqa: E402;
     from src.routers.statistic import router as statistic_router  # noqa: E402;
     from src.routers.users import router as users_router  # noqa: E402;
@@ -31,6 +32,7 @@ def include_routers(fastapi_app):
     fastapi_app.include_router(operations_router, tags=["operations"])
     fastapi_app.include_router(bankapi_router, tags=["bankapi"])
     fastapi_app.include_router(statistic_router, tags=["statistic"])
+    fastapi_app.include_router(categories_router, tags=["categories"])
 
 
 app = bootstrap_fastapi_app()

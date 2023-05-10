@@ -9,9 +9,9 @@ class OperationCreateSchema(BaseModel):
 
     amount: int
     description: str | None
-    mcc: int
     source_type: str
     time: int | None
+    category_id: int | None
 
 
 class OperationSchema(OperationCreateSchema):

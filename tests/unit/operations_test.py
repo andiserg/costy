@@ -11,9 +11,7 @@ from tests.fake_adapters.uow import FakeUnitOfWork
 @pytest.mark.asyncio
 async def test_create_operation():
     uow = FakeUnitOfWork()
-    schema = OperationCreateSchema(
-        amount=100, description="test", mcc=9999, source_type="manual"
-    )
+    schema = OperationCreateSchema(amount=100, description="test", source_type="manual")
     operation = await create_operation(uow, 1, schema)
     assert operation
 
@@ -27,7 +25,6 @@ async def test_read_operation():
                 id=1,
                 amount=100,
                 description="test",
-                mcc=9999,
                 source_type="manual",
                 time=int(datetime.now().timestamp()),
                 user_id=1,
@@ -36,7 +33,6 @@ async def test_read_operation():
                 id=2,
                 amount=333,
                 description="test",
-                mcc=9998,
                 source_type="manual",
                 time=int(datetime.now().timestamp()),
                 user_id=1,
@@ -45,7 +41,6 @@ async def test_read_operation():
                 id=3,
                 amount=150,
                 description="test",
-                mcc=9999,
                 source_type="manual",
                 time=int(datetime.now().timestamp()),
                 user_id=1,

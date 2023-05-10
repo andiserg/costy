@@ -14,5 +14,5 @@ class SqlAlchemyRepository(AbstractRepository, ABC):
     async def add(self, model_object):
         self.session.add(model_object)
 
-    async def _get(self, model, field, value):
-        return await self.session.scalar(select(model).filter_by(**{field: value}))
+    async def _get(self, model, **kwargs):
+        return await self.session.scalar(select(model).filter_by(**kwargs))
