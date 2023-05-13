@@ -10,7 +10,7 @@ async def create_category(
         created_category = await uow.categories.get(name=schema.name, user_id=user_id)
         if created_category:
             return created_category
-        category = Category(name=schema.name, user_id=user_id)
+        category = Category(name=schema.name, user_id=user_id, type="user")
         await uow.categories.add(category)
         await uow.commit()
         return category

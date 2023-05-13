@@ -8,7 +8,6 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.database import Database, DatabaseFactory
 from src.main import bootstrap_fastapi_app
 

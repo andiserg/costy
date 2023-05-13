@@ -57,6 +57,7 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("id", Integer, primary_key=True),
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
+            Column("type", String, default="system"),
         ),
     }
 

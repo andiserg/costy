@@ -13,15 +13,11 @@ async def test_create_and_read_categories(database):
         for i in range(10):
             await repository.add(
                 Category(
-                    name=f"Test category #{i}",
-                    user_id=created_user.id,
+                    name=f"Test category #{i}", user_id=created_user.id, type="user"
                 )
             )
         await repository.add(
-            Category(
-                name=f"Test common category",
-                user_id=None,
-            )
+            Category(name=f"Test common category", user_id=None, type="user")
         )
         await session.commit()
 
