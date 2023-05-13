@@ -10,5 +10,9 @@ class ACategoryRepository(AbstractRepository):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_categories(self, *args) -> list[Category]:
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_availables(self, user_id) -> list[Category]:
         raise NotImplementedError

@@ -9,14 +9,12 @@ class CategoryRepository(SqlAlchemyRepository, ACategoryRepository):
     async def get(self, **kwargs) -> Category:
         return await self._get(Category, **kwargs)
 
+    async def get_categories(self, *args) -> list[Category]:
+        return list(await self.session.scalars(select(Category).filter(*args)))
+
     async def get_availables(self, user_id) -> list[Category]:
         return list(
-            await self.session.scalars(
-                select(Category).filter(
-                    or_(
-                        Category.user_id == user_id,
-                        Category.user_id == None,  # noqa: E711
-                    )
-                )
+            await self.get_categories(
+                or_(Category.user_id == user_id, Category.user_id == None)  # noqa: E711
             )
         )
