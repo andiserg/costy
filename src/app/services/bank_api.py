@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
+from src.app.domain.operations import Operation
 from src.app.repositories.absctract.bank_api import (
     ABankManagerRepository,
     BankManagerRepositoryFactory,
@@ -58,18 +59,25 @@ async def update_banks_costs(
         costs = []
         updated_managers = []
         for manager in managers:
-            updated_time = get_updated_time(manager)
-            if updated_time:
-                bank_costs = await manager.get_costs(from_time=updated_time)
-                if bank_costs:
-                    costs += bank_costs
-                    updated_managers.append(manager)
+            bank_costs = await get_costs_by_bank(manager)
+            if bank_costs:
+                costs += bank_costs
+                updated_managers.append(manager)
+
         for cost in costs:
             await uow.operations.add(cost)
         await uow.banks_info.set_update_time_to_managers(
             [manager.properties["id"] for manager in updated_managers]
         )
         await uow.commit()
+
+
+async def get_costs_by_bank(manager) -> list[Operation] | None:
+    updated_time = get_updated_time(manager)
+    if updated_time:
+        bank_costs = await manager.get_costs(from_time=updated_time)
+        if bank_costs:
+            return bank_costs
 
 
 def get_updated_time(manager: ABankManagerRepository) -> int | None:
