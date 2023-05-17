@@ -21,3 +21,10 @@ async def get_availables_categories(
 ) -> list[Category]:
     async with uow:
         return await uow.categories.get_availables(user_id)
+
+
+async def get_categories_in_values(
+    uow: AbstractUnitOfWork, field: str, values: list
+) -> list[Category]:
+    async with uow:
+        return await uow.categories.get_categories_in_values(field, values)

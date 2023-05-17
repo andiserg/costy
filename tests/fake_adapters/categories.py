@@ -7,6 +7,9 @@ class FakeCategoryRepository(FakeRepository, ACategoryRepository):
     async def get(self, **kwargs) -> Category | None:
         return await self._get(**kwargs)
 
+    async def _get_categories(self, *args) -> list[Category]:
+        pass
+
     async def get_availables(self, user_id) -> list[Category]:
         return list(
             filter(
@@ -15,3 +18,8 @@ class FakeCategoryRepository(FakeRepository, ACategoryRepository):
                 self.instances,
             )
         )
+
+    async def get_categories_in_values(
+        self, field: str, values: list
+    ) -> list[Category]:
+        pass
