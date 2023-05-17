@@ -82,6 +82,5 @@ def start_mappers(mapper_registry: registry, tables: dict[str, Table]):
     mapper_registry.map_imperatively(
         BankInfoProperty,
         tables["banks_info_properties"],
-        properties={"manager": relationship(BankInfo)},
     )
     mapper_registry.map_imperatively(Category, tables["categories"])
