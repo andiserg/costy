@@ -1,4 +1,5 @@
 import json
+import os
 
 from sqlalchemy import or_, select
 
@@ -27,9 +28,11 @@ class CategoryRepository(SqlAlchemyRepository, ACategoryRepository):
 
 class CategoryMccFacade:
     @staticmethod
-    async def get_category_name_by_mcc(mcc: int):
-        with open("mcc.json", encoding="utf-8") as json_file:
+    def get_category_name_by_mcc(mcc: int):
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, "mcc.json")
+        with open(filename, encoding="utf-8") as json_file:
             data = json.load(json_file)
-            for key, value in data:
+            for key, value in data.items():
                 if mcc in value:
                     return key
