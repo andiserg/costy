@@ -36,8 +36,8 @@ async def test_update_costs_with_banks(database: Database):
         managers = await get_bank_managers_by_user(uow, user_id=user.id)
         await update_banks_costs(uow, managers)
 
-        assert True
-        # Якщо не виникло помилки - тест пройдений
+    assert True
+    # Якщо не виникло помилки - тест пройдений
 
 
 @pytest.mark.asyncio

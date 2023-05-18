@@ -32,7 +32,8 @@ async def test_create_dublicate_category():
 async def test_read_availables_categories():
     uow = FakeUnitOfWork()
     uow.categories.instances = [
-        Category(id=i, name=f"Test category #{i}", user_id=1) for i in range(10)
+        Category(id=i, name=f"Test category #{i}", user_id=1, type="user")
+        for i in range(10)
     ]
     categories = await get_availables_categories(uow, user_id=1)
     assert len(categories) == 10

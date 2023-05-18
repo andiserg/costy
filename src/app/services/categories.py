@@ -10,7 +10,7 @@ async def create_category(
         created_category = await uow.categories.get(name=schema.name, user_id=user_id)
         if created_category:
             return created_category
-        category = Category(name=schema.name, user_id=user_id)
+        category = Category(name=schema.name, user_id=user_id, type="user")
         await uow.categories.add(category)
         await uow.commit()
         return category
@@ -21,3 +21,10 @@ async def get_availables_categories(
 ) -> list[Category]:
     async with uow:
         return await uow.categories.get_availables(user_id)
+
+
+async def get_categories_in_values(
+    uow: AbstractUnitOfWork, field: str, values: list
+) -> list[Category]:
+    async with uow:
+        return await uow.categories.get_categories_in_values(field, values)
