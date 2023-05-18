@@ -12,9 +12,8 @@ class MonobankManagerRepository(ABankManagerRepository):
 
     async def get_costs(self, from_time=None, to_time=None) -> list[dict] | None:
         from_time, to_time = self._normalize_time_values(from_time, to_time)
-
         operations = list(
-            chain.from_iterable(self._send_request_to_api(from_time, to_time))
+            chain.from_iterable(await self._send_request_to_api(from_time, to_time))
         )
         if not operations:
             return []
@@ -39,16 +38,19 @@ class MonobankManagerRepository(ABankManagerRepository):
     async def _send_request_to_api(self, from_time, to_time) -> list[dict]:
         url = "https://api.monobank.ua/personal/statement/0"
         headers = {"X-Token": self.properties["X-Token"]}
+        res_operations = []
         async with aiohttp.ClientSession(headers=headers) as session:
             while from_time:
                 response = await session.get(f"{url}/{from_time}/{to_time}")
-                operations = await response.json()
-                yield operations
-                from_time = operations[-1]["time"] if len(operations) == 500 else None
+                res_operations.append(await response.json())
+                from_time = (
+                    res_operations[-1]["time"] if len(res_operations) == 500 else None
+                )
                 # В одного запиту до Monobank API обмеження - 500 операцій
                 # Тому, якщо вийшло 500 операцій то можливо, ще є операції
                 # В такому випадку, потрібно зробити ще один запит
                 # Від часу остальної операцій до to_time
+        return res_operations
 
     def validate_operations(self, operations: list[dict]) -> list[dict]:
         """Фільтрація витрат та заміна мінусових значень amount на додатні"""
