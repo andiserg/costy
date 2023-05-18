@@ -29,7 +29,7 @@ async def update_costs_view(
 ):
     managers = await get_bank_managers_by_user(uow, user_id=current_user.id)
     await update_banks_costs(uow, managers)
-    return
+    return {"status": "ok"}
 
 
 @router.get("/list/", status_code=200)
