@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 
 import pytest
 
@@ -10,9 +11,9 @@ from tests.fake_adapters.uow import FakeUnitOfWork
 
 
 def set_mcc_categories_to_repo(uow: FakeUnitOfWork):
-    dirname = os.path.dirname(__file__)
+    root_dir = Path(__file__).parent.parent.parent
     with open(
-        dirname + "\\..\\..\\src\\app\\repositories\\mcc.json", encoding="utf-8"
+        root_dir / "src" / "app" / "repositories" / "mcc.json", encoding="utf-8"
     ) as json_file:
         data = json.load(json_file)
         uow.categories.instances = [
