@@ -16,7 +16,6 @@ ABankManagerRepository:
 from abc import ABC, abstractmethod
 
 from src.app.domain.bank_api import BankInfo
-from src.app.domain.operations import Operation
 from src.app.repositories.absctract.base import AbstractRepository
 
 
@@ -52,7 +51,7 @@ class ABankManagerRepository(ABC):
         self.properties = properties if properties else {}
 
     @abstractmethod
-    async def get_costs(self, from_time=None, to_time=None) -> list[Operation]:
+    async def get_costs(self, from_time=None, to_time=None) -> list[dict]:
         raise NotImplementedError
 
 
