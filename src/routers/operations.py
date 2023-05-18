@@ -48,8 +48,10 @@ async def read_operations_view(
     :param to_time: по який час в unix форматі
     :return: Operation list
     """
-    from_time = from_time if from_time else int(datetime.today().timestamp())
-    to_time = (
-        to_time if to_time else int((datetime.today() + timedelta(days=1)).timestamp())
+    from_time = (
+        from_time
+        if from_time
+        else int((datetime.now() - timedelta(minutes=1)).timestamp())
     )
+    to_time = to_time if to_time else int(datetime.now().timestamp())
     return await get_operations(uow, current_user.id, from_time, to_time)
