@@ -22,4 +22,8 @@ class FakeCategoryRepository(FakeRepository, ACategoryRepository):
     async def get_categories_in_values(
         self, field: str, values: list
     ) -> list[Category]:
-        pass
+        return list(
+            filter(
+                lambda category: category.__dict__.get(field) in values, self.instances
+            )
+        )
