@@ -58,6 +58,8 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
             Column("type", String, default="system"),
+            Column("icon_name", String, nullable=True, default=None),
+            Column("icon_color", String, nullable=True, default=None),
         ),
     }
 
@@ -79,8 +81,5 @@ def start_mappers(mapper_registry: registry, tables: dict[str, Table]):
         tables["banks_info"],
         properties={"properties": relationship(BankInfoProperty)},
     )
-    mapper_registry.map_imperatively(
-        BankInfoProperty,
-        tables["banks_info_properties"],
-    )
+    mapper_registry.map_imperatively(BankInfoProperty, tables["banks_info_properties"])
     mapper_registry.map_imperatively(Category, tables["categories"])
