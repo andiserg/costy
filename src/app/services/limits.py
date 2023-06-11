@@ -14,7 +14,7 @@ async def create_limit(
     :return: Limit якщо user_id існує в базі. None, якщо ні
     """
     async with uow:
-        limit = Limit(**schema.dict(), user_id=user_id)
+        limit = Limit(user_id, **schema.dict())
         await uow.limits.add(limit)
         await uow.commit()
         return limit
@@ -23,4 +23,8 @@ async def create_limit(
 async def get_limits(uow: AbstractUnitOfWork, user_id: int) -> list[Limit]:
     async with uow:
         limits = await uow.limits.get_all(user_id)
-        return limits
+        return list(limits)
+
+
+async def delete_limit(uow: AbstractUnitOfWork, limit_id: int):
+    await uow.limits.delete(limit_id)
