@@ -60,6 +60,7 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("type", String, default="system"),
             Column("icon_name", String, nullable=True, default=None),
             Column("icon_color", String, nullable=True, default=None),
+            Column("parent_id", Integer, ForeignKey("categories.id"), nullable=True),
         ),
     }
 

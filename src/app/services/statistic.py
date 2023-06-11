@@ -8,8 +8,6 @@ from src.app.domain.statistic import Statistic
 def get_statistic(operations: list[Operation]) -> Statistic:
     """
     Створення статистики витрат користувача
-    :param from_time: timestamp початку проміжка
-    :param to_time: timestamp кінця проміжка
     :param operations: Список операцій
     :return: Statistic
     """
@@ -30,6 +28,7 @@ def get_costs_sum(operations: list[Operation]) -> int:
 def get_categories_costs(operations: list[Operation]) -> dict[int, int]:
     """Словник у форматі {<категорія>: <сума витрат по категорії>}"""
     categories_id = [operation.category_id for operation in operations]
+
     return {
         category_id: sum(
             operation.amount

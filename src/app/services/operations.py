@@ -35,4 +35,18 @@ async def get_operations(
     :return: список об'єктів моделі Opetation. Якщо операцій немає, то пустий список
     """
     async with uow:
-        return await uow.operations.get_all_by_user(user_id, from_time, to_time)
+        categories = await uow.categories.get_availables(user_id)
+        operations = await uow.operations.get_all_by_user(user_id, from_time, to_time)
+        for operation in operations:
+            # Якщо категорія операції - підкатегорія,
+            # то на category_id назначається батьківська
+            if operation.category_id:
+                category = next(
+                    category
+                    for category in categories
+                    if category.id == operation.category_id
+                )
+                if category.parent_id:
+                    operation.category_id = category.parent_id
+                    operation.subcategory_id = category.id
+        return operations
