@@ -20,3 +20,6 @@ class FakeBankInfoRepository(FakeRepository, ABankInfoRepository):
 
     async def set_update_time_to_managers(self, ids: list[int]):
         pass
+
+    async def delete(self, user_id: int, bank_name: str):
+        pass
