@@ -40,12 +40,13 @@ async def get_operations(
         for operation in operations:
             # Якщо категорія операції - підкатегорія,
             # то на category_id назначається батьківська
-            category = next(
-                category
-                for category in categories
-                if category.id == operation.category_id
-            )
-            if category.parent_id:
-                operation.category_id = category.parent_id
-                operation.subcategory_id = category.id
+            if operation.category_id:
+                category = next(
+                    category
+                    for category in categories
+                    if category.id == operation.category_id
+                )
+                if category.parent_id:
+                    operation.category_id = category.parent_id
+                    operation.subcategory_id = category.id
         return operations
