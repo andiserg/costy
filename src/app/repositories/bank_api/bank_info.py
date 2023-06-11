@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import subqueryload
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
@@ -9,8 +9,8 @@ from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
-    async def get(self, field, value) -> BankInfo:
-        return await self._get(BankInfo, field, value)
+    async def get(self, **kwargs) -> BankInfo:
+        return await self._get(BankInfo, **kwargs)
 
     async def get_all_by_user(self, user_id):
         return list(
@@ -55,3 +55,11 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
             )
             .values(prop_value=str(int(datetime.now().timestamp())))
         )
+
+    async def delete(self, user_id: int, bank_name: str):
+        bank = await self.get(user_id=user_id, bank_name=bank_name)
+        # Видалення властивостей банку
+        await self.session.execute(
+            delete(BankInfoProperty).filter_by(manager_id=bank.id)
+        )
+        await self.session.execute(delete(BankInfo).filter_by(id=bank.id))
