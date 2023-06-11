@@ -11,6 +11,7 @@ class CategorySchema(CategoryCreateSchema):
     type: str
     icon_name: str | None
     icon_color: str | None
+    parent_id: int | None
 
     class Config:
         orm_mode = True
