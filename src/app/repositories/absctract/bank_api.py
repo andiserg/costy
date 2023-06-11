@@ -42,6 +42,10 @@ class ABankInfoRepository(AbstractRepository):
     async def set_update_time_to_managers(self, ids: list[int]):
         raise NotImplementedError
 
+    @abstractmethod
+    async def delete(self, user_id: int, bank_name: str):
+        raise NotImplementedError
+
 
 class ABankManagerRepository(ABC):
     __bankname__ = None

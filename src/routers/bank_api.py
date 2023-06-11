@@ -40,3 +40,13 @@ async def get_connected_banks_names(
     async with uow:
         managers = await uow.banks_info.get_all_by_user(current_user.id)
         return [manager.bank_name for manager in managers]
+
+
+@router.delete("/delete/", status_code=204)
+async def delete_bank(
+    bank_name: str,
+    current_user: User = Depends(get_current_user),
+    uow: AbstractUnitOfWork = Depends(get_uow),
+):
+    await uow.banks_info.delete(current_user.id, bank_name)
+    await uow.commit()
