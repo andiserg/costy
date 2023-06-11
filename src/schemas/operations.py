@@ -18,6 +18,7 @@ class OperationSchema(OperationCreateSchema):
     """Схема операції, яка виокристовується під час завантаження даних з БД"""
 
     id: int
+    subcategory_id: int | None
 
     class Config:
         orm_mode = True

@@ -7,6 +7,7 @@ class Operation:
         source_type: str,
         user_id: int,
         category_id: int | None = None,
+        subcategory_id: int | None = None,
         id: int = None,
         **kwargs,
     ):
@@ -17,3 +18,4 @@ class Operation:
         self.user_id = user_id
         self.id = id
         self.category_id = category_id
+        self.subcategory_id = subcategory_id
