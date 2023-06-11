@@ -8,7 +8,6 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.domain.users import User
-from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.app.services.users import create_user
 from src.schemas.users import UserCreateSchema

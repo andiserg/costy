@@ -8,6 +8,8 @@ from src.app.domain.statistic import Statistic
 def get_statistic(operations: list[Operation]) -> Statistic:
     """
     Створення статистики витрат користувача
+    :param from_time: timestamp початку проміжка
+    :param to_time: timestamp кінця проміжка
     :param operations: Список операцій
     :return: Statistic
     """
@@ -15,6 +17,7 @@ def get_statistic(operations: list[Operation]) -> Statistic:
         costs_sum=get_costs_sum(operations),
         categories_costs=get_categories_costs(operations),
         costs_num_by_days=get_costs_num_by_days(operations),
+        costs_sum_by_days=get_costs_sum_by_days(operations),
     )
     return statistic
 
@@ -44,4 +47,13 @@ def get_costs_num_by_days(operations: list[Operation]) -> dict[str, int]:
         costs_num_by_days[
             datetime.fromtimestamp(operation.time).strftime("%Y-%m-%d")
         ] += 1
+    return dict(costs_num_by_days)
+
+
+def get_costs_sum_by_days(operations: list[Operation]) -> dict[str, int]:
+    costs_num_by_days = Counter()
+    for operation in operations:
+        costs_num_by_days[
+            datetime.fromtimestamp(operation.time).strftime("%Y-%m-%d")
+        ] += operation.amount
     return dict(costs_num_by_days)
