@@ -62,6 +62,14 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("icon_color", String, nullable=True, default=None),
             Column("parent_id", Integer, ForeignKey("categories.id"), nullable=True),
         ),
+        "limits": Table(
+            "limits",
+            mapper_registry.metadata,
+            Column("id", Integer, primary_key=True),
+            Column("category_id", Integer, ForeignKey("categories.id"), nullable=True),
+            Column("limit", Integer),
+            Column("date_range", String),
+        ),
     }
 
 
