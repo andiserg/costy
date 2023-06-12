@@ -82,7 +82,13 @@ def get_exceeded_limits(
     from_time = datetime.fromtimestamp(from_time).replace(day=1)
     to_time = datetime.fromtimestamp(to_time)
     # to_time - Первий день наступного місяця після остального місяця періоду
-    to_time.replace(day=1, month=to_time.month + 1)
+    to_time = to_time.replace(
+        day=1,
+        month=to_time.month + 1 if to_time.month < 12 else 12,
+        hour=0,
+        minute=0,
+        second=0,
+    )
     # Список початків місяців у періоді
     months_list = get_months_list(from_time, to_time)
     # Список операцій у кожному місяці
@@ -92,10 +98,7 @@ def get_exceeded_limits(
     }
     exceeded_limits = defaultdict(list)
     for start_of_month, categories_costs in operations_categories_sum_by_months.items():
-        for (
-            category_id,
-            category_costs_sum,
-        ) in categories_costs.items():
+        for category_id, category_costs_sum in categories_costs.items():
             limit = list(limit for limit in limits if limit.category_id == category_id)
             if limit and category_costs_sum > limit[0].limit:
                 exceeded_limits[start_of_month].append(category_id)
