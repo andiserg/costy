@@ -25,6 +25,9 @@ class CategoryRepository(SqlAlchemyRepository, ACategoryRepository):
     ) -> list[Category]:
         return await self._get_categories(Category.__dict__.get(field).in_(values))
 
+    async def delete(self, category_id: int):
+        await self._delete(Category, id=category_id)
+
 
 class CategoryMccFacade:
     @staticmethod
