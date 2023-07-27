@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.repositories.bank_api.bank_info import BankInfoRepository
@@ -23,7 +25,8 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)
         await self.session.close()
-        return True
+        if os.environ.get("DEBUG_MODE") == "TRUE":
+            return True
 
     async def _commit(self):
         await self.session.commit()
