@@ -27,4 +27,4 @@ async def get_limits(uow: AbstractUnitOfWork, user_id: int) -> list[Limit]:
 
 
 async def delete_limit(uow: AbstractUnitOfWork, limit_id: int):
-    await uow.limits.delete(limit_id)
+    await uow.limits.delete(id=limit_id)
