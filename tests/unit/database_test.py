@@ -4,11 +4,11 @@
 import pytest
 from sqlalchemy import text
 
-from tests.conftest import precents_evn_variables  # noqa: F401;
+from tests.conftest import precents_env_variables  # noqa: F401;
 
 
 @pytest.mark.asyncio
-@precents_evn_variables
+@precents_env_variables
 async def test_db_connect(database):  # noqa: F811;
     """
     Перевірка працездібності бази даних та підключення до неї

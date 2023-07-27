@@ -18,8 +18,14 @@ class UserCreateSchema(UserBaseSchema):
 
     password: str
 
+    class Config:
+        orm_mode = True
+
 
 class UserSchema(UserBaseSchema):
     """Class used for read user info"""
 
     id: int
+
+    class Config:
+        orm_mode = True

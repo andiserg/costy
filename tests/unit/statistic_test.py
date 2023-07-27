@@ -1,4 +1,3 @@
-from collections import Counter
 from datetime import datetime, timedelta
 from random import randint
 
@@ -15,7 +14,6 @@ async def test_get_statistic():
         Operation(
             amount=randint(-10000, -10),
             description="description",
-            mcc=randint(9996, 9999),
             source_type="manual",
             time=int(datetime.now().timestamp()),
             user_id=1,
@@ -58,7 +56,6 @@ async def test_statistic_by_days():
             Operation(
                 amount=randint(-10000, -10),
                 description="description",
-                mcc=randint(9990, 9999),
                 source_type="manual",
                 time=int(date.timestamp() + randint(1, 8399)),  # random time of day
                 user_id=1,

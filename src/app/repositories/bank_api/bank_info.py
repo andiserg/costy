@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import subqueryload
 
 from src.app.domain.bank_api import BankInfo, BankInfoProperty
@@ -9,8 +9,8 @@ from src.app.repositories.sqlalchemy import SqlAlchemyRepository
 
 
 class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
-    async def get(self, field, value) -> BankInfo:
-        return await self._get(BankInfo, field, value)
+    async def get(self, **kwargs) -> BankInfo:
+        return await self._get(BankInfo, **kwargs)
 
     async def get_all_by_user(self, user_id):
         return list(
@@ -39,9 +39,9 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
         types = {str: "str", int: "int", float: "float"}
         self.session.add(
             BankInfoProperty(
-                name=name,
-                value=str(value),
-                value_type=types[type(value)],
+                prop_name=name,
+                prop_value=str(value),
+                prop_type=types[type(value)],
                 manager_id=manager.id,
             )
         )
@@ -51,7 +51,15 @@ class BankInfoRepository(SqlAlchemyRepository, ABankInfoRepository):
             update(BankInfoProperty)
             .filter(
                 BankInfoProperty.manager_id.in_(ids),
-                BankInfoProperty.name == "updated_time",
+                BankInfoProperty.prop_name == "updated_time",
             )
-            .values(updated_time=datetime.now().timestamp())
+            .values(prop_value=str(int(datetime.now().timestamp())))
         )
+
+    async def delete(self, user_id: int, bank_name: str):
+        bank = await self.get(user_id=user_id, bank_name=bank_name)
+        # Видалення властивостей банку
+        await self.session.execute(
+            delete(BankInfoProperty).filter_by(manager_id=bank.id)
+        )
+        await self.session.execute(delete(BankInfo).filter_by(id=bank.id))

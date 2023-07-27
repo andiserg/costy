@@ -9,15 +9,17 @@ class OperationCreateSchema(BaseModel):
 
     amount: int
     description: str | None
-    mcc: int
     source_type: str
     time: int | None
+    category_id: int | None
 
 
 class OperationSchema(OperationCreateSchema):
     """Схема операції, яка виокристовується під час завантаження даних з БД"""
 
     id: int
+    subcategory_id: int | None
+    is_exceeded_limit: bool | None
 
     class Config:
         orm_mode = True

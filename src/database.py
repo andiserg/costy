@@ -43,7 +43,7 @@ class Database:
     """
 
     def __init__(self, mapper_registry, test: bool = False):
-        self.engine = create_async_engine(_get_url(test), echo=True)
+        self.engine = create_async_engine(_get_url(test))
         self.sessionmaker = async_sessionmaker(self.engine, expire_on_commit=False)
         self.mapper_registry = mapper_registry
 

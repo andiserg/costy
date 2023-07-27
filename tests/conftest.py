@@ -23,7 +23,7 @@ def event_loop():
 # Декоратор-перевірка на те, чи існує файл "pytest.ini"
 # або існують потрібні ENV параметри
 # Перевірка для того, щоб тести не крашились якщо не має потрібних env параметрів.
-precents_evn_variables = pytest.mark.skipif(
+precents_env_variables = pytest.mark.skipif(
     all(
         [
             # Якщо результат буде True то тест пропуститься.

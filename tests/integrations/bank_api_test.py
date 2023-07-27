@@ -6,7 +6,7 @@ from src.app.services.bank_api import get_bank_managers_by_user, update_banks_co
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.app.services.uow.sqlalchemy import SqlAlchemyUnitOfWork
 from src.database import Database
-from tests.patterns import create_and_auth_func_user, create_model_user
+from tests.patterns import create_and_auth_func_user, create_user_with_orm
 
 
 async def create_monobank_manager(uow: AbstractUnitOfWork, user_id: int):
@@ -15,9 +15,9 @@ async def create_monobank_manager(uow: AbstractUnitOfWork, user_id: int):
         await uow.banks_info.add(bank_info)
         await uow.banks_info.add(
             BankInfoProperty(
-                name="X-Token",
-                value="uZFOvRJNeXoVHYTUA_8NgHneWUz8IsG8dRPUbx60mbM4",
-                value_type="str",
+                prop_name="X-Token",
+                prop_value="uZFOvRJNeXoVHYTUA_8NgHneWUz8IsG8dRPUbx60mbM4",
+                prop_type="str",
                 manager=bank_info,
             )
         )
@@ -29,15 +29,15 @@ async def test_update_costs_with_banks(database: Database):
     async with database.sessionmaker() as session:
         # КРОК 1: Створення менеджерів
         uow = SqlAlchemyUnitOfWork(session)
-        user = await create_model_user(uow)
+        user = await create_user_with_orm(session)
         await create_monobank_manager(uow, user_id=user.id)
 
         # КРОК 2: Запис в базу даних витрат за допомогою менеджерів
         managers = await get_bank_managers_by_user(uow, user_id=user.id)
         await update_banks_costs(uow, managers)
 
-        assert True
-        # Якщо не виникло помилки - тест пройдений
+    assert True
+    # Якщо не виникло помилки - тест пройдений
 
 
 @pytest.mark.asyncio
