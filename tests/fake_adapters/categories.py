@@ -4,6 +4,9 @@ from tests.fake_adapters.base import FakeRepository
 
 
 class FakeCategoryRepository(FakeRepository, ACategoryRepository):
+    async def delete(self, category_id: int):
+        pass
+
     async def get(self, **kwargs) -> Category | None:
         return await self._get(**kwargs)
 
