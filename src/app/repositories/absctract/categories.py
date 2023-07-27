@@ -22,3 +22,7 @@ class ACategoryRepository(AbstractRepository):
         self, field: str, values: list
     ) -> list[Category]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, category_id: int):
+        raise NotImplementedError

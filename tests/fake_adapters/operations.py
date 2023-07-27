@@ -4,6 +4,9 @@ from tests.fake_adapters.base import FakeRepository
 
 
 class FakeOperationRepository(FakeRepository, AOperationRepository):
+    async def delete(self, **kwargs):
+        pass
+
     async def get(self, **kwargs) -> Operation | None:
         return await self._get(**kwargs)
 

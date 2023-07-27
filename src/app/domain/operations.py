@@ -8,6 +8,7 @@ class Operation:
         user_id: int,
         category_id: int | None = None,
         subcategory_id: int | None = None,
+        is_exceeded_limit: bool = False,
         id: int = None,
         **kwargs,
     ):
@@ -19,3 +20,4 @@ class Operation:
         self.id = id
         self.category_id = category_id
         self.subcategory_id = subcategory_id
+        self.is_exceeded_limit = is_exceeded_limit

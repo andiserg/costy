@@ -14,7 +14,7 @@ async def test_create_category_endpoint(client_db: AsyncClient):
     token = auth_data["token"]
     headers = {"Authorization": token}
 
-    category_data = {"name": "category name"}
+    category_data = {"name": "category name", "icon_name": "", "icon_color": ""}
     response = await client_db.post(
         "/categories/create/", json=category_data, headers=headers
     )
@@ -34,7 +34,9 @@ async def test_read_categories_endpoint(database: Database, client_db: AsyncClie
     async with database.sessionmaker() as session:
         uow = SqlAlchemyUnitOfWork(session)
         for i in range(10):
-            schema = CategoryCreateSchema(name=f"test category #{i}")
+            schema = CategoryCreateSchema(
+                name=f"test category #{i}", icon_name="", icon_color=""
+            )
             await create_category(uow, user_id, schema)
 
     response = await client_db.get("/categories/list/", headers=headers)

@@ -1,7 +1,10 @@
+import os
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.repositories.bank_api.bank_info import BankInfoRepository
 from src.app.repositories.categories import CategoryRepository
+from src.app.repositories.limits import LimitRepository
 from src.app.repositories.operations import OperationRepository
 from src.app.repositories.users import UserRepository
 from src.app.services.uow.abstract import AbstractUnitOfWork
@@ -16,12 +19,14 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self.operations = OperationRepository(self.session)
         self.banks_info = BankInfoRepository(self.session)
         self.categories = CategoryRepository(self.session)
+        self.limits = LimitRepository(self.session)
         return await super().__aenter__()
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await super().__aexit__(exc_type, exc_val, exc_tb)
         await self.session.close()
-        return True
+        if os.environ.get("DEBUG_MODE") == "TRUE":
+            return True
 
     async def _commit(self):
         await self.session.commit()

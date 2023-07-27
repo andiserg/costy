@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 
 from src.app.repositories.absctract.bank_api import ABankInfoRepository
 from src.app.repositories.absctract.categories import ACategoryRepository
+from src.app.repositories.absctract.limits import ALimitRepository
 from src.app.repositories.absctract.operations import AOperationRepository
 from src.app.repositories.absctract.users import AUserRepository
 
@@ -21,6 +22,7 @@ class AbstractUnitOfWork(ABC):
     operations: AOperationRepository
     banks_info: ABankInfoRepository
     categories: ACategoryRepository
+    limits: ALimitRepository
 
     async def __aenter__(self):
         return self

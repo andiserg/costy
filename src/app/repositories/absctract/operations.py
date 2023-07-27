@@ -14,3 +14,7 @@ class AOperationRepository(AbstractRepository):
         self, user_id, from_time: int, to_time: int
     ) -> list[Operation]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, **kwargs):
+        raise NotImplementedError
