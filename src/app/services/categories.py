@@ -7,10 +7,13 @@ async def create_category(
     uow: AbstractUnitOfWork, user_id: int, schema: CategoryCreateSchema
 ) -> Category:
     async with uow:
-        created_category = await uow.categories.get(name=schema.name, user_id=user_id)
-        if created_category:
-            return created_category
-        category = Category(name=schema.name, user_id=user_id, type="user")
+        category = Category(
+            name=schema.name,
+            user_id=user_id,
+            type="user",
+            icon_name=schema.icon_name,
+            icon_color=schema.icon_color.upper(),
+        )
         await uow.categories.add(category)
         await uow.commit()
         return category
@@ -28,3 +31,19 @@ async def get_categories_in_values(
 ) -> list[Category]:
     async with uow:
         return await uow.categories.get_categories_in_values(field, values)
+
+
+async def delete_category(
+    uow: AbstractUnitOfWork, user_id: int, category_id: int
+) -> bool:
+    async with uow:
+        category = await uow.categories.get(
+            id=category_id, user_id=user_id, type="user"
+        )
+        if category:
+            await uow.operations.delete(category_id=category_id)
+            await uow.limits.delete(category_id=category_id)
+            await uow.categories.delete(category_id=category_id)
+            await uow.commit()
+            return True
+        return False

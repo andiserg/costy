@@ -19,3 +19,6 @@ class OperationRepository(SqlAlchemyRepository, AOperationRepository):
                 .filter_by(user_id=user_id)
             )
         )
+
+    async def delete(self, **kwargs):
+        await self._delete(Operation, **kwargs)

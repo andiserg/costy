@@ -9,5 +9,5 @@ class ALimitRepository(AbstractRepository):
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, limit_id: int):
+    async def delete(self, **kwargs):
         raise NotImplementedError

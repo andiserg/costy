@@ -12,6 +12,7 @@ class OperationCreateSchema(BaseModel):
 class OperationSchema(OperationCreateSchema):
     id: int
     subcategory_id: int | None
+    is_exceeded_limit: bool | None
 
     class Config:
         orm_mode = True

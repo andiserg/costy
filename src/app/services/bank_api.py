@@ -32,6 +32,15 @@ async def add_bank_info(uow: AbstractUnitOfWork, user_id: int, props: dict):
                     prop_name=key, prop_value=value, prop_type="str", manager=bank_info
                 )
             )
+        # TEMP
+        await uow.banks_info.add(
+            BankInfoProperty(
+                prop_name="updated_time",
+                prop_value=str(int((datetime.now() - timedelta(30)).timestamp())),
+                prop_type="int",
+                manager=bank_info,
+            )
+        )
         await uow.commit()
 
 
