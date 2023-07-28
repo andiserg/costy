@@ -1,6 +1,3 @@
-"""
-Authentication endpoints
-"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -20,15 +17,14 @@ async def login_for_access_token(
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Логін користувача за допомогою формування JWT.
-    Якщо дані для входу не вірні - піднімається помилка
+    User login using JWT generation.
+    If the login credentials are incorrect, an error is raised.
 
     :param uow: Unit of Work
-    :param form_data: схема, яка формується на базі введених даних користувача.
-    :return: jwt і тип токену. Для використання потрібно вказати як header у вигляді
+    :param form_data: Schema generated based on the user's input data.
+    :return: JWT and token type. To use, specify as a header:
 
-        Authorization: <token_type> <access_token>
-
+    Authorization: <token_type> <access_token>
     """
     user = await get_user_by_email(uow, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):

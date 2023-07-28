@@ -16,17 +16,13 @@ async def create_operation_view(
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Створює в БД та повертає операцію
+    Creates a record in the database and returns the operation.
+
     :param uow: Unit of Work
-    :param category_schema: JSON, який буде спаршений у CategoryCretaeSchema
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :return: Category | Error 400
+    :param category_schema: JSON, which will be parsed into CategoryCreateSchema.
+    :param current_user: User decrypted from the token in the Authorization header.
+    :return: Category object or Error 400.
     """
-    # Результат create_category не може бути None,
-    # тому що user_id не може бути не правильним.
-    # У випадку помилки під час розшифровки токену
-    # буде повернута помилка 401 перед виконанням тіла.
     return await create_category(uow, current_user.id, category_schema)
 
 
@@ -36,10 +32,10 @@ async def read_operations_view(
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Повертає список операцій поточного користувача.
+    Returns a list of operations for the current user.
+
     :param uow: Unit of Work
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :return: Category list
+    :param current_user: User decrypted from the token in the Authorization header.
+    :return: List of categories.
     """
     return await get_availables_categories(uow, current_user.id)

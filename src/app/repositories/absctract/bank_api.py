@@ -1,16 +1,15 @@
 """
-Репозиторії менеджерів банку
+Bank Manager Repositories:
 
 ABankInfoRepository:
-    Відповідає за зберігання моделі BankInfo
-    яка містить інформацію про банк
+Responsible for storing the BankInfo model, which contains information about the bank.
 
 ABankManagerRepository:
-    Відповідає за роботу з API банка. Для роботи потрібні поля
-    які находяться в BankInfo моделі
+Responsible for working with the bank's API.
+It requires fields present in the BankInfo model.
 
-    Кожен банк має свій алгоритм для отримання витрат, для якого потрібні різні поля.
-    Кожен нащадок ABankManagerRepository реалізує роботу з якимось API.
+Each bank has its own algorithm for obtaining expenses, which requires different fields.
+Each subclass of ABankManagerRepository implements the work with a specific API.
 """
 
 from abc import ABC, abstractmethod
@@ -61,7 +60,7 @@ class ABankManagerRepository(ABC):
 
 class BankManagerRepositoryFactory:
     """
-    Фабрика для створення ABankInfoRepository на основі BankInfo моделі
+    Factory for creating ABankInfoRepository based on the BankInfo model.
     """
 
     @staticmethod

@@ -1,3 +1,9 @@
+"""
+Dependencies for FastApi routers.
+These methods are used with the Depends
+construct to obtain the necessary resources for performing operations.
+"""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +18,11 @@ from src.database import get_session_depend
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def get_uow(session: AsyncSession = Depends(get_session_depend)):
+def get_uow(session: AsyncSession = Depends(get_session_depend)) -> AbstractUnitOfWork:
+    """
+    :param session: database session
+    :return: UnitOfWork
+    """
     yield SqlAlchemyUnitOfWork(session)
 
 
@@ -20,7 +30,7 @@ async def get_current_user(
     uow: AbstractUnitOfWork = Depends(get_uow), token: str = Depends(oauth2_scheme)
 ) -> User:
     """
-    Залежність FastApi для отримання юзера по JWT
+    FastApi dependency to retrieve a user based on JWT (JSON Web Token)
     :return: User
     """
     token_data = decode_token_data(token)
@@ -31,8 +41,8 @@ async def get_current_user(
 
 def raise_credentials_exception():
     """
-    Піднімає HTTPException.
-    Викликається, якщо JWT, переданий в headers - невалідний
+    Raises HTTPException.
+    Called when the JWT passed in the headers is invalid.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

@@ -18,17 +18,13 @@ async def create_operation_view(
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Створює в БД та повертає операцію
+    Create and return an operation.
+
     :param uow: Unit of Work
-    :param operation_schema: JSON, який буде спаршений у OperationCretaeSchema
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :return: Operation | Error 400
+    :param operation_schema: JSON, which will be parsed into OperationCreateSchema.
+    :param current_user: User decrypted from the token in the Authorization header.
+    :return: Operation object or Error 400.
     """
-    # Результат create_operation не може бути None,
-    # тому що user_id не може бути не правильним.
-    # У випадку помилки під час розшифровки токену
-    # буде повернута помилка 401 перед виконанням тіла.
     return await create_operation(uow, current_user.id, operation_schema)
 
 
@@ -40,13 +36,13 @@ async def read_operations_view(
     to_time: int | None = None,
 ):
     """
-    Повертає список операцій поточного користувача.
+    Returns a list of operations for the current user.
+
     :param uow: Unit of Work
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :param from_time: з якого часу в unix форматі
-    :param to_time: по який час в unix форматі
-    :return: Operation list
+    :param current_user: User decrypted from the token in the Authorization header.
+    :param from_time: Starting time in Unix format.
+    :param to_time: Ending time in Unix format.
+    :return: List of operations.
     """
     from_time = (
         from_time

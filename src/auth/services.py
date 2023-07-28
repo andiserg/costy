@@ -11,12 +11,11 @@ from src.schemas.auth import TokenData
 
 def create_access_token(data: dict) -> str:
     """
-    Створює JWT,
-    який надалі використовуватиметься для визначення залогіненого користувача.
-    Шифрує у собі email користувача та дату, до якого дійсний токен.
+    Creates a JWT (JSON Web Token) that will be used to identify the logged-in user.
+    It contains encrypted user's email and the expiration date for the token.
 
-    :param data: словник такого шаблону: {'sub': user.email}
-    :return: JWT у вигляді рядка
+    :param data: Dictionary with the following template: {'sub': user.email}
+    :return: JWT as a string.
     """
     # Час у хвилинах, під час якого токен дійсний
     expire = datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -25,7 +24,11 @@ def create_access_token(data: dict) -> str:
 
 
 def decode_token_data(token: str) -> TokenData | None:
-    """Розшифровка JWT"""
+    """
+    Decryption of JWT (JSON Web Token)
+    :param token: Json Web Token
+    :return: TokenData | None
+    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")

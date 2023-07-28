@@ -1,5 +1,5 @@
 """
-Налаштування бази даних
+Database Configuration
 """
 import os
 
@@ -12,8 +12,8 @@ from src.app.adapters.orm import create_tables, start_mappers
 
 def _get_url(test: bool = False, async_: bool = True) -> str:
     """
-    :param test: Якщо True, то підставляє назву тестової бази в URL
-    :return: URL для підлключення до БД
+    :param test: If True, then substitutes the name of the test database into the URL.
+    :return: URL for connecting to the database.
     """
     db_name = os.getenv("DB_NAME") if not test else os.getenv("TEST_DB_NAME")
     db_user, db_password, db_host = (
@@ -30,16 +30,16 @@ def _get_url(test: bool = False, async_: bool = True) -> str:
 
 class Database:
     """
-    Клас роботи з базою даних, який використовується у програмі.
+    Class for working with the database used in the program.
+    Contains two main attributes:
+    engine - an object for working with database drivers
+    sessionmaker - a factory for creating database sessions with the engine
 
-    Містить два головних атрибути:
-        engine - об'єкт для роботи з драйверами бази даних
-        sessionmaker - фабрика для створення сесії роботи з engine
-
-    Тестовий режим:
-        Якщо вказати test = True під час ініціалізації,
-        то буде створений об'єкт тестової бази, яка використовує іншу базу в роботі.
-        Використовується під час pytest тестів.
+    Test mode:
+    If 'test' is set to True during initialization,
+    then a test database object will be created,
+    which uses a different database in the program.
+    It is used during pytest tests.
     """
 
     def __init__(self, mapper_registry, test: bool = False):
@@ -48,17 +48,18 @@ class Database:
         self.mapper_registry = mapper_registry
 
         self.test = test
-        # db_created використовується як прапорець того, створена база чи ні
+        # The variable db_created is used as a flag
+        # to indicate whether the database has been created or not.
         self.db_created = False
 
     async def init_models(self):
         """
-        Створює базу даних в test режимі.
+        Creates the database in test mode.
 
-        AsyncSession не підтримує такі методи як
-            Base.metadata.drop_all
-            Base.metadata.create_all
-        тому ці методи виконуються у синхронному режимі за допомогою run_sync
+        AsyncSession does not support methods like
+        Base.metadata.drop_all and
+        Base.metadata.create_all.
+        Therefore, these methods are executed in synchronous mode using run_sync.
         """
         async with self.engine.begin() as conn:
             await conn.run_sync(self.mapper_registry.metadata.drop_all)
@@ -66,15 +67,15 @@ class Database:
 
     async def get_session(self) -> AsyncSession:
         """
-        Дає AsyncSession для роботи з базою
-        Увага:
-            Призначена для FastApi Depends, тому що сесія повертається через yield
-            В якості Depends метод відпрацює правильно,
-            але виклили з інших мість можуть створити неочікувані наслідки.
+        Provides an AsyncSession for working with the database.
+        Attention:
+            Designed for FastApi Depends because the session is returned using yield.
+            When used as a Depends method, it works correctly.
+            However, calling it from other places may lead to unexpected consequences.
         :return: sqlalchemy.ext.asyncio.AsyncSession
         """
         if self.test and not self.db_created:
-            # Тут це для того, щоб виконатись у async event loop
+            # Here, this is to be executed in the async event loop.
             await self.init_models()
             self.db_created = True
         async with self.sessionmaker() as session:
@@ -92,13 +93,14 @@ class SingletonMeta(type):
 
 class DatabaseFactory(metaclass=SingletonMeta):
     """
-    Фабрика для бази даних.
+    Database factory.
 
-    Для налаштування бази даних, потрібно прив'язати класи до таблиць.
-    Таку операцію потрібно проводити один раз за сесію,
-     тому що ОРМ не дасть повторно прив'язати одні і ті самі класи.
-     Фабрика реалізує патерн "Singleton", що дозволяє їй один раз провести прив'язку
-     та за потребності повертати об'єкти бази даних.
+    To configure the database, it is necessary to bind classes to tables.
+    This operation needs to be performed once per session since
+    the ORM does not allow re-binding the same classes.
+    The factory implements the "Singleton" pattern,
+    which allows it to perform the binding only
+    once and then return database objects as needed.
     """
 
     def __init__(self):
@@ -115,15 +117,15 @@ class DatabaseFactory(metaclass=SingletonMeta):
 
 def bind_database_to_app(app: FastAPI, database: Database):
     """
-    Перезапис залежності сесії бази даних.
-    В цілях уникнення глобальних змінних, в коді використовується функція-заглушка
-     для залежності сесії
-    А під час налаштування, викликається ця функція, яка перезаписує залежність
-     на працюючу функцію
+    Overriding the database session dependency.
+    To avoid global variables, a dummy function
+    is used in the code as a session dependency.
+    During setup, this function is called to
+    override the dependency with the actual working function.
     """
     app.dependency_overrides[get_session_depend] = database.get_session
 
 
 async def get_session_depend():
-    """Функція-заглушка"""
+    """Dummy function"""
     pass
