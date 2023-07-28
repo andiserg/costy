@@ -10,7 +10,7 @@ router = APIRouter(prefix="/categories")
 
 
 @router.post("/", response_model=CategorySchema, status_code=201)
-async def create_operation_view(
+async def create_category_view(
     category_schema: CategoryCreateSchema,
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
@@ -27,7 +27,7 @@ async def create_operation_view(
 
 
 @router.get("/", response_model=list[CategorySchema])
-async def read_operations_view(
+async def read_categories_view(
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
