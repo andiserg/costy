@@ -1,12 +1,7 @@
-"""
-User schemas
-"""
 from pydantic import BaseModel
 
 
 class UserBaseSchema(BaseModel):
-    """User base class"""
-
     email: str
 
     class Config:
@@ -14,8 +9,6 @@ class UserBaseSchema(BaseModel):
 
 
 class UserCreateSchema(UserBaseSchema):
-    """Class used for user create"""
-
     password: str
 
     class Config:
@@ -23,8 +16,6 @@ class UserCreateSchema(UserBaseSchema):
 
 
 class UserSchema(UserBaseSchema):
-    """Class used for read user info"""
-
     id: int
 
     class Config:

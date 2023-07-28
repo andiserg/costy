@@ -33,7 +33,7 @@ async def create_func_user(client: AsyncClient) -> dict:
     :return: dict з інформацією про користувача
     """
     user_data = {"email": "test@mail.test", "password": "123456"}  # nosec B106
-    return (await client.post("/users/create/", json=user_data)).json()
+    return (await client.post("/users/", json=user_data)).json()
 
 
 async def create_and_auth_func_user(client: AsyncClient) -> dict:
@@ -64,4 +64,4 @@ async def create_operations(headers: dict, client: AsyncClient):
             "mcc": random.randint(1000, 9999),
             "source_type": "manual",
         }
-        await client.post("/operations/create/", json=operation_data, headers=headers)
+        await client.post("/operations/", json=operation_data, headers=headers)

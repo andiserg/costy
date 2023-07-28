@@ -13,38 +13,34 @@ from src.schemas.categories import CategoryCreateSchema, CategorySchema
 router = APIRouter(prefix="/categories")
 
 
-@router.post("/create/", response_model=CategorySchema, status_code=201)
+@router.post("/", response_model=CategorySchema, status_code=201)
 async def create_category_view(
     category_schema: CategoryCreateSchema,
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Створює в БД та повертає операцію
+    Creates a record in the database and returns the operation.
+
     :param uow: Unit of Work
-    :param category_schema: JSON, який буде спаршений у CategoryCretaeSchema
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :return: Category | Error 400
+    :param category_schema: JSON, which will be parsed into CategoryCreateSchema.
+    :param current_user: User decrypted from the token in the Authorization header.
+    :return: Category object or Error 400.
     """
-    # Результат create_category не може бути None,
-    # тому що user_id не може бути не правильним.
-    # У випадку помилки під час розшифровки токену
-    # буде повернута помилка 401 перед виконанням тіла.
     return await create_category(uow, current_user.id, category_schema)
 
 
-@router.get("/list/", response_model=list[CategorySchema])
+@router.get("/", response_model=list[CategorySchema])
 async def read_categories_view(
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
     """
-    Повертає список операцій поточного користувача.
+    Returns a list of operations for the current user.
+
     :param uow: Unit of Work
-    :param current_user: Користувач,
-     який розшифровується з токену у заголовку Authorization
-    :return: Category list
+    :param current_user: User decrypted from the token in the Authorization header.
+    :return: List of categories.
     """
     return await get_availables_categories(uow, current_user.id)
 
