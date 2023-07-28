@@ -1,5 +1,5 @@
 """
-Технічні особливості побудови таблиць в ORM
+Technical aspects of table construction in ORM and mapping to domain models
 """
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
@@ -28,11 +28,10 @@ def create_tables(mapper_registry) -> dict[str, Table]:
             Column("amount", Integer, nullable=False),
             Column("description", String),
             Column("time", Integer, nullable=False),
-            # mcc - код виду операції
             Column("source_type", String, nullable=False),
-            # Тип джерела.
+            # Source type.
             # value: "manual" | "<bank_name>"
-            # Операція може бути або додана вручну або за допомогою API банку
+            # The operation can either be added manually or through the bank's API.
             Column("user_id", Integer, ForeignKey("users.id")),
             Column("category_id", Integer, ForeignKey("categories.id"), nullable=True),
         ),
@@ -76,11 +75,7 @@ def create_tables(mapper_registry) -> dict[str, Table]:
 
 
 def start_mappers(mapper_registry: registry, tables: dict[str, Table]):
-    """
-    Прив'язка класів до таблиць. ORM буде з ними працювати як з моделями
-    Такий підхід відповідє SOLID, інверсуючи залежності.
-    Таким чином, частини програми нижчого рівня стають залежними від вищого рівня
-    """
+    """Binding domain classes to tables. The ORM will work with them as models."""
     mapper_registry.map_imperatively(
         User,
         tables["users"],

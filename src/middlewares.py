@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 def set_cors_middleware(app: FastAPI):
+    """CORS settings allow the frontend part to send requests to the API."""
     origins = ["*"]
 
     app.add_middleware(

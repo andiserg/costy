@@ -13,19 +13,20 @@ from src.app.services.uow.abstract import AbstractUnitOfWork
 
 async def add_bank_info(uow: AbstractUnitOfWork, user_id: int, props: dict):
     """
-    Сторерння BankInfo екземпляра та збереження у базу
+    Storing a BankInfo instance and saving it to the database.
+
     :param uow: Unit of Work
-    :param user_id: id користувача
-    :param props: властивості. Обов'язко повинні містити bank_name
-    :return: BankInfo instance
+    :param user_id: User ID
+    :param props: Properties. Must include bank_name.
+    :return: BankInfo instance.
     """
     async with uow:
         bank_info = BankInfo(props.get("bank_name"), user_id)
         await uow.banks_info.add(bank_info)
         del props["bank_name"]
         for key, value in props.items():
-            # Всі інші властивості, крім bank_name,
-            # записуються у вигляді BankInfoProperty із зовнішнім ключем до BankInfo
+            # All other properties, except bank_name,
+            # are stored as BankInfoProperty with a foreign key to BankInfo.
             await uow.banks_info.add(
                 BankInfoProperty(
                     prop_name=key, prop_value=value, prop_type="str", manager=bank_info
@@ -47,10 +48,11 @@ async def get_bank_managers_by_user(
     uow: AbstractUnitOfWork, user_id: int
 ) -> list[ABankManagerRepository]:
     """
-    Взяття об'єктів BankInfo та перетворення їх у BankManagerRepository
+    Converting BankInfo objects into BankManagerRepository.
+
     :param uow: Unit of Work
-    :param user_id: id користувача
-    :return: список Bank Manager
+    :param user_id: User ID
+    :return: List of Bank Managers.
     """
     async with uow:
         bank_info_list = await uow.banks_info.get_all_by_user(user_id)
@@ -64,6 +66,12 @@ async def get_bank_managers_by_user(
 async def update_banks_costs(
     uow: AbstractUnitOfWork, managers: list[ABankManagerRepository]
 ):
+    """
+    Updating the list of financial expenses using the banks' APIs.
+    :param uow: unit of work (fastapi depend)
+    :param managers: list of an ABankManagerRepository implements objects
+    :return: None
+    """
     if len(managers) == 0:
         return
     async with uow:
@@ -125,11 +133,12 @@ def create_operations_by_bank_costs(costs, mcc_categories) -> list[Operation]:
 
 def get_updated_time(manager: ABankManagerRepository) -> int | None:
     """
-    Визначення корректної дати оновлення за допомогою валідацій
-    :param manager: BankManagerRepository
-    :return:
-        - date timestamp
-        - None: Оновлення даних відбувалось менш ніж 1 хвилину тому
+    Determining the correct update date using validations.
+
+     :param manager: BankManagerRepository
+     :return:
+         - date timestamp
+         - None: Data was updated less than 1 minute ago.
     """
     updated_time_prop = manager.properties.get("updated_time")
     max_update_period = datetime.now() - manager.MAX_UPDATE_PERIOD

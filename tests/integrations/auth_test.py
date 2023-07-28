@@ -12,7 +12,7 @@ async def test_auth_token(client_db: AsyncClient):  # noqa: F811;
     Якщо ні, то повернути помилку 401.
     """
     user_json = {"email": "test", "password": "test"}  # nosec B106
-    await client_db.post("/users/create/", json=user_json)
+    await client_db.post("/users/", json=user_json)
 
     auth_json = {"username": user_json["email"], "password": user_json["password"]}
     auth_result = await client_db.post("/token/", data=auth_json)

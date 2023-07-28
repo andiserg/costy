@@ -12,20 +12,26 @@ from src.schemas.users import UserCreateSchema, UserSchema
 router = APIRouter(prefix="/users")
 
 
-@router.post("/create/", response_model=UserSchema, status_code=201)
+@router.post("/", response_model=UserSchema, status_code=201)
 async def create_user_view(
     user: UserCreateSchema, uow: AbstractUnitOfWork = Depends(get_uow)
 ):
     """
-    Створення і повернення користувача
+    Creation and retrieval of the user.
+    :param user: user create info
+    :param uow: unit of work (fastapi depend)
+    :return: UserSchema
     """
     created_user = await create_user(uow, user)
     return created_user
 
 
-@router.get("/me/", response_model=UserSchema)
+@router.get("/", response_model=UserSchema)
 async def read_me(current_user: User = Depends(get_current_user)):
     """
-    Повертає залогіненого юзера, або 401, якщо юзер не вказав заголовок Authorization
+    Returns the logged-in user or 401
+    if the user did not provide the Authorization header.
+    :param current_user: user (fastapi depend)
+    :return: UserSchema or 401
     """
     return current_user

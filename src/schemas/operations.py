@@ -1,12 +1,7 @@
-"""
-Operations schemas
-"""
 from pydantic import BaseModel
 
 
 class OperationCreateSchema(BaseModel):
-    """Схема операції. Модель: src.domain.operations.Operation"""
-
     amount: int
     description: str | None
     source_type: str
@@ -15,8 +10,6 @@ class OperationCreateSchema(BaseModel):
 
 
 class OperationSchema(OperationCreateSchema):
-    """Схема операції, яка виокристовується під час завантаження даних з БД"""
-
     id: int
     subcategory_id: int | None
     is_exceeded_limit: bool | None
