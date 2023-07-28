@@ -15,9 +15,7 @@ async def test_create_category_endpoint(client_db: AsyncClient):
     headers = {"Authorization": token}
 
     category_data = {"name": "category name"}
-    response = await client_db.post(
-        "/categories/create/", json=category_data, headers=headers
-    )
+    response = await client_db.post("/categories/", json=category_data, headers=headers)
     assert response.status_code == 201
 
     created_category = response.json()
@@ -37,6 +35,6 @@ async def test_read_categories_endpoint(database: Database, client_db: AsyncClie
             schema = CategoryCreateSchema(name=f"test category #{i}")
             await create_category(uow, user_id, schema)
 
-    response = await client_db.get("/categories/list/", headers=headers)
+    response = await client_db.get("/categories/", headers=headers)
     assert response.status_code == 200
     assert len(response.json()) == 10

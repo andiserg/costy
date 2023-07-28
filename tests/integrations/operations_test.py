@@ -22,7 +22,7 @@ async def test_create_operation_endpoint(client_db: AsyncClient):  # noqa: F811;
         "source_type": "manual",
     }
     response = await client_db.post(
-        "/operations/create/", json=operation_data, headers=headers
+        "/operations/", json=operation_data, headers=headers
     )
     assert response.status_code == 201
 
@@ -37,9 +37,7 @@ async def test_create_operation_with_incorrect_data(client_db: AsyncClient):
     token = auth_data["token"]
     headers = {"Authorization": token}
 
-    incorrect_response = await client_db.post(
-        "/operations/create/", json={}, headers=headers
-    )
+    incorrect_response = await client_db.post("/operations/", json={}, headers=headers)
     assert incorrect_response.status_code == 422
 
 
@@ -55,11 +53,9 @@ async def test_read_operations_endpoint(client_db: AsyncClient):  # noqa: F811;
             "description": "description",
             "source_type": "manual",
         }
-        await client_db.post(
-            "/operations/create/", json=operation_data, headers=headers
-        )
+        await client_db.post("/operations/", json=operation_data, headers=headers)
 
-    operations_response = await client_db.get("/operations/list/", headers=headers)
+    operations_response = await client_db.get("/operations/", headers=headers)
     assert operations_response.status_code == 200
 
     operations = operations_response.json()

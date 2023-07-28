@@ -50,7 +50,7 @@ async def test_update_costs_with_endpoint(client_db: AsyncClient, database: Data
         # Створення менеджера
         uow = SqlAlchemyUnitOfWork(session)
         await create_monobank_manager(uow, user_id)
-    response = await client_db.put("/bankapi/update_costs/", headers=headers)
+    response = await client_db.put("/bankapi/costs/", headers=headers)
     assert response.status_code == 200
 
 
@@ -61,7 +61,7 @@ async def test_add_bank_info_with_endpoint(client_db: AsyncClient):
     headers = {"Authorization": token}
 
     response = await client_db.post(
-        "/bankapi/add/",
+        "/bankapi/",
         json={
             "bank_name": "monobank",
             "X-Token": "uZFOvRJNeXoVHYTUA_8NgHneWUz8IsG8dRPUbx60mbM4",
