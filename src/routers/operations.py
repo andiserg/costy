@@ -11,7 +11,7 @@ from src.schemas.operations import OperationCreateSchema, OperationSchema
 router = APIRouter(prefix="/operations")
 
 
-@router.post("/create/", response_model=OperationSchema, status_code=201)
+@router.post("/", response_model=OperationSchema, status_code=201)
 async def create_operation_view(
     operation_schema: OperationCreateSchema,
     current_user: User = Depends(get_current_user),
@@ -28,7 +28,7 @@ async def create_operation_view(
     return await create_operation(uow, current_user.id, operation_schema)
 
 
-@router.get("/list/", response_model=list[OperationSchema])
+@router.get("/", response_model=list[OperationSchema])
 async def read_operations_view(
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
