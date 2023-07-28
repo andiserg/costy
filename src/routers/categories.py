@@ -9,7 +9,7 @@ from src.schemas.categories import CategoryCreateSchema, CategorySchema
 router = APIRouter(prefix="/categories")
 
 
-@router.post("/create/", response_model=CategorySchema, status_code=201)
+@router.post("/", response_model=CategorySchema, status_code=201)
 async def create_operation_view(
     category_schema: CategoryCreateSchema,
     current_user: User = Depends(get_current_user),
@@ -26,7 +26,7 @@ async def create_operation_view(
     return await create_category(uow, current_user.id, category_schema)
 
 
-@router.get("/list/", response_model=list[CategorySchema])
+@router.get("/", response_model=list[CategorySchema])
 async def read_operations_view(
     current_user: User = Depends(get_current_user),
     uow: AbstractUnitOfWork = Depends(get_uow),
