@@ -15,9 +15,7 @@ async def test_create_category_endpoint(client_db: AsyncClient):
     headers = {"Authorization": token}
 
     category_data = {"name": "category name", "icon_name": "", "icon_color": ""}
-    response = await client_db.post(
-        "/categories/", json=category_data, headers=headers
-    )
+    response = await client_db.post("/categories/", json=category_data, headers=headers)
     assert response.status_code == 201
 
     created_category = response.json()
