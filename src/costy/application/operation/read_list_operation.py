@@ -2,12 +2,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
+from costy.domain.models.operation import Operation
+from costy.domain.services.operation import OperationService
+
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationsReader
 from ..common.uow import UoW
-from costy.domain.models.operation import Operation
-from costy.domain.services.operation import OperationService
 
 
 @dataclass
@@ -32,12 +33,10 @@ class ReadListOperation(Interactor[ListOperationDTO, List[Operation]]):
     async def __call__(self, data: ListOperationDTO) -> List[Operation]:
         user_id = await self.id_provider.get_current_user_id()
 
-        operations = (
-            await self.operation_db_gateway.find_operations_by_user_id(
-                user_id,
-                int(data.from_time.timestamp()),
-                int(data.to_time.timestamp()),
-            )
+        operations = await self.operation_db_gateway.find_operations_by_user(
+            user_id,
+            int(data.from_time.timestamp()),
+            int(data.to_time.timestamp()),
         )
 
         return operations

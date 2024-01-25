@@ -1,9 +1,10 @@
+from costy.domain.models.operation import Operation, OperationId
+from costy.domain.services.operation import OperationService
+
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationReader
 from ..common.uow import UoW
-from costy.domain.models.operation import OperationId, Operation
-from costy.domain.services.operation import OperationService
 
 
 class ReadOperation(Interactor[OperationId, Operation]):

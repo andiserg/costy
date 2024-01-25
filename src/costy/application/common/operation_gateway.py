@@ -19,7 +19,7 @@ class OperationSaver(Protocol):
 
 class OperationsReader(Protocol):
     @abstractmethod
-    async def find_operations_by_user_id(
+    async def find_operations_by_user(
         self, user_id: UserId, from_time: int, to_time: int
     ) -> list[Operation]:
         raise NotImplementedError

@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.interactor import Interactor
-from costy.domain.models.user import UserId
 from costy.application.common.uow import UoW
+from costy.domain.models.user import UserId
 
 
 @dataclass

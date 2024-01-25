@@ -1,7 +1,7 @@
-from costy.application.common.id_provider import IdProvider
-from costy.application.common.interactor import Interactor
 from dataclasses import dataclass
 
+from costy.application.common.id_provider import IdProvider
+from costy.application.common.interactor import Interactor
 from costy.application.common.operation_gateway import OperationSaver
 from costy.application.common.uow import UoW
 from costy.domain.models.category import CategoryId

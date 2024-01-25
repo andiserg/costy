@@ -1,12 +1,12 @@
 from abc import abstractmethod
 from typing import Protocol
 
-from costy.domain.models.user import UserId, User
+from costy.domain.models.user import User, UserId
 
 
 class UserReader(Protocol):
     @abstractmethod
-    def get_user(self, user_id: UserId) -> User:
+    async def get_user(self, user_id: UserId) -> User | None:
         raise NotImplementedError
 
 

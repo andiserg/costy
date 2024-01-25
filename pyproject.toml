@@ -5,7 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name="costy"
 version="0.0.1"
-dependencies = []
+dependencies = [
+    'sqlalchemy'
+]
 
 [project.optional-dependencies]
 tests = [

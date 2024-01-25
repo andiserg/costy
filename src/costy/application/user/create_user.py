@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 
-from ..common.id_provider import IdProvider
-from ..common.interactor import Interactor
-from ..common.user_gateway import UserSaver
-from ..common.uow import UoW
 from costy.domain.models.user import UserId
 from costy.domain.services.user import UserService
+
+from ..common.id_provider import IdProvider
+from ..common.interactor import Interactor
+from ..common.uow import UoW
+from ..common.user_gateway import UserSaver
 
 
 @dataclass
