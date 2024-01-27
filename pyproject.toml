@@ -6,7 +6,8 @@ build-backend = "setuptools.build_meta"
 name="costy"
 version="0.0.1"
 dependencies = [
-    'sqlalchemy'
+    'sqlalchemy',
+    'litestar'
 ]
 
 [project.optional-dependencies]

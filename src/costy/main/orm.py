@@ -1,6 +1,6 @@
 from typing import Type
 
-from sqlalchemy import Table, Column, Integer, String, ForeignKey
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import registry
 
 from costy.domain.models.category import Category

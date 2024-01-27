@@ -6,7 +6,11 @@ from costy.domain.models.user import User, UserId
 
 class UserReader(Protocol):
     @abstractmethod
-    async def get_user(self, user_id: UserId) -> User | None:
+    async def get_user_by_id(self, user_id: UserId) -> User | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_user_by_email(self, email: str) -> User | None:
         raise NotImplementedError
 
 

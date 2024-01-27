@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from costy.application.common.id_provider import IdProvider
 from costy.application.common.interactor import Interactor
 from costy.application.common.uow import UoW
+from costy.application.common.user_gateway import UserReader
 from costy.domain.models.user import UserId
 
 
@@ -13,9 +13,11 @@ class LoginInputDTO:
 
 
 class Authenticate(Interactor[LoginInputDTO, UserId]):
-    def __init__(self, id_provider: IdProvider, uow: UoW):
-        self.id_provider = id_provider
+    def __init__(self, user_gateway: UserReader, uow: UoW):
+        self.user_gateway = user_gateway
         self.uow = uow
 
-    def __call__(self, *args, **kwargs) -> UserId:
-        pass
+    async def __call__(self, data: LoginInputDTO) -> UserId:
+        user = await self.user_gateway.get_user_by_email(data.email)
+        # TODO: compare hashed passwords
+        return user.id

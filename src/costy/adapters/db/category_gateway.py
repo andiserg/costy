@@ -1,11 +1,11 @@
-from sqlalchemy import select, delete, or_
+from sqlalchemy import delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.category_gateway import (
+    CategoriesReader,
+    CategoryDeleter,
     CategoryReader,
     CategorySaver,
-    CategoryDeleter,
-    CategoriesReader,
 )
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
@@ -30,5 +30,6 @@ class CategoryGateway(
         await self.session.execute(query)
 
     async def find_categories(self, user_id: UserId) -> list[Category]:
-        query = select(Category).filter(or_(Category.user_id == user_id, Category.user_id == None))
+        filter_expr = or_(Category.user_id == user_id, Category.user_id == None)
+        query = select(Category).where(filter_expr)
         return list(await self.session.scalars(query))
