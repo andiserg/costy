@@ -1,6 +1,7 @@
 """
 Модульні тести бази даних
 """
+
 import pytest
 from sqlalchemy import text
 

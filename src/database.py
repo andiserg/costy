@@ -1,6 +1,7 @@
 """
 Database Configuration
 """
+
 import os
 
 from fastapi import FastAPI

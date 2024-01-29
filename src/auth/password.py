@@ -1,6 +1,7 @@
 """
 Methods of password hashing and their comparison.
 """
+
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
