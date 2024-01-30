@@ -7,7 +7,10 @@ name="costy"
 version="0.0.1"
 dependencies = [
     'sqlalchemy',
-    'litestar'
+    'litestar',
+    'uvicorn',
+    'psycopg[binary]',
+    'alembic'
 ]
 
 [project.optional-dependencies]

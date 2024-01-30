@@ -7,7 +7,6 @@ from costy.presentation.interactor_factory import InteractorFactory
 
 class AuthenticationController(Controller):
     path = "/auth"
-    dependencies = {"ioc": None}
 
     @post()
     async def login(self, ioc: InteractorFactory, data: LoginInputDTO) -> Response:
