@@ -6,6 +6,8 @@ from sqlalchemy import pool
 from alembic import context
 
 from costy.infrastructure.config import get_db_connection_url
+from costy.infrastructure.db.main import get_registry
+from costy.infrastructure.db.orm import create_tables
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -22,7 +24,9 @@ config.set_main_option('sqlalchemy.url', get_db_connection_url())
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+registry = get_registry()
+create_tables(registry)
+target_metadata = registry.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
