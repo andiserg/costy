@@ -14,19 +14,21 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = [
+ci-tests = [
     'pytest',
     'pytest-asyncio',
-    'pytest-env',
-    'pytest-cov'
-]
-dev = [
-    'costy[tests]',
-    'black',
+    'pytest-cov',
+    'pre-commit',
+    'ruff',
     'isort',
     'mypy',
     'flake8',
     'bandit'
+]
+
+dev = [
+    'costy[ci-tests]',
+    'pytest-env',
 ]
 
 [tool.isort]
