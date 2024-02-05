@@ -41,5 +41,6 @@ class CreateOperation(Interactor[NewOperationDTO, OperationId]):
             data.category_id,
         )
         await self.operation_db_gateway.save_operation(operation)
+        operation_id = operation.id
         await self.uow.commit()
-        return operation.id
+        return operation_id

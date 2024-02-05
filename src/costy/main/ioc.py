@@ -43,9 +43,9 @@ class IoC(InteractorFactory):
             yield Authenticate(UserGateway(depends.session), depends.uow)
 
     @asynccontextmanager
-    async def create_user(self, id_provider: IdProvider) -> AsyncContextManager[CreateUser]:
+    async def create_user(self) -> AsyncContextManager[CreateUser]:
         async with self._init_depends() as depends:
-            yield CreateUser(UserService(), UserGateway(depends.session), id_provider, depends.uow)
+            yield CreateUser(UserService(), UserGateway(depends.session), depends.uow)
 
     @asynccontextmanager
     async def create_operation(self, id_provider: IdProvider) -> AsyncContextManager[CreateOperation]:

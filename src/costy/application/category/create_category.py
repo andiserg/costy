@@ -30,5 +30,6 @@ class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):
             data.name, CategoryType.PERSONAL, user_id
         )
         await self.category_db_gateway.save_category(category)
+        category_id = category.id
         await self.uow.commit()
-        return category.id
+        return category_id

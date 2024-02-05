@@ -19,9 +19,7 @@ class InteractorFactory(ABC):
         pass
 
     @abstractmethod
-    def create_user(
-        self, id_provider: IdProvider
-    ) -> AsyncContextManager[CreateUser]:
+    def create_user(self) -> AsyncContextManager[CreateUser]:
         pass
 
     @abstractmethod
