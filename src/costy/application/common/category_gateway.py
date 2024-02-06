@@ -13,7 +13,7 @@ class CategorySaver(Protocol):
 
 class CategoryReader(Protocol):
     @abstractmethod
-    async def get_category(self, category_id: CategoryId) -> Category:
+    async def get_category(self, category_id: CategoryId) -> Category | None:
         raise NotImplementedError
 
 

@@ -9,7 +9,11 @@ class AuthenticationController(Controller):
     path = "/auth"
 
     @post()
-    async def login(self, ioc: InteractorFactory, data: LoginInputDTO) -> Response:
+    async def login(
+            self, ioc: InteractorFactory, data: LoginInputDTO
+    ) -> Response[str]:
         async with ioc.authenticate() as authenticate:
             user_id = await authenticate(data)
-        return Response("ok", cookies=[Cookie(key="user_id", value=str(user_id))])
+        return Response(
+            "ok", cookies=[Cookie(key="user_id", value=str(user_id))]
+        )

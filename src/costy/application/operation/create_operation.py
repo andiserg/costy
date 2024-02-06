@@ -43,4 +43,4 @@ class CreateOperation(Interactor[NewOperationDTO, OperationId]):
         await self.operation_db_gateway.save_operation(operation)
         operation_id = operation.id
         await self.uow.commit()
-        return operation_id
+        return operation_id  # type: ignore

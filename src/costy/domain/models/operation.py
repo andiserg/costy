@@ -4,7 +4,7 @@ from typing import NewType
 from costy.domain.models.category import CategoryId
 from costy.domain.models.user import UserId
 
-OperationId = NewType("OperationID", int)
+OperationId = NewType("OperationId", int)
 
 
 @dataclass(kw_only=True)

@@ -7,7 +7,9 @@ from costy.domain.models.user import UserId
 
 class OperationReader(Protocol):
     @abstractmethod
-    async def get_operation(self, operation_id: OperationId) -> Operation:
+    async def get_operation(
+            self, operation_id: OperationId
+    ) -> Operation | None:
         raise NotImplementedError
 
 
