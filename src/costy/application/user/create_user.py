@@ -30,4 +30,4 @@ class CreateUser(Interactor[NewUserDTO, UserId]):
         await self.user_db_gateway.save_user(user)
         user_id = user.id
         await self.uow.commit()
-        return user_id
+        return user_id  # type: ignore

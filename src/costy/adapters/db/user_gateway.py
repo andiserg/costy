@@ -14,9 +14,11 @@ class UserGateway(UserSaver, UserReader):
         await self.session.flush(objects=[user])
 
     async def get_user_by_id(self, user_id: UserId) -> User | None:
-        query = select(User).where(User.id == user_id)
-        return await self.session.scalar(query)
+        query = select(User).where(User.id == user_id)  # type: ignore
+        result: User | None = await self.session.scalar(query)
+        return result
 
     async def get_user_by_email(self, email: str) -> User | None:
-        query = select(User).where(User.email == email)
-        return await self.session.scalar(query)
+        query = select(User).where(User.email == email)  # type: ignore
+        result: User | None = await self.session.scalar(query)
+        return result

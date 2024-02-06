@@ -9,7 +9,7 @@ from costy.domain.models.user import UserId
 
 async def get_id_provider(cookies: dict[str, Any]) -> IdProvider:
     # This is a simple version that will be improved
-    user_id: str = cookies.get("user_id")
+    user_id: str | None = cookies.get("user_id")
     if not user_id:
         raise HTTPException("Not authenticated", status_code=401)
     if not user_id.isdigit():

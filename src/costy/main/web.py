@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Any, Callable, Coroutine, TypeVar
 
 from litestar import Litestar
 from litestar.di import Provide
@@ -11,12 +11,11 @@ from costy.main.ioc import IoC
 from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.user import UserController
 
-
 T = TypeVar('T')
 
 
-def singleton(instance: T) -> Callable[[], T]:
-    async def func():
+def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
+    async def func() -> T:
         return instance
 
     return func
@@ -32,6 +31,9 @@ def init_app() -> Litestar:
 
     return Litestar(
         route_handlers=(UserController,),
-        dependencies={"ioc": Provide(singleton(ioc)), "id_provider": Provide(get_id_provider)},
+        dependencies={
+            "ioc": Provide(singleton(ioc)),
+            "id_provider": Provide(get_id_provider)
+        },
         debug=True
     )

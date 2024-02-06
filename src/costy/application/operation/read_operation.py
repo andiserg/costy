@@ -7,7 +7,7 @@ from ..common.operation_gateway import OperationReader
 from ..common.uow import UoW
 
 
-class ReadOperation(Interactor[OperationId, Operation]):
+class ReadOperation(Interactor[OperationId, Operation | None]):
     def __init__(
         self,
         operation_service: OperationService,
@@ -20,13 +20,13 @@ class ReadOperation(Interactor[OperationId, Operation]):
         self.id_provider = id_provider
         self.uow = uow
 
-    async def __call__(self, operation_id: OperationId):
+    async def __call__(self, operation_id: OperationId) -> Operation | None:
         user_id = await self.id_provider.get_current_user_id()
 
         operation = await self.operation_db_gateway.get_operation(operation_id)
 
         # TODO: Move to access service
-        if operation.user_id != user_id:
+        if operation and operation.user_id != user_id:
             raise Exception("User must be the owner of the operation")
 
         return operation

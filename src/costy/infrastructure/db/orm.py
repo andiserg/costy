@@ -1,3 +1,4 @@
+import typing
 from typing import Type
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
@@ -7,8 +8,10 @@ from costy.domain.models.category import Category
 from costy.domain.models.operation import Operation
 from costy.domain.models.user import User
 
+Model = typing.Union[Category, Operation, User]
 
-def create_tables(mapper_registry: registry) -> dict[Type, Table]:
+
+def create_tables(mapper_registry: registry) -> dict[Type[Model], Table]:
     return {
         User: Table(
             "users",
@@ -25,7 +28,12 @@ def create_tables(mapper_registry: registry) -> dict[Type, Table]:
             Column("description", String),
             Column("time", Integer, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id")),
-            Column("category_id", Integer, ForeignKey("categories.id"), nullable=True),
+            Column(
+                "category_id",
+                Integer,
+                ForeignKey("categories.id"),
+                nullable=True
+            ),
         ),
         Category: Table(
             "categories",
@@ -38,6 +46,8 @@ def create_tables(mapper_registry: registry) -> dict[Type, Table]:
     }
 
 
-def map_tables_to_models(mapper_registry: registry, tables: dict[Type, Table]):
+def map_tables_to_models(
+        mapper_registry: registry, tables: dict[Type[Model], Table]
+) -> None:
     for model, table in tables.items():
         mapper_registry.map_imperatively(model, table)
