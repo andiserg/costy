@@ -10,7 +10,8 @@ dependencies = [
     'litestar',
     'uvicorn',
     'psycopg[binary]',
-    'alembic'
+    'alembic',
+    'adaptix',
 ]
 
 [project.optional-dependencies]

@@ -6,4 +6,4 @@ class CategoryService:
     def create(
         self, name: str, kind: CategoryType, user_id: UserId
     ) -> Category:
-        return Category(id=None, name=name, kind=kind, user_id=user_id)
+        return Category(id=None, name=name, kind=kind.value, user_id=user_id)

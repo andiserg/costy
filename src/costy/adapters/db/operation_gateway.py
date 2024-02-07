@@ -37,14 +37,14 @@ class OperationGateway(
         await self.session.execute(query)
 
     async def find_operations_by_user(
-        self, user_id: UserId, from_time: int, to_time: int
+        self, user_id: UserId, from_time: int | None, to_time: int | None
     ) -> list[Operation]:
         query = (
             select(Operation)
             .where(Operation.user_id == user_id)  # type: ignore
-            .where(
-                Operation.time >= from_time,   # type: ignore
-                Operation.time <= to_time   # type: ignore
-            )
         )
+        if from_time:
+            query = query.where(Operation.time >= from_time)  # type: ignore
+        if to_time:
+            query = query.where(Operation.time <= to_time)  # type: ignore
         return list(await self.session.scalars(query))

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 from typing import List
 
 from costy.domain.models.operation import Operation
@@ -13,8 +12,8 @@ from ..common.uow import UoW
 
 @dataclass
 class ListOperationDTO:
-    from_time: datetime
-    to_time: datetime
+    from_time: int | None
+    to_time: int | None
 
 
 class ReadListOperation(Interactor[ListOperationDTO, List[Operation]]):
@@ -35,8 +34,8 @@ class ReadListOperation(Interactor[ListOperationDTO, List[Operation]]):
 
         operations = await self.operation_db_gateway.find_operations_by_user(
             user_id,
-            int(data.from_time.timestamp()),
-            int(data.to_time.timestamp()),
+            data.from_time,
+            data.to_time,
         )
 
         return operations

@@ -14,4 +14,4 @@ async def get_id_provider(cookies: dict[str, Any]) -> IdProvider:
         raise HTTPException("Not authenticated", status_code=401)
     if not user_id.isdigit():
         raise HTTPException("Not valid user_id", status_code=401)
-    return SimpleIdProvider(UserId(cookies["user_id"]))
+    return SimpleIdProvider(UserId(int(cookies["user_id"])))
