@@ -37,7 +37,7 @@ class CategoryGateway(
         )
         await self.session.execute(query)
 
-    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
+    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:  # type: ignore # noqa
         filter_expr = or_(
             Category.user_id == user_id,  # type: ignore
             Category.user_id == None  # type: ignore # noqa: E711
