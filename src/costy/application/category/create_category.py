@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
 
@@ -7,6 +9,7 @@ from ..common.interactor import Interactor
 from ..common.uow import UoW
 
 
+@dataclass
 class NewCategoryDTO:
     name: str
 

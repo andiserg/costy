@@ -7,7 +7,7 @@ from costy.domain.models.user import UserId
 OperationId = NewType("OperationId", int)
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Operation:
     id: OperationId | None
     amount: int
