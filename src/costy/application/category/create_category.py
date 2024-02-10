@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
 
@@ -7,11 +5,7 @@ from ..common.category_gateway import CategorySaver
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-
-
-@dataclass
-class NewCategoryDTO:
-    name: str
+from .dto import NewCategoryDTO
 
 
 class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):

@@ -2,7 +2,7 @@ from adaptix import Retort
 from sqlalchemy import delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.category.read_available_categories import CategoryDTO
+from costy.application.category.dto import CategoryDTO
 from costy.application.common.category_gateway import (
     CategoriesReader,
     CategoryDeleter,
@@ -37,7 +37,7 @@ class CategoryGateway(
         )
         await self.session.execute(query)
 
-    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:  # type: ignore # noqa
+    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
         filter_expr = or_(
             Category.user_id == user_id,  # type: ignore
             Category.user_id == None  # type: ignore # noqa: E711
