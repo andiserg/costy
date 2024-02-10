@@ -1,25 +1,12 @@
-from dataclasses import dataclass
 from typing import List, Optional
 
-from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
 
 from ..common.category_gateway import CategoriesReader
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-
-
-@dataclass
-class ReadAvailableCategoriesDTO:
-    ...
-
-
-@dataclass
-class CategoryDTO:
-    id: CategoryId | None
-    name: str
-    kind: CategoryType
+from .dto import CategoryDTO, ReadAvailableCategoriesDTO
 
 
 class ReadAvailableCategories(Interactor[None, List[CategoryDTO]]):

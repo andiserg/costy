@@ -1,20 +1,10 @@
-from dataclasses import dataclass
-
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.interactor import Interactor
 from costy.application.common.operation_gateway import OperationSaver
 from costy.application.common.uow import UoW
-from costy.domain.models.category import CategoryId
+from costy.application.operation.dto import NewOperationDTO
 from costy.domain.models.operation import OperationId
 from costy.domain.services.operation import OperationService
-
-
-@dataclass
-class NewOperationDTO:
-    amount: int
-    description: str | None
-    time: int
-    category_id: CategoryId
 
 
 class CreateOperation(Interactor[NewOperationDTO, OperationId]):

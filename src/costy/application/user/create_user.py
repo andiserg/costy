@@ -1,17 +1,10 @@
-from dataclasses import dataclass
-
 from costy.domain.models.user import UserId
 from costy.domain.services.user import UserService
 
 from ..common.interactor import Interactor
 from ..common.uow import UoW
 from ..common.user_gateway import UserSaver
-
-
-@dataclass
-class NewUserDTO:
-    email: str
-    password: str
+from .dto import NewUserDTO
 
 
 class CreateUser(Interactor[NewUserDTO, UserId]):

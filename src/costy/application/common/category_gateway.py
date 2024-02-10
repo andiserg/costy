@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
-from costy.application.category.read_available_categories import CategoryDTO
+from costy.application.category.dto import CategoryDTO
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
 

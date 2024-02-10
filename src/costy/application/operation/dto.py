@@ -1,17 +1,17 @@
 from dataclasses import dataclass
-from typing import NewType
 
 from costy.domain.models.category import CategoryId
-from costy.domain.models.user import UserId
-
-OperationId = NewType("OperationId", int)
 
 
 @dataclass
-class Operation:
-    id: OperationId | None
+class NewOperationDTO:
     amount: int
     description: str | None
     time: int
-    user_id: UserId
     category_id: CategoryId
+
+
+@dataclass
+class ListOperationDTO:
+    from_time: int | None
+    to_time: int | None

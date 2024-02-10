@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import List
 
 from costy.domain.models.operation import Operation
@@ -8,12 +7,7 @@ from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationsReader
 from ..common.uow import UoW
-
-
-@dataclass
-class ListOperationDTO:
-    from_time: int | None
-    to_time: int | None
+from .dto import ListOperationDTO
 
 
 class ReadListOperation(Interactor[ListOperationDTO, List[Operation]]):
