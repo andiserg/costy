@@ -1,17 +1,16 @@
-from typing import Any
+from typing import Annotated, Callable
 
 from litestar.exceptions import HTTPException
+from litestar.params import Parameter
 
-from costy.adapters.auth.id_provider import SimpleIdProvider
 from costy.application.common.id_provider import IdProvider
-from costy.domain.models.user import UserId
 
 
-async def get_id_provider(cookies: dict[str, Any]) -> IdProvider:
-    # This is a simple version that will be improved
-    user_id: str | None = cookies.get("user_id")
-    if not user_id:
+async def get_id_provider(
+        token: Annotated[str, Parameter(header="Authorization")],
+        id_provider_factory: Callable
+) -> IdProvider:
+    if not token:
         raise HTTPException("Not authenticated", status_code=401)
-    if not user_id.isdigit():
-        raise HTTPException("Not valid user_id", status_code=401)
-    return SimpleIdProvider(UserId(int(cookies["user_id"])))
+    token_type, token = token.split(" ")
+    return id_provider_factory(token)

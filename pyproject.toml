@@ -12,6 +12,8 @@ dependencies = [
     'psycopg[binary]',
     'alembic',
     'adaptix',
+    'aiohttp',
+    'python-jose'
 ]
 
 [project.optional-dependencies]

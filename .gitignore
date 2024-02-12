@@ -52,3 +52,5 @@ dmypy.json
 
 .idea
 /pytest.ini
+/docker-compose.yml
+/keycloak/
