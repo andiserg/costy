@@ -7,7 +7,6 @@ Unit of Work: Паттерн проектування, який дозволяє
 Натомість, він зберігає множину записів в рамках однієї транзакції
 """
 
-
 from abc import ABC, abstractmethod
 
 from src.app.repositories.absctract.bank_api import ABankInfoRepository
