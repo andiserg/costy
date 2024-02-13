@@ -1,6 +1,7 @@
 """
 Users endpoints
 """
+
 from fastapi import APIRouter, Depends
 
 from src.app.domain.users import User

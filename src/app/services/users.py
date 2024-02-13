@@ -1,6 +1,7 @@
 """
 CRUD операції з User сутностями
 """
+
 from src.app.domain.users import User
 from src.app.services.uow.abstract import AbstractUnitOfWork
 from src.auth.password import get_password_hash
