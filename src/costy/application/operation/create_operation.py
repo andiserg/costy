@@ -22,11 +22,11 @@ class CreateOperation(Interactor[NewOperationDTO, OperationId]):
 
     async def __call__(self, data: NewOperationDTO) -> OperationId:
         user_id = await self.id_provider.get_current_user_id()
-        operation = self.operation_service.create(
+        operation = self.operation_service.create(  # type: ignore
             data.amount,
             data.description,
             data.time,
-            user_id,
+            user_id,  # type: ignore
             data.category_id,
         )
         await self.operation_db_gateway.save_operation(operation)

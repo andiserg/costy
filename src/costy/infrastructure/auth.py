@@ -22,7 +22,7 @@ def create_id_provider_factory(
     token_processor = JwtTokenProcessor(algorithm, audience, issuer)
     jwsk_provider = KeySetProvider(jwsk_uri, web_session, jwsk_expired)
 
-    def factory(token: str):
-        return TokenIdProvider(token, token_processor, jwsk_provider)
+    async def factory():
+        return TokenIdProvider(token_processor, jwsk_provider)
 
     return factory

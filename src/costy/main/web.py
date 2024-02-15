@@ -5,13 +5,17 @@ from adaptix import Retort
 from aiohttp import ClientSession
 from litestar import Litestar
 from litestar.di import Provide
-from sqlalchemy.orm import registry
 
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import get_db_connection_url
-from costy.infrastructure.db.main import get_engine, get_sessionmaker
-from costy.infrastructure.db.orm import create_tables, map_tables_to_models
+from costy.infrastructure.db.main import (
+    get_engine,
+    get_metadata,
+    get_sessionmaker,
+)
+from costy.infrastructure.db.orm import create_tables
 from costy.main.ioc import IoC
+from costy.presentation.api.authenticate import AuthenticationController
 from costy.presentation.api.category import CategoryController
 from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.operation import OperationController
@@ -28,10 +32,13 @@ def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
 
 
 def init_app() -> Litestar:
-    session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
-    ioc = IoC(session_factory=session_factory, retort=Retort())
+    base_metadata = get_metadata()
+    tables = create_tables(base_metadata)
 
+    session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
     web_session = ClientSession()
+    ioc = IoC(session_factory=session_factory, web_session=web_session, tables=tables, retort=Retort())
+
     id_provider_factory = create_id_provider_factory(
         os.environ.get("AUTH0_AUDIENCE", ""),
         "RS256",
@@ -40,15 +47,12 @@ def init_app() -> Litestar:
         web_session
     )
 
-    mapper_registry = registry()
-    tables = create_tables(mapper_registry)
-    map_tables_to_models(mapper_registry, tables)
-
     return Litestar(
         route_handlers=(
+            AuthenticationController,
             UserController,
             OperationController,
-            CategoryController
+            CategoryController,
         ),
         dependencies={
             "ioc": Provide(singleton(ioc)),

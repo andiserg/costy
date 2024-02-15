@@ -10,7 +10,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 class OperationController(Controller):
     path = '/operations'
 
-    @get("{operation_id:int}")
+    @get("/{operation_id:int}")
     async def get_operation(
         self,
         ioc: InteractorFactory,

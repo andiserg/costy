@@ -1,28 +1,17 @@
-import typing
-from typing import Type
-
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import registry
-
-from costy.domain.models.category import Category
-from costy.domain.models.operation import Operation
-from costy.domain.models.user import User
-
-Model = typing.Union[Category, Operation, User]
+from sqlalchemy import Column, ForeignKey, Integer, MetaData, String, Table
 
 
-def create_tables(mapper_registry: registry) -> dict[Type[Model], Table]:
+def create_tables(metadata: MetaData) -> dict[str, Table]:
     return {
-        User: Table(
+        "users": Table(
             "users",
-            mapper_registry.metadata,
+            metadata,
             Column("id", Integer, primary_key=True),
-            Column("email", String, unique=True, index=True, nullable=False),
-            Column("hashed_password", String, nullable=False),
+            Column("auth_id", String, unique=True, index=True, nullable=False)
         ),
-        Operation: Table(
+        "operations": Table(
             "operations",
-            mapper_registry.metadata,
+            metadata,
             Column("id", Integer, primary_key=True),
             Column("amount", Integer, nullable=False),
             Column("description", String),
@@ -35,19 +24,12 @@ def create_tables(mapper_registry: registry) -> dict[Type[Model], Table]:
                 nullable=True
             ),
         ),
-        Category: Table(
+        "categories": Table(
             "categories",
-            mapper_registry.metadata,
+            metadata,
             Column("id", Integer, primary_key=True),
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
             Column("kind", String, default="general"),
         ),
     }
-
-
-def map_tables_to_models(
-        mapper_registry: registry, tables: dict[Type[Model], Table]
-) -> None:
-    for model, table in tables.items():
-        mapper_registry.map_imperatively(model, table)

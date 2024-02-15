@@ -19,7 +19,7 @@ class CreateUser(Interactor[NewUserDTO, UserId]):
         self.uow = uow
 
     async def __call__(self, data: NewUserDTO) -> UserId:
-        user = self.user_service.create(data.email, data.password)
+        user = self.user_service.create()
         await self.user_db_gateway.save_user(user)
         user_id = user.id
         await self.uow.commit()

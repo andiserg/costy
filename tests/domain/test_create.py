@@ -11,8 +11,8 @@ from costy.domain.services.user import UserService
 @pytest.mark.parametrize("domain_service, data, expected_model", [
     (
         UserService(),
-        ("email@test.com", "password"),
-        User(None, "email@test.com", "password")
+        (),
+        User(None)
     ),
     (
         OperationService(),

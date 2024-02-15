@@ -4,6 +4,7 @@ from typing import Literal
 from aiohttp import ClientSession
 from jose import jwt
 
+from costy.application.common.auth_gateway import AuthLoger
 from costy.application.common.id_provider import IdProvider
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import UserId
@@ -38,7 +39,7 @@ class JwtTokenProcessor:
                 }
         return rsa_key
 
-    def validate_token(self, token: str, jwks: dict) -> UserId:
+    def validate_token(self, token: str, jwks: dict) -> str:
         invalid_header_error = AuthenticationError(
             {"detail": "Invalid header. Use an RS256 signed JWT Access Token"}
         )
@@ -81,6 +82,9 @@ class KeySetProvider:
     async def get_key_set(self):
         if not self.jwks:
             await self._request_new_key_set()
+        if self.last_updated and datetime.now() - self.last_updated > self.expired:
+            # TODO: add use Cache-Control
+            await self._request_new_key_set()
         return self.jwks
 
     async def _request_new_key_set(self):
@@ -92,14 +96,19 @@ class KeySetProvider:
 class TokenIdProvider(IdProvider):
     def __init__(
             self,
-            token: str,
             token_processor: JwtTokenProcessor,
             key_set_provider: KeySetProvider,
+            token: str | None = None
     ):
         self.token_processor = token_processor
         self.key_set_provider = key_set_provider
         self.token = token
+        self.auth_gateway: AuthLoger | None = None
 
     async def get_current_user_id(self) -> UserId:
-        jwks = await self.key_set_provider.get_key_set()
-        return self.token_processor.validate_token(self.token, jwks)
+        if self.token and self.auth_gateway:
+            jwks = await self.key_set_provider.get_key_set()
+            sub = self.token_processor.validate_token(self.token, jwks)
+            user = await self.auth_gateway.get_user_by_sub(sub)
+            return user  # type: ignore
+        raise AuthenticationError()

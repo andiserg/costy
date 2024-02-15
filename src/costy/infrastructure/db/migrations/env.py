@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from costy.infrastructure.config import get_db_connection_url
-from costy.infrastructure.db.main import get_registry
+from costy.infrastructure.db.main import get_metadata
 from costy.infrastructure.db.orm import create_tables
 
 # this is the Alembic Config object, which provides
@@ -22,9 +22,9 @@ config.set_main_option('sqlalchemy.url', get_db_connection_url())
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-registry = get_registry()
-create_tables(registry)
-target_metadata = registry.metadata
+metadata = get_metadata()
+create_tables(metadata)
+target_metadata = metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

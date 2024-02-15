@@ -11,7 +11,7 @@ class UserReader(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_by_email(self, email: str) -> User | None:
+    async def get_user_by_auth_id(self, auth_id: str) -> User | None:
         raise NotImplementedError
 
 
