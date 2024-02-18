@@ -1,4 +1,3 @@
-import os
 from typing import Any, Callable, Coroutine, TypeVar
 
 from adaptix import Retort
@@ -7,7 +6,10 @@ from litestar import Litestar
 from litestar.di import Provide
 
 from costy.infrastructure.auth import create_id_provider_factory
-from costy.infrastructure.config import get_db_connection_url
+from costy.infrastructure.config import (
+    get_auth_settings,
+    get_db_connection_url,
+)
 from costy.infrastructure.db.main import (
     get_engine,
     get_metadata,
@@ -37,13 +39,15 @@ def init_app() -> Litestar:
 
     session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
     web_session = ClientSession()
-    ioc = IoC(session_factory=session_factory, web_session=web_session, tables=tables, retort=Retort())
+
+    auth_settings = get_auth_settings()
+    ioc = IoC(session_factory, web_session, tables, Retort(), auth_settings)
 
     id_provider_factory = create_id_provider_factory(
-        os.environ.get("AUTH0_AUDIENCE", ""),
+        auth_settings.audience,
         "RS256",
-        os.environ.get("AUTH0_ISSUER", ""),
-        os.environ.get("AUTH0_JWKS_URI", ""),
+        auth_settings.issuer,
+        auth_settings.jwks_uri,
         web_session
     )
 
@@ -57,7 +61,7 @@ def init_app() -> Litestar:
         dependencies={
             "ioc": Provide(singleton(ioc)),
             "id_provider": Provide(get_id_provider),
-            "id_provider_factory": Provide(id_provider_factory)
+            "id_provider_pure": Provide(id_provider_factory)
         },
         on_shutdown=[lambda: web_session.close()],
         debug=True

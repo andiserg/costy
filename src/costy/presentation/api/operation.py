@@ -1,8 +1,7 @@
 from litestar import Controller, get, post
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.operation.create_operation import NewOperationDTO
-from costy.application.operation.read_list_operation import ListOperationDTO
+from costy.application.operation.dto import ListOperationDTO, NewOperationDTO
 from costy.domain.models.operation import Operation, OperationId
 from costy.presentation.interactor_factory import InteractorFactory
 

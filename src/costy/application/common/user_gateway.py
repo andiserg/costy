@@ -10,10 +10,6 @@ class UserReader(Protocol):
     async def get_user_by_id(self, user_id: UserId) -> User | None:
         raise NotImplementedError
 
-    @abstractmethod
-    async def get_user_by_auth_id(self, auth_id: str) -> User | None:
-        raise NotImplementedError
-
 
 @runtime_checkable
 class UserSaver(Protocol):

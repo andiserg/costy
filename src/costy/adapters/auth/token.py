@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
-from typing import Literal
+from typing import Any, Literal
 
 from aiohttp import ClientSession
+from jose import exceptions as jwt_exc
 from jose import jwt
 
 from costy.application.common.auth_gateway import AuthLoger
@@ -26,7 +27,7 @@ class JwtTokenProcessor:
         self.audience = audience
         self.issuer = issuer
 
-    def _fetch_rsa_key(self, jwks: dict, unverified_header: dict) -> dict:
+    def _fetch_rsa_key(self, jwks: dict[Any, Any], unverified_header: dict[str, str]) -> dict[str, str]:
         rsa_key = {}
         for key in jwks["keys"]:
             if key["kid"] == unverified_header["kid"]:
@@ -39,19 +40,19 @@ class JwtTokenProcessor:
                 }
         return rsa_key
 
-    def validate_token(self, token: str, jwks: dict) -> str:
+    def validate_token(self, token: str, jwks: dict[Any, Any]) -> str:
         invalid_header_error = AuthenticationError(
             {"detail": "Invalid header. Use an RS256 signed JWT Access Token"}
         )
         try:
             unverified_header = jwt.get_unverified_header(token)
-        except jwt.JWTError:
+        except jwt_exc.JWTError:
             raise invalid_header_error
         if unverified_header["alg"] == "HS256":
             raise invalid_header_error
         rsa_key = self._fetch_rsa_key(jwks, unverified_header)
         try:
-            payload = jwt.decode(
+            payload: dict[str, str] = jwt.decode(
                 token,
                 rsa_key,
                 algorithms=[self.algorithm],
@@ -59,9 +60,9 @@ class JwtTokenProcessor:
                 issuer=self.issuer
             )
             return payload["sub"]
-        except jwt.ExpiredSignatureError:
+        except jwt_exc.ExpiredSignatureError:
             raise AuthenticationError({"detail": "token is expired"})
-        except jwt.JWTClaimsError:
+        except jwt_exc.JWTClaimsError:
             raise AuthenticationError(
                 {"detail": "incorrect claims (check audience and issuer)"}
             )
@@ -76,10 +77,10 @@ class KeySetProvider:
         self.session = session
         self.jwks: dict[str, str] = {}
         self.expired = expired
-        self.last_updated = None
+        self.last_updated: datetime | None = None
         self.uri = uri
 
-    async def get_key_set(self):
+    async def get_key_set(self) -> dict[Any, Any]:
         if not self.jwks:
             await self._request_new_key_set()
         if self.last_updated and datetime.now() - self.last_updated > self.expired:
@@ -87,7 +88,7 @@ class KeySetProvider:
             await self._request_new_key_set()
         return self.jwks
 
-    async def _request_new_key_set(self):
+    async def _request_new_key_set(self) -> None:
         async with self.session.get(self.uri) as response:
             self.jwks = await response.json()
             self.last_updated = datetime.now()
@@ -109,6 +110,6 @@ class TokenIdProvider(IdProvider):
         if self.token and self.auth_gateway:
             jwks = await self.key_set_provider.get_key_set()
             sub = self.token_processor.validate_token(self.token, jwks)
-            user = await self.auth_gateway.get_user_by_sub(sub)
-            return user  # type: ignore
+            user_id = await self.auth_gateway.get_user_id_by_sub(sub)
+            return user_id
         raise AuthenticationError()

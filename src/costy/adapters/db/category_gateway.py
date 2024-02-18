@@ -34,14 +34,14 @@ class CategoryGateway(
 
     async def delete_category(self, category_id: CategoryId) -> None:
         query = delete(Category).where(
-            Category.id == category_id  # type: ignore
+            self.table.c.id == category_id
         )
         await self.session.execute(query)
 
     async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
         filter_expr = or_(
-            self.table.c.user_id == user_id,  # type: ignore
-            self.table.c.user_id == None  # type: ignore # noqa: E711
+            self.table.c.user_id == user_id,
+            self.table.c.user_id == None  # noqa: E711
         )
         query = select(self.table).where(filter_expr)
         categories = list(await self.session.scalars(query))

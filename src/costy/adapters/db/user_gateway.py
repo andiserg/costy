@@ -18,10 +18,10 @@ class UserGateway(UserSaver, UserReader):
 
     async def get_user_by_id(self, user_id: UserId) -> User | None:
         query = select(self.table).where(self.table.c.id == user_id)
-        result: User | None = await self.session.scalar(query)
-        return result
-
-    async def get_user_by_auth_id(self, auth_id: str) -> User | None:
-        query = select(self.table).where(self.table.c.auth_id == auth_id)
         result = await self.session.scalar(query)
-        return result
+        try:
+            data = next(result.mapping())
+            user: User = self.retort.load(data, User)
+            return user
+        except StopIteration:
+            return None

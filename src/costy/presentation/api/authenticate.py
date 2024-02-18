@@ -8,7 +8,7 @@ class AuthenticationController(Controller):
     path = "/auth"
 
     @post(status_code=200)
-    async def login(self, ioc: InteractorFactory, data: LoginInputDTO) -> Response:
+    async def login(self, ioc: InteractorFactory, data: LoginInputDTO) -> Response[dict[str, str]]:
         async with ioc.authenticate() as authenticate:
             token = await authenticate(data)
             if token:

@@ -1,4 +1,3 @@
-import os
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import AsyncIterator
@@ -8,7 +7,7 @@ from aiohttp import ClientSession
 from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from costy.adapters.auth.auth_gateway import AuthGateway, AuthSettings
+from costy.adapters.auth.auth_gateway import AuthGateway
 from costy.adapters.db.category_gateway import CategoryGateway
 from costy.adapters.db.operation_gateway import OperationGateway
 from costy.adapters.db.uow import OrmUoW
@@ -26,6 +25,7 @@ from costy.application.user.create_user import CreateUser
 from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
 from costy.domain.services.user import UserService
+from costy.infrastructure.config import AuthSettings
 from costy.presentation.interactor_factory import InteractorFactory
 
 
@@ -43,19 +43,14 @@ class IoC(InteractorFactory):
         session_factory: async_sessionmaker[AsyncSession],
         web_session: ClientSession,
         tables: dict[str, Table],
-        retort: Retort
+        retort: Retort,
+        auth_settings: AuthSettings
     ):
         self._session_factory = session_factory
         self._web_session = web_session
         self._tables = tables
         self._retort = retort
-        self._settings = AuthSettings(
-            authorize_url="https://dev-66quvcmw46dh86sh.us.auth0.com/oauth/token",
-            grant_type="password",
-            client_id=os.getenv("AUTH0_CLIENT_ID", ""),
-            client_secret=os.getenv("AUTH0_CLIENT_ID", ""),
-            audience="https://dev-66quvcmw46dh86sh.us.auth0.com/api/v2/"
-        )
+        self._settings = auth_settings
 
     @asynccontextmanager
     async def _init_depends(self) -> AsyncIterator[Depends]:
@@ -63,7 +58,6 @@ class IoC(InteractorFactory):
         auth_gateway = AuthGateway(session, self._web_session, self._tables["users"], self._settings)
         yield Depends(session, self._web_session, OrmUoW(session), auth_gateway)
         await session.close()
-        await self._web_session.close()
 
     @asynccontextmanager
     async def authenticate(self) -> AsyncIterator[Authenticate]:

@@ -10,5 +10,5 @@ class AuthLoger(Protocol):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_user_by_sub(self, sub: str) -> UserId | None:
+    async def get_user_id_by_sub(self, sub: str) -> UserId:
         raise NotImplementedError

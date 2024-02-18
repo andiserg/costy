@@ -26,4 +26,4 @@ class ReadAvailableCategories(Interactor[None, List[CategoryDTO]]):
         self, data: Optional[ReadAvailableCategoriesDTO] = None
     ) -> List[CategoryDTO]:
         user_id = await self.id_provider.get_current_user_id()
-        return await self.category_db_gateway.find_categories(user_id)  # type: ignore
+        return await self.category_db_gateway.find_categories(user_id)

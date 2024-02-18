@@ -1,21 +1,11 @@
-from dataclasses import dataclass
-
 from aiohttp import ClientSession
-from sqlalchemy import Select, Table
+from sqlalchemy import Table, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.auth_gateway import AuthLoger
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import UserId
-
-
-@dataclass
-class AuthSettings:
-    authorize_url: str
-    client_id: str
-    client_secret: str
-    audience: str
-    grant_type: str
+from costy.infrastructure.config import AuthSettings
 
 
 class AuthGateway(AuthLoger):
@@ -42,14 +32,17 @@ class AuthGateway(AuthLoger):
             "grant_type": self.settings.grant_type
         }
         async with self.web_session.post(url, data=data) as response:
+            response_data = await response.json()
             if response.status == 200:
-                data = await response.json()
-                token = data.get("access_token")
+                token: str | None = response_data.get("access_token")
                 if token:
                     return token
-        raise AuthenticationError()
+            raise AuthenticationError(response_data)
 
-    async def get_user_by_sub(self, sub: str) -> UserId:
-        query = Select(self.table).where(self.table.c.auth_id == sub)
+    async def get_user_id_by_sub(self, sub: str) -> UserId:
+        query = select(self.table).where(self.table.c.auth_id == sub)
         result = await self.db_session.execute(query)
-        return tuple(result)[0][0]
+        try:
+            return UserId(next(result.mappings())["id"])
+        except StopIteration:
+            raise AuthenticationError("Invalid auth sub. User is not exists.")

@@ -4,9 +4,9 @@ import pytest
 from pytest import fixture
 
 from costy.application.authenticate import Authenticate, LoginInputDTO
+from costy.application.common.auth_gateway import AuthLoger
 from costy.application.common.uow import UoW
-from costy.application.common.user_gateway import UserReader
-from costy.domain.models.user import User, UserId
+from costy.domain.models.user import UserId
 
 
 @fixture
@@ -15,16 +15,18 @@ def login_info() -> LoginInputDTO:
 
 
 @fixture
-def interactor(user_id, login_info):
-    user_gateway = Mock(spec=UserReader)
-    user_gateway.get_user_by_email.return_value = User(
-        id=user_id, email=login_info.email,
-        hashed_password=login_info.password,
-    )
+def token() -> str:
+    return "token"
+
+
+@fixture
+def interactor(user_id: UserId, login_info: LoginInputDTO) -> Authenticate:
+    auth_gateway = Mock(spec=AuthLoger)
+    auth_gateway.authenticate.return_value = "token"
     uow = Mock(spec=UoW)
-    return Authenticate(user_gateway, uow)
+    return Authenticate(auth_gateway, uow)
 
 
 @pytest.mark.asyncio
-async def test_authenticate(interactor: Authenticate, user_id: UserId, login_info: LoginInputDTO):
-    assert await interactor(login_info) == user_id
+async def test_authenticate(interactor: Authenticate, user_id: UserId, login_info: LoginInputDTO, token: str) -> None:
+    assert await interactor(login_info) == token
