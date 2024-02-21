@@ -1,6 +1,6 @@
 from litestar import Controller, get
 
-from costy.application.category.read_available_categories import CategoryDTO
+from costy.application.category.dto import CategoryDTO
 from costy.application.common.id_provider import IdProvider
 from costy.presentation.interactor_factory import InteractorFactory
 

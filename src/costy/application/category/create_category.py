@@ -1,6 +1,7 @@
 from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
 
+from ...domain.exceptions.access import AuthenticationError
 from ..common.category_gateway import CategorySaver
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
@@ -23,10 +24,12 @@ class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):
 
     async def __call__(self, data: NewCategoryDTO) -> CategoryId:
         user_id = await self.id_provider.get_current_user_id()
-        category = self.category_service.create(
-            data.name, CategoryType.PERSONAL, user_id
-        )
-        await self.category_db_gateway.save_category(category)
-        category_id = category.id
-        await self.uow.commit()
-        return category_id  # type: ignore
+        if user_id:
+            category = self.category_service.create(
+                data.name, CategoryType.PERSONAL, user_id
+            )
+            await self.category_db_gateway.save_category(category)
+            category_id = category.id
+            await self.uow.commit()
+            return category_id  # type: ignore
+        raise AuthenticationError("User not found")

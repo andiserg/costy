@@ -1,11 +1,13 @@
 from unittest.mock import Mock
 
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import OperationId
 from costy.domain.models.user import UserId
+
+pytest_plugins = ["tests.infrastructure"]
 
 
 @fixture

@@ -11,8 +11,8 @@ from costy.domain.services.user import UserService
 @pytest.mark.parametrize("domain_service, data, expected_model", [
     (
         UserService(),
-        ("email@test.com", "password"),
-        User(None, "email@test.com", "password")
+        (),
+        User(None)
     ),
     (
         OperationService(),
@@ -25,5 +25,5 @@ from costy.domain.services.user import UserService
         Category(None, "test", CategoryType.GENERAL.value, UserId(9999))
     ),
 ])
-def test_create_domain_service(domain_service, data, expected_model):
+def test_create_domain_service(domain_service, data, expected_model):  # type: ignore
     assert domain_service.create(*data) == expected_model

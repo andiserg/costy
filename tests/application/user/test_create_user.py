@@ -5,7 +5,8 @@ from pytest import fixture
 
 from costy.application.common.uow import UoW
 from costy.application.common.user_gateway import UserSaver
-from costy.application.user.create_user import CreateUser, NewUserDTO
+from costy.application.user.create_user import CreateUser
+from costy.application.user.dto import NewUserDTO
 from costy.domain.models.user import User, UserId
 from costy.domain.services.user import UserService
 
@@ -16,15 +17,13 @@ def user_info() -> NewUserDTO:
 
 
 @fixture
-def interactor(user_id, user_info):
+def interactor(user_id: UserId, user_info: NewUserDTO) -> CreateUser:
     user_service = Mock(spec=UserService)
     user_service.create.return_value = User(
         id=None,
-        email=user_info.email,
-        hashed_password=user_info.password
     )
 
-    async def mock_save_user(user: User):
+    async def mock_save_user(user: User) -> None:
         user.id = user_id
 
     user_gateway = Mock(spec=UserSaver)
@@ -34,5 +33,5 @@ def interactor(user_id, user_info):
 
 
 @pytest.mark.asyncio
-async def test_create_user(interactor: CreateUser, user_info: NewUserDTO, user_id: UserId):
+async def test_create_user(interactor: CreateUser, user_info: NewUserDTO, user_id: UserId) -> None:
     assert await interactor(user_info) == user_id

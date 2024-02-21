@@ -1,5 +1,5 @@
 from adaptix import Retort
-from sqlalchemy import delete, or_, select
+from sqlalchemy import Table, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.category.dto import CategoryDTO
@@ -16,13 +16,14 @@ from costy.domain.models.user import UserId
 class CategoryGateway(
     CategoryReader, CategorySaver, CategoryDeleter, CategoriesReader
 ):
-    def __init__(self, session: AsyncSession, retort: Retort):
+    def __init__(self, session: AsyncSession, table: Table, retort: Retort):
         self.session = session
+        self.table = table
         self.retort = retort
 
     async def get_category(self, category_id: CategoryId) -> Category | None:
-        query = select(Category).where(
-            Category.id == category_id  # type: ignore
+        query = select(self.table).where(
+            self.table.c.id == category_id
         )
         result: Category | None = await self.session.scalar(query)
         return result
@@ -33,16 +34,16 @@ class CategoryGateway(
 
     async def delete_category(self, category_id: CategoryId) -> None:
         query = delete(Category).where(
-            Category.id == category_id  # type: ignore
+            self.table.c.id == category_id
         )
         await self.session.execute(query)
 
     async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
         filter_expr = or_(
-            Category.user_id == user_id,  # type: ignore
-            Category.user_id == None  # type: ignore # noqa: E711
+            self.table.c.user_id == user_id,
+            self.table.c.user_id == None  # noqa: E711
         )
-        query = select(Category).where(filter_expr)
+        query = select(self.table).where(filter_expr)
         categories = list(await self.session.scalars(query))
         dumped = self.retort.dump(categories, list[Category])
         return self.retort.load(dumped, list[CategoryDTO])

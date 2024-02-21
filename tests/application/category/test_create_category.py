@@ -3,13 +3,13 @@ from unittest.mock import Mock
 import pytest
 from pytest import fixture
 
-from costy.application.category.create_category import (
-    CreateCategory,
-    NewCategoryDTO,
-)
+from costy.application.category.create_category import CreateCategory
+from costy.application.category.dto import NewCategoryDTO
 from costy.application.common.category_gateway import CategorySaver
+from costy.application.common.id_provider import IdProvider
 from costy.application.common.uow import UoW
-from costy.domain.models.category import Category, CategoryType
+from costy.domain.models.category import Category, CategoryId, CategoryType
+from costy.domain.models.user import UserId
 
 
 @fixture
@@ -18,7 +18,7 @@ def category_info() -> NewCategoryDTO:
 
 
 @fixture
-def interactor(id_provider, category_id, user_id, category_info) -> CreateCategory:
+def interactor(id_provider: IdProvider, category_id: CategoryId, user_id: UserId, category_info: NewCategoryDTO) -> CreateCategory:
     category_service = Mock()
     category_service.create.return_value = Category(
         id=None,
@@ -37,5 +37,5 @@ def interactor(id_provider, category_id, user_id, category_info) -> CreateCatego
 
 
 @pytest.mark.asyncio
-async def test_create_operation(interactor: CreateCategory, category_info: NewCategoryDTO, category_id) -> None:
+async def test_create_operation(interactor: CreateCategory, category_info: NewCategoryDTO, category_id: CategoryId) -> None:
     assert await interactor(category_info) == category_id
