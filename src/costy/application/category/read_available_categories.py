@@ -2,14 +2,15 @@ from typing import List, Optional
 
 from costy.domain.services.category import CategoryService
 
+from ...domain.models.category import Category
 from ..common.category_gateway import CategoriesReader
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-from .dto import CategoryDTO, ReadAvailableCategoriesDTO
+from .dto import ReadAvailableCategoriesDTO
 
 
-class ReadAvailableCategories(Interactor[None, List[CategoryDTO]]):
+class ReadAvailableCategories(Interactor[None, List[Category]]):
     def __init__(
         self,
         category_service: CategoryService,
@@ -24,6 +25,6 @@ class ReadAvailableCategories(Interactor[None, List[CategoryDTO]]):
 
     async def __call__(
         self, data: Optional[ReadAvailableCategoriesDTO] = None
-    ) -> List[CategoryDTO]:
+    ) -> List[Category]:
         user_id = await self.id_provider.get_current_user_id()
         return await self.category_db_gateway.find_categories(user_id)

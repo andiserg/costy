@@ -1,5 +1,5 @@
 from adaptix import Retort
-from sqlalchemy import Table, select
+from sqlalchemy import Table, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.user_gateway import UserReader, UserSaver
@@ -13,15 +13,13 @@ class UserGateway(UserSaver, UserReader):
         self.retort = retort
 
     async def save_user(self, user: User) -> None:
-        self.session.add(user)
-        await self.session.flush(objects=[user])
+        values = self.retort.dump(user)
+        query = insert(self.table).values(**values)
+        result = await self.session.execute(query)
+        user.id = result.inserted_primary_key
 
     async def get_user_by_id(self, user_id: UserId) -> User | None:
         query = select(self.table).where(self.table.c.id == user_id)
         result = await self.session.scalar(query)
-        try:
-            data = next(result.mapping())
-            user: User = self.retort.load(data, User)
-            return user
-        except StopIteration:
-            return None
+        data = next(result.mapping(), None)
+        return self.retort.load(data, User) if data else None

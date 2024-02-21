@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
-from costy.application.category.dto import CategoryDTO
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
 
@@ -23,7 +22,7 @@ class CategoryReader(Protocol):
 @runtime_checkable
 class CategoriesReader(Protocol):
     @abstractmethod
-    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
+    async def find_categories(self, user_id: UserId) -> list[Category]:
         raise NotImplementedError
 
 

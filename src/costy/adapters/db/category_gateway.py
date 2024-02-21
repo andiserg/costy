@@ -1,8 +1,7 @@
 from adaptix import Retort
-from sqlalchemy import Table, delete, or_, select
+from sqlalchemy import Table, delete, insert, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.category.dto import CategoryDTO
 from costy.application.common.category_gateway import (
     CategoriesReader,
     CategoryDeleter,
@@ -25,25 +24,24 @@ class CategoryGateway(
         query = select(self.table).where(
             self.table.c.id == category_id
         )
-        result: Category | None = await self.session.scalar(query)
-        return result
+        result = await self.session.scalar(query)
+        return self.retort.load(result.mapping(), Category)
 
     async def save_category(self, category: Category) -> None:
-        self.session.add(category)
-        await self.session.flush(objects=[category])
+        values = self.retort.dump(category)
+        query = insert(self.table).values(**values)
+        result = await self.session.execute(query)
+        category.id = CategoryId(result.inserted_primary_key)
 
     async def delete_category(self, category_id: CategoryId) -> None:
-        query = delete(Category).where(
-            self.table.c.id == category_id
-        )
+        query = delete(self.table).where(self.table.c.id == category_id)
         await self.session.execute(query)
 
-    async def find_categories(self, user_id: UserId) -> list[CategoryDTO]:
+    async def find_categories(self, user_id: UserId) -> list[Category]:
         filter_expr = or_(
             self.table.c.user_id == user_id,
             self.table.c.user_id == None  # noqa: E711
         )
         query = select(self.table).where(filter_expr)
-        categories = list(await self.session.scalars(query))
-        dumped = self.retort.dump(categories, list[Category])
-        return self.retort.load(dumped, list[CategoryDTO])
+        result = await self.session.scalars(query)
+        return self.retort.dump(result.mapping(), list[Category])

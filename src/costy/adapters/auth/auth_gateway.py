@@ -42,7 +42,7 @@ class AuthGateway(AuthLoger):
     async def get_user_id_by_sub(self, sub: str) -> UserId:
         query = select(self.table).where(self.table.c.auth_id == sub)
         result = await self.db_session.execute(query)
-        try:
-            return UserId(next(result.mappings())["id"])
-        except StopIteration:
-            raise AuthenticationError("Invalid auth sub. User is not exists.")
+        data = next(result.mappings(), None)
+        if data:
+            return UserId(data["id"])
+        raise AuthenticationError("Invalid auth sub. User is not exists.")
