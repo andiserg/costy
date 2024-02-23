@@ -12,9 +12,7 @@ from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
 
 
-class OperationGateway(
-    OperationReader, OperationSaver, OperationDeleter, OperationsReader
-):
+class OperationGateway(OperationReader, OperationSaver, OperationDeleter, OperationsReader):
     def __init__(self, session: AsyncSession, table: Table, retort: Retort):
         self.session = session
         self.table = table
@@ -28,9 +26,10 @@ class OperationGateway(
 
     async def save_operation(self, operation: Operation) -> None:
         values = self.retort.dump(operation)
+        del values["id"]
         query = insert(self.table).values(**values)
         result = await self.session.execute(query)
-        operation.id = OperationId(result.inserted_primary_key)
+        operation.id = OperationId(result.inserted_primary_key[0])
 
     async def delete_operation(self, operation_id: OperationId) -> None:
         query = delete(self.table).where(self.table.c.id == operation_id)
@@ -47,5 +46,5 @@ class OperationGateway(
             query = query.where(self.table.c.time >= from_time)
         if to_time:
             query = query.where(self.table.c.time <= to_time)
-        result = await self.session.scalars(query)
-        return self.retort.dump(result.mapping(), list[Operation])
+        result = await self.session.execute(query)
+        return self.retort.dump(result.mappings(), list[Operation])

@@ -7,3 +7,4 @@ UserId = NewType("UserId", int)
 @dataclass
 class User:
     id: UserId | None
+    auth_id: str | None

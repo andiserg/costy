@@ -1,14 +1,14 @@
 from aiohttp import ClientSession
-from sqlalchemy import Table, select
+from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.auth_gateway import AuthLoger
-from costy.domain.exceptions.access import AuthenticationError
-from costy.domain.models.user import UserId
+from costy.application.common.auth_gateway import AuthLoger, AuthRegister
+from costy.domain.exceptions.access import AuthenticationError, RegisterError
 from costy.infrastructure.config import AuthSettings
 
 
-class AuthGateway(AuthLoger):
+class AuthGateway(AuthLoger, AuthRegister):
+
     def __init__(
         self,
         db_session: AsyncSession,
@@ -39,10 +39,17 @@ class AuthGateway(AuthLoger):
                     return token
             raise AuthenticationError(response_data)
 
-    async def get_user_id_by_sub(self, sub: str) -> UserId:
-        query = select(self.table).where(self.table.c.auth_id == sub)
-        result = await self.db_session.execute(query)
-        data = next(result.mappings(), None)
-        if data:
-            return UserId(data["id"])
-        raise AuthenticationError("Invalid auth sub. User is not exists.")
+    async def register(self, email: str, password: str) -> str:
+        url = self.settings.register_url
+        data = {
+            "email": email,
+            "password": password,
+            "client_id": self.settings.client_id,
+            "client_secret": self.settings.client_secret,
+            "connection": self.settings.connection
+        }
+        async with self.web_session.post(url, data=data) as response:
+            response_data = await response.json()
+            if response.status == 200:
+                return response_data["_id"]
+            raise RegisterError(response_data)

@@ -1,13 +1,14 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from costy.domain.models.category import CategoryId
 
 
-@dataclass
+@dataclass(kw_only=True)
 class NewOperationDTO:
     amount: int
     description: str | None
-    time: int
+    time: int = int(datetime.now().timestamp())
     category_id: CategoryId
 
 
