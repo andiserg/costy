@@ -16,10 +16,10 @@ from costy.domain.models.user import UserId
 @fixture
 def operation_info() -> NewOperationDTO:
     return NewOperationDTO(
-        100,
-        "description",
-        10000,
-        CategoryId(999)
+        amount=100,
+        description="description",
+        time=10000,
+        category_id=CategoryId(999)
     )
 
 

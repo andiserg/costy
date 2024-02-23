@@ -2,6 +2,7 @@ import os
 from typing import AsyncGenerator
 
 import pytest
+from adaptix import Retort
 from aiohttp import ClientSession
 from pytest_asyncio import fixture
 from sqlalchemy import Table
@@ -61,7 +62,12 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
         await conn.run_sync(metadata.drop_all)
 
 
-@fixture()
+@fixture
 async def web_session() -> ClientSession:
     async with ClientSession() as session:
         yield session
+
+
+@fixture
+def retort() -> Retort:
+    return Retort()
