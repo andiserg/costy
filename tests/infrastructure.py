@@ -1,5 +1,5 @@
 import os
-from typing import AsyncGenerator
+from typing import AsyncGenerator, AsyncIterator
 
 import pytest
 from adaptix import Retort
@@ -37,7 +37,7 @@ async def db_sessionmaker(db_engine: AsyncEngine) -> async_sessionmaker[AsyncSes
 
 
 @fixture
-async def db_session(db_sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncSession:
+async def db_session(db_sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncIterator[AsyncSession]:
     session = db_sessionmaker()
     yield session
     # clean up database
@@ -63,7 +63,7 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
 
 
 @fixture
-async def web_session() -> ClientSession:
+async def web_session() -> AsyncIterator[ClientSession]:
     async with ClientSession() as session:
         yield session
 
