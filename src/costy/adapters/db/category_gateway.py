@@ -43,4 +43,4 @@ class CategoryGateway(
         )
         query = select(self.table).where(filter_expr)
         result = await self.session.execute(query)
-        return self.retort.dump(result.mappings(), list[Category])
+        return self.retort.load(result.mappings(), list[Category])

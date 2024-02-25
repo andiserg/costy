@@ -20,8 +20,8 @@ class OperationGateway(OperationReader, OperationSaver, OperationDeleter, Operat
 
     async def get_operation(self, operation_id: OperationId) -> Operation | None:
         query = select(self.table).where(self.table.c.id == operation_id)
-        result = await self.session.scalar(query)
-        data = next(result.mapping(), None)
+        result = await self.session.execute(query)
+        data = next(result.mappings(), None)
         return self.retort.load(data, Operation) if data else None
 
     async def save_operation(self, operation: Operation) -> None:
@@ -38,8 +38,8 @@ class OperationGateway(OperationReader, OperationSaver, OperationDeleter, Operat
     async def find_operations_by_user(
         self,
         user_id: UserId,
-        from_time: int | None,
-        to_time: int | None
+        from_time: int | None = None,
+        to_time: int | None = None
     ) -> list[Operation]:
         query = select(self.table).where(self.table.c.user_id == user_id)
         if from_time:
@@ -47,4 +47,4 @@ class OperationGateway(OperationReader, OperationSaver, OperationDeleter, Operat
         if to_time:
             query = query.where(self.table.c.time <= to_time)
         result = await self.session.execute(query)
-        return self.retort.dump(result.mappings(), list[Operation])
+        return self.retort.load(result.mappings(), list[Operation])

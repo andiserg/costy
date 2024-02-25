@@ -53,9 +53,3 @@ async def created_user(db_session: AsyncSession, db_tables: dict[str, Table], au
 async def test_authenticate(auth_adapter: AuthLoger, credentials: dict[str, str]):
     token = await auth_adapter.authenticate(credentials["username"], credentials["password"])
     assert isinstance(token, str)
-
-
-# @pytest.mark.asyncio
-# async def test_get_user_id_by_sup(auth_adapter: AuthLoger, auth_sub: str, created_user: UserId):
-#     created_user_id = await auth_adapter.get_user_id_by_auth_id(auth_sub)
-#     assert created_user_id == created_user
