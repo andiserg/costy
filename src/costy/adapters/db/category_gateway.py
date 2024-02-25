@@ -22,8 +22,9 @@ class CategoryGateway(
 
     async def get_category(self, category_id: CategoryId) -> Category | None:
         query = select(self.table).where(self.table.c.id == category_id)
-        result = await self.session.scalar(query)
-        return self.retort.load(result.mapping(), Category)
+        result = await self.session.execute(query)
+        data = next(result.mappings(), None)
+        return self.retort.load(data, Category) if data else None
 
     async def save_category(self, category: Category) -> None:
         values = self.retort.dump(category)

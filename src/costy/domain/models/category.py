@@ -16,5 +16,5 @@ class CategoryType(Enum):
 class Category:
     id: CategoryId | None
     name: str
-    kind: str  # CategoryType
+    kind: str = CategoryType.GENERAL.value
     user_id: Optional[UserId] = None
