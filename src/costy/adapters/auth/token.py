@@ -5,8 +5,8 @@ from aiohttp import ClientSession
 from jose import exceptions as jwt_exc
 from jose import jwt
 
-from costy.application.common.auth_gateway import AuthLoger
 from costy.application.common.id_provider import IdProvider
+from costy.application.common.user_gateway import UserReader
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import UserId
 
@@ -59,7 +59,7 @@ class JwtTokenProcessor:
                 audience=self.audience,
                 issuer=self.issuer
             )
-            return payload["sub"]
+            return payload["sub"].replace("auth0|", "")
         except jwt_exc.ExpiredSignatureError:
             raise AuthenticationError({"detail": "token is expired"})
         except jwt_exc.JWTClaimsError:
@@ -104,12 +104,12 @@ class TokenIdProvider(IdProvider):
         self.token_processor = token_processor
         self.key_set_provider = key_set_provider
         self.token = token
-        self.auth_gateway: AuthLoger | None = None
+        self.user_gateway: UserReader | None = None
 
     async def get_current_user_id(self) -> UserId:
-        if self.token and self.auth_gateway:
+        if self.token and self.user_gateway:
             jwks = await self.key_set_provider.get_key_set()
             sub = self.token_processor.validate_token(self.token, jwks)
-            user_id = await self.auth_gateway.get_user_id_by_sub(sub)
-            return user_id
+            user_id = await self.user_gateway.get_user_id_by_auth_id(sub)
+            return UserId(user_id)
         raise AuthenticationError()

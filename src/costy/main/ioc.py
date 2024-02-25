@@ -34,7 +34,7 @@ class Depends:
     session: AsyncSession
     web_session: ClientSession
     uow: OrmUoW
-    auth_gateway: AuthGateway
+    user_gateway: UserGateway
 
 
 class IoC(InteractorFactory):
@@ -55,15 +55,15 @@ class IoC(InteractorFactory):
     @asynccontextmanager
     async def _init_depends(self) -> AsyncIterator[Depends]:
         session = self._session_factory()
-        auth_gateway = AuthGateway(session, self._web_session, self._tables["users"], self._settings)
-        yield Depends(session, self._web_session, OrmUoW(session), auth_gateway)
+        user_gateway = UserGateway(session, self._tables["users"], self._retort)
+        yield Depends(session, self._web_session, OrmUoW(session), user_gateway)
         await session.close()
 
     @asynccontextmanager
     async def authenticate(self) -> AsyncIterator[Authenticate]:
         async with self._init_depends() as depends:
             yield Authenticate(
-                depends.auth_gateway,
+                AuthGateway(depends.session, self._web_session, self._tables["users"], self._settings),
                 depends.uow
             )
 
@@ -71,7 +71,10 @@ class IoC(InteractorFactory):
     async def create_user(self) -> AsyncIterator[CreateUser]:
         async with self._init_depends() as depends:
             yield CreateUser(
-                UserService(), UserGateway(depends.session, self._tables["users"], self._retort), depends.uow
+                UserService(),
+                depends.user_gateway,
+                AuthGateway(depends.session, self._web_session, self._tables["users"], self._settings),
+                depends.uow
             )
 
     @asynccontextmanager
@@ -79,7 +82,7 @@ class IoC(InteractorFactory):
             self, id_provider: IdProvider
     ) -> AsyncIterator[CreateOperation]:
         async with self._init_depends() as depends:
-            id_provider.auth_gateway = depends.auth_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield CreateOperation(
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
@@ -91,7 +94,7 @@ class IoC(InteractorFactory):
             self, id_provider: IdProvider
     ) -> AsyncIterator[ReadOperation]:
         async with self._init_depends() as depends:
-            id_provider.auth_gateway = depends.auth_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield ReadOperation(
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
@@ -104,7 +107,7 @@ class IoC(InteractorFactory):
             self, id_provider: IdProvider
     ) -> AsyncIterator[ReadListOperation]:
         async with self._init_depends() as depends:
-            id_provider.auth_gateway = depends.auth_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield ReadListOperation(
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
@@ -117,7 +120,7 @@ class IoC(InteractorFactory):
             self, id_provider: IdProvider
     ) -> AsyncIterator[CreateCategory]:
         async with self._init_depends() as depends:
-            id_provider.auth_gateway = depends.auth_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield CreateCategory(
                 CategoryService(),
                 CategoryGateway(depends.session, self._tables["categories"], self._retort),
@@ -130,7 +133,7 @@ class IoC(InteractorFactory):
             self, id_provider: IdProvider
     ) -> AsyncIterator[ReadAvailableCategories]:
         async with self._init_depends() as depends:
-            id_provider.auth_gateway = depends.auth_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield ReadAvailableCategories(
                 CategoryService(),
                 CategoryGateway(depends.session, self._tables["categories"], self._retort),

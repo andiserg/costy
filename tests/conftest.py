@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 from pytest_asyncio import fixture
+from sqlalchemy import insert
 
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.category import CategoryId
@@ -23,6 +24,12 @@ def operation_id() -> OperationId:
 @fixture
 def category_id() -> CategoryId:
     return CategoryId(999)
+
+
+@fixture()
+async def created_user(db_session, db_tables, auth_id) -> UserId:
+    result = await db_session.execute(insert(db_tables["users"]).values(auth_id=auth_id))
+    return UserId(result.inserted_primary_key[0])
 
 
 @fixture
