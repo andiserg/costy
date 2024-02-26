@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from costy.application.authenticate import Authenticate, LoginInputDTO
 from costy.application.common.auth_gateway import AuthLoger
@@ -10,17 +10,17 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-def login_info() -> LoginInputDTO:
+async def login_info() -> LoginInputDTO:
     return LoginInputDTO(email="test@email.com", password="password")
 
 
 @fixture
-def token() -> str:
+async def token() -> str:
     return "token"
 
 
 @fixture
-def interactor(user_id: UserId, login_info: LoginInputDTO) -> Authenticate:
+async def interactor(user_id: UserId, login_info: LoginInputDTO) -> Authenticate:
     auth_gateway = Mock(spec=AuthLoger)
     auth_gateway.authenticate.return_value = "token"
     uow = Mock(spec=UoW)

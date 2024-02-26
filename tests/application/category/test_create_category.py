@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from costy.application.category.create_category import CreateCategory
 from costy.application.category.dto import NewCategoryDTO
@@ -13,12 +13,12 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-def category_info() -> NewCategoryDTO:
+async def category_info() -> NewCategoryDTO:
     return NewCategoryDTO("test")
 
 
 @fixture
-def interactor(id_provider: IdProvider, category_id: CategoryId, user_id: UserId, category_info: NewCategoryDTO) -> CreateCategory:
+async def interactor(id_provider: IdProvider, category_id: CategoryId, user_id: UserId, category_info: NewCategoryDTO) -> CreateCategory:
     category_service = Mock()
     category_service.create.return_value = Category(
         id=None,

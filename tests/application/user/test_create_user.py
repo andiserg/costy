@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from costy.application.common.auth_gateway import AuthRegister
 from costy.application.common.uow import UoW
@@ -13,12 +13,12 @@ from costy.domain.services.user import UserService
 
 
 @fixture
-def user_info() -> NewUserDTO:
+async def user_info() -> NewUserDTO:
     return NewUserDTO(email="test@email.com", password="password")
 
 
 @fixture
-def interactor(user_id: UserId, user_info: NewUserDTO) -> CreateUser:
+async def interactor(user_id: UserId, user_info: NewUserDTO) -> CreateUser:
     user_service = Mock(spec=UserService)
     user_service.create.return_value = User(id=None, auth_id="auth_id")
 

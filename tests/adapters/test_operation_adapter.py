@@ -9,7 +9,7 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-def operation_gateway(db_session, db_tables, retort) -> OperationGateway:
+async def operation_gateway(db_session, db_tables, retort) -> OperationGateway:
     return OperationGateway(db_session, db_tables["operations"], retort)
 
 
@@ -26,7 +26,7 @@ async def db_category_id(db_session, db_tables) -> CategoryId:
 
 
 @fixture
-def operation_entity(db_user_id, db_category_id) -> Operation:
+async def operation_entity(db_user_id, db_category_id) -> Operation:
     return Operation(
         id=None,
         amount=100,

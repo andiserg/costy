@@ -8,7 +8,7 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-def category_gateway(db_session, db_tables, retort) -> CategoryGateway:
+async def category_gateway(db_session, db_tables, retort) -> CategoryGateway:
     return CategoryGateway(db_session, db_tables["categories"], retort)
 
 

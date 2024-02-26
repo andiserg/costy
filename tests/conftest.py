@@ -12,17 +12,17 @@ pytest_plugins = ["tests.infrastructure"]
 
 
 @fixture
-def user_id() -> UserId:
+async def user_id() -> UserId:
     return UserId(999)
 
 
 @fixture
-def operation_id() -> OperationId:
+async def operation_id() -> OperationId:
     return OperationId(999)
 
 
 @fixture
-def category_id() -> CategoryId:
+async def category_id() -> CategoryId:
     return CategoryId(999)
 
 
@@ -33,7 +33,7 @@ async def created_user(db_session, db_tables, auth_id) -> UserId:
 
 
 @fixture
-def id_provider(user_id: UserId) -> IdProvider:
+async def id_provider(user_id: UserId) -> IdProvider:
     provider = Mock(spec=IdProvider)
     provider.get_current_user_id.return_value = user_id
     return provider

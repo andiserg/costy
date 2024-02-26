@@ -6,17 +6,17 @@ from costy.domain.models.user import User
 
 
 @fixture
-def auth_id() -> str:
+async def auth_id() -> str:
     return "auth_id"
 
 
 @fixture
-def user_gateway(db_session, db_tables, retort) -> UserGateway:
+async def user_gateway(db_session, db_tables, retort) -> UserGateway:
     return UserGateway(db_session, db_tables["users"], retort)
 
 
 @fixture
-def user_entity() -> User:
+async def user_entity() -> User:
     return User(id=None, auth_id="auth_id")
 
 
