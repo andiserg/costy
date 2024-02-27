@@ -7,7 +7,7 @@ from costy.domain.models.category import CategoryId
 @dataclass(kw_only=True)
 class NewOperationDTO:
     amount: int
-    description: str | None
+    description: str | None = None
     time: int = int(datetime.now().timestamp())
     category_id: CategoryId
 

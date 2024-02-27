@@ -4,6 +4,7 @@ from typing import AsyncGenerator, AsyncIterator
 import pytest
 from adaptix import Retort
 from aiohttp import ClientSession
+from httpx import AsyncClient
 from litestar import Litestar
 from pytest_asyncio import fixture
 from sqlalchemy import Table
@@ -66,13 +67,13 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
 
 @fixture
 async def web_session() -> AsyncIterator[ClientSession]:
-    async with ClientSession() as session:
-        yield session
+    async with AsyncClient() as client:
+        yield client
 
 
-@fixture(scope="session")
-async def app() -> Litestar:
-    return init_app()
+@fixture
+async def app(db_url) -> Litestar:
+    return init_app(db_url)
 
 
 @fixture

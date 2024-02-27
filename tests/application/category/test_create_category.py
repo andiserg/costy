@@ -13,11 +13,6 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-async def category_info() -> NewCategoryDTO:
-    return NewCategoryDTO("test")
-
-
-@fixture
 async def interactor(id_provider: IdProvider, category_id: CategoryId, user_id: UserId, category_info: NewCategoryDTO) -> CreateCategory:
     category_service = Mock()
     category_service.create.return_value = Category(

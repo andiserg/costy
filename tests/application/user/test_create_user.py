@@ -13,11 +13,6 @@ from costy.domain.services.user import UserService
 
 
 @fixture
-async def user_info() -> NewUserDTO:
-    return NewUserDTO(email="test@email.com", password="password")
-
-
-@fixture
 async def interactor(user_id: UserId, user_info: NewUserDTO) -> CreateUser:
     user_service = Mock(spec=UserService)
     user_service.create.return_value = User(id=None, auth_id="auth_id")

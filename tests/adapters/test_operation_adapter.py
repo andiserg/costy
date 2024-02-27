@@ -1,28 +1,7 @@
 import pytest
 from pytest_asyncio import fixture
-from sqlalchemy import insert
 
-from costy.adapters.db.operation_gateway import OperationGateway
-from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
-
-
-@fixture
-async def operation_gateway(db_session, db_tables, retort) -> OperationGateway:
-    return OperationGateway(db_session, db_tables["operations"], retort)
-
-
-@fixture()
-async def db_user_id(db_session, db_tables) -> UserId:
-    created_user_record = await db_session.execute(insert(db_tables["users"]).values(auth_id="test"))
-    return UserId(created_user_record.inserted_primary_key[0])
-
-
-@fixture
-async def db_category_id(db_session, db_tables) -> CategoryId:
-    created_category_record = await db_session.execute(insert(db_tables["categories"]).values(name="test"))
-    return CategoryId(created_category_record.inserted_primary_key[0])
 
 
 @fixture

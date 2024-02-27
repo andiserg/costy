@@ -8,19 +8,8 @@ from costy.application.common.operation_gateway import OperationSaver
 from costy.application.common.uow import UoW
 from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.dto import NewOperationDTO
-from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
-
-
-@fixture
-async def operation_info() -> NewOperationDTO:
-    return NewOperationDTO(
-        amount=100,
-        description="description",
-        time=10000,
-        category_id=CategoryId(999)
-    )
 
 
 @fixture

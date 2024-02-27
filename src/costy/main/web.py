@@ -1,7 +1,7 @@
 from typing import Any, Callable, Coroutine, TypeVar
 
 from adaptix import Retort
-from aiohttp import ClientSession
+from httpx import AsyncClient
 from litestar import Litestar
 from litestar.di import Provide
 
@@ -33,12 +33,12 @@ def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
     return func
 
 
-def init_app() -> Litestar:
+def init_app(db_url: str = get_db_connection_url()) -> Litestar:
     base_metadata = get_metadata()
     tables = create_tables(base_metadata)
 
-    session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
-    web_session = ClientSession()
+    session_factory = get_sessionmaker(get_engine(db_url))
+    web_session = AsyncClient()
 
     auth_settings = get_auth_settings()
     ioc = IoC(session_factory, web_session, tables, Retort(), auth_settings)
@@ -50,6 +50,9 @@ def init_app() -> Litestar:
         auth_settings.jwks_uri,
         web_session
     )
+
+    async def finalization():
+        await web_session.aclose()
 
     return Litestar(
         route_handlers=(
@@ -63,6 +66,6 @@ def init_app() -> Litestar:
             "id_provider": Provide(get_id_provider),
             "id_provider_pure": Provide(id_provider_factory)
         },
-        on_shutdown=[lambda: web_session.close()],
+        on_shutdown=[finalization],
         debug=True
     )

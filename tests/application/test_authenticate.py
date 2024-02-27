@@ -10,19 +10,9 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-async def login_info() -> LoginInputDTO:
-    return LoginInputDTO(email="test@email.com", password="password")
-
-
-@fixture
-async def token() -> str:
-    return "token"
-
-
-@fixture
-async def interactor(user_id: UserId, login_info: LoginInputDTO) -> Authenticate:
+async def interactor(user_id: UserId, login_info: LoginInputDTO, token) -> Authenticate:
     auth_gateway = Mock(spec=AuthLoger)
-    auth_gateway.authenticate.return_value = "token"
+    auth_gateway.authenticate.return_value = token
     uow = Mock(spec=UoW)
     return Authenticate(auth_gateway, uow)
 
