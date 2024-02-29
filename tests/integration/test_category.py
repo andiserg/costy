@@ -3,65 +3,66 @@ from adaptix import P, loader, name_mapping
 from litestar.testing import AsyncTestClient
 from sqlalchemy import insert
 
-from costy.domain.models.operation import Operation
+from costy.domain.models.category import Category, CategoryType
 
 
 @pytest.mark.asyncio
-async def test_create_operation(app, user_token, create_sub_user, db_category_id, clean_up_db):
+async def test_create_category(app, user_token, create_sub_user, clean_up_db):
     async with AsyncTestClient(app) as client:
         headers = {"Authorization": f"Bearer {user_token}"}
         data = {
-            "amount": 100,
-            "category_id": db_category_id
+            "name": "test"
         }
-        result = await client.post("/operations", json=data, headers=headers)
+        result = await client.post("/categories", json=data, headers=headers)
 
         assert result.status_code == 201
         assert isinstance(result.json(), int)
 
 
 @pytest.mark.asyncio
-async def test_get_list_operations(
+async def test_get_list_categoris(
     app,
     user_token,
     create_sub_user,
     db_session,
     db_tables,
-    db_category_id,
     retort,
     clean_up_db
 ):
     loader_retort = retort.extend(
         recipe=[
-            loader(P[Operation].id, lambda _: None)
+            loader(P[Category].id, lambda _: None)
         ]
     )
     retort = retort.extend(
         recipe=[
             name_mapping(
-                Operation,
+                Category,
                 skip=['id'],
             ),
         ]
     )
-    operations = [
-        Operation(
+    categories = [
+        Category(
             id=None,
-            amount=100,
-            description="test",
-            category_id=db_category_id,
-            time=1111,
+            name=f"test_category {i}",
+            kind=CategoryType.PERSONAL.value,
             user_id=create_sub_user
-        )
-        for _ in range(10)
+        ) for i in range(5)
+    ] + [
+        Category(
+            id=None,
+            name=f"test_category {i}",
+            kind=CategoryType.GENERAL.value
+        ) for i in range(5)
     ]
-    stmt = insert(db_tables["operations"]).values(retort.dump(operations, list[Operation]))
+    stmt = insert(db_tables["categories"]).values(retort.dump(categories, list[Category]))
     await db_session.execute(stmt)
     await db_session.commit()
 
     async with AsyncTestClient(app) as client:
         headers = {"Authorization": f"Bearer {user_token}"}
 
-        result = await client.get("/operations", headers=headers)
+        result = await client.get("/categories", headers=headers)
 
-        assert loader_retort.load(result.json(), list[Operation]) == operations
+        assert loader_retort.load(result.json(), list[Category]) == categories
