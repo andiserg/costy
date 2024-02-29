@@ -33,7 +33,10 @@ def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
     return func
 
 
-def init_app(db_url: str = get_db_connection_url()) -> Litestar:
+def init_app(db_url: str | None = None) -> Litestar:
+    if not db_url:
+        db_url = get_db_connection_url()
+
     base_metadata = get_metadata()
     tables = create_tables(base_metadata)
 
