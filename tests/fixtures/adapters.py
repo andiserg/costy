@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 from pytest_asyncio import fixture
 
 from costy.adapters.auth.auth_gateway import AuthGateway
@@ -5,6 +7,8 @@ from costy.adapters.db.category_gateway import CategoryGateway
 from costy.adapters.db.operation_gateway import OperationGateway
 from costy.adapters.db.user_gateway import UserGateway
 from costy.application.common.auth_gateway import AuthLoger
+from costy.application.common.id_provider import IdProvider
+from costy.domain.models.user import UserId
 from costy.infrastructure.config import AuthSettings, get_auth_settings
 
 
@@ -31,3 +35,10 @@ async def category_gateway(db_session, db_tables, retort) -> CategoryGateway:
 @fixture
 async def operation_gateway(db_session, db_tables, retort) -> OperationGateway:
     return OperationGateway(db_session, db_tables["operations"], retort)
+
+
+@fixture
+async def id_provider(user_id: UserId) -> IdProvider:
+    provider = Mock(spec=IdProvider)
+    provider.get_current_user_id.return_value = user_id
+    return provider
