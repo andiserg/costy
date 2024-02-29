@@ -9,16 +9,6 @@ from costy.presentation.interactor_factory import InteractorFactory
 class OperationController(Controller):
     path = '/operations'
 
-    @get("/{operation_id:int}")
-    async def get_operation(
-        self,
-        ioc: InteractorFactory,
-        id_provider: IdProvider,
-        operation_id: OperationId
-    ) -> Operation | None:
-        async with ioc.read_operation(id_provider) as read_operation:
-            return await read_operation(operation_id)
-
     @get()
     async def get_list_operations(
         self,

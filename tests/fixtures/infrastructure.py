@@ -4,6 +4,8 @@ from typing import AsyncGenerator, AsyncIterator
 import pytest
 from adaptix import Retort
 from aiohttp import ClientSession
+from httpx import AsyncClient
+from litestar import Litestar
 from pytest_asyncio import fixture
 from sqlalchemy import Table
 from sqlalchemy.exc import OperationalError
@@ -16,6 +18,7 @@ from sqlalchemy.ext.asyncio import (
 
 from costy.infrastructure.db.main import get_metadata
 from costy.infrastructure.db.orm import create_tables
+from costy.main.web import init_app
 
 
 @fixture(scope='session')
@@ -23,7 +26,7 @@ async def db_url() -> str:  # type: ignore
     try:
         return os.environ['TEST_DB_URL']
     except KeyError:
-        pytest.skip("TEST_DB_URL env variable not set")
+        pytest.fail("TEST_DB_URL env variable not set")
 
 
 @fixture(scope='session')
@@ -54,7 +57,7 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
             await conn.run_sync(metadata.drop_all)
             await conn.run_sync(metadata.create_all)
     except OperationalError:
-        pytest.skip("Connection to database is faield.")
+        pytest.fail("Connection to database is faield.")
 
     yield tables
 
@@ -64,10 +67,15 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
 
 @fixture
 async def web_session() -> AsyncIterator[ClientSession]:
-    async with ClientSession() as session:
-        yield session
+    async with AsyncClient() as client:
+        yield client
 
 
 @fixture
-def retort() -> Retort:
+async def app(db_url) -> Litestar:
+    return init_app(db_url)
+
+
+@fixture
+async def retort() -> Retort:
     return Retort()

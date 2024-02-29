@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import AsyncIterator
 
 from adaptix import Retort
-from aiohttp import ClientSession
+from httpx import AsyncClient
 from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -32,7 +32,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 @dataclass
 class Depends:
     session: AsyncSession
-    web_session: ClientSession
+    web_session: AsyncClient
     uow: OrmUoW
     user_gateway: UserGateway
 
@@ -41,7 +41,7 @@ class IoC(InteractorFactory):
     def __init__(
         self,
         session_factory: async_sessionmaker[AsyncSession],
-        web_session: ClientSession,
+        web_session: AsyncClient,
         tables: dict[str, Table],
         retort: Retort,
         auth_settings: AuthSettings

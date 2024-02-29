@@ -1,4 +1,4 @@
-from aiohttp import ClientSession
+from httpx import AsyncClient
 from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,7 +12,7 @@ class AuthGateway(AuthLoger, AuthRegister):
     def __init__(
         self,
         db_session: AsyncSession,
-        web_session: ClientSession,
+        web_session: AsyncClient,
         table: Table,
         settings: AuthSettings
     ) -> None:
@@ -31,13 +31,13 @@ class AuthGateway(AuthLoger, AuthRegister):
             "audience": self.settings.audience,
             "grant_type": self.settings.grant_type
         }
-        async with self.web_session.post(url, data=data) as response:
-            response_data = await response.json()
-            if response.status == 200:
-                token: str | None = response_data.get("access_token")
-                if token:
-                    return token
-            raise AuthenticationError(response_data)
+        response = await self.web_session.post(url, data=data)
+        response_data = response.json()
+        if response.status_code == 200:
+            token: str | None = response_data.get("access_token")
+            if token:
+                return token
+        raise AuthenticationError(response_data)
 
     async def register(self, email: str, password: str) -> str:
         url = self.settings.register_url
@@ -48,8 +48,8 @@ class AuthGateway(AuthLoger, AuthRegister):
             "client_secret": self.settings.client_secret,
             "connection": self.settings.connection
         }
-        async with self.web_session.post(url, data=data) as response:
-            response_data = await response.json()
-            if response.status == 200:
-                return response_data["_id"]
-            raise RegisterError(response_data)
+        response = await self.web_session.post(url, data=data)
+        response_data = response.json()
+        if response.status_code == 200:
+            return response_data["_id"]
+        raise RegisterError(response_data)

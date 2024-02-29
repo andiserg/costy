@@ -1,30 +1,19 @@
 from unittest.mock import Mock
 
 import pytest
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.operation_gateway import OperationSaver
 from costy.application.common.uow import UoW
 from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.dto import NewOperationDTO
-from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
 
 
 @fixture
-def operation_info() -> NewOperationDTO:
-    return NewOperationDTO(
-        amount=100,
-        description="description",
-        time=10000,
-        category_id=CategoryId(999)
-    )
-
-
-@fixture
-def interactor(id_provider: IdProvider, operation_id: OperationId, user_id: UserId, operation_info: NewOperationDTO) -> CreateOperation:
+async def interactor(id_provider: IdProvider, operation_id: OperationId, user_id: UserId, operation_info: NewOperationDTO) -> CreateOperation:
     operation_service = Mock()
     operation_service.create.return_value = Operation(
         id=None,

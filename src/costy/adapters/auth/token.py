@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any, Literal
 
-from aiohttp import ClientSession
+from httpx import AsyncClient
 from jose import exceptions as jwt_exc
 from jose import jwt
 
@@ -73,7 +73,7 @@ class JwtTokenProcessor:
 
 
 class KeySetProvider:
-    def __init__(self, uri: str, session: ClientSession, expired: timedelta):
+    def __init__(self, uri: str, session: AsyncClient, expired: timedelta):
         self.session = session
         self.jwks: dict[str, str] = {}
         self.expired = expired
@@ -89,9 +89,9 @@ class KeySetProvider:
         return self.jwks
 
     async def _request_new_key_set(self) -> None:
-        async with self.session.get(self.uri) as response:
-            self.jwks = await response.json()
-            self.last_updated = datetime.now()
+        response = await self.session.get(self.uri)
+        self.jwks = response.json()
+        self.last_updated = datetime.now()
 
 
 class TokenIdProvider(IdProvider):
