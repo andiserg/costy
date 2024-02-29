@@ -1,4 +1,3 @@
-import pytest
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -7,14 +6,9 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from costy.infrastructure.config import SettingError
-
 
 def get_engine(url: str) -> AsyncEngine:
-    try:
-        return create_async_engine(url, future=True)
-    except SettingError:
-        pytest.skip("Auth settings env var are not exists.")
+    return create_async_engine(url, future=True)
 
 
 def get_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:

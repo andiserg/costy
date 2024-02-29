@@ -13,7 +13,7 @@ async def credentials() -> dict[str, str]:  # type: ignore
             "password": os.environ["TEST_AUTH_PASSWORD"]
         }
     except KeyError:
-        pytest.skip("No test user credentials.")
+        pytest.fail("No test user credentials.")
 
 
 @pytest.mark.asyncio

@@ -78,7 +78,7 @@ async def user_token(auth_adapter, credentials):  # type: ignore
         response = await auth_adapter.authenticate(credentials["username"], credentials["password"])
         if response:
             return response
-        pytest.skip("Failed to test user authenticate.")
+        pytest.fail("Failed to test user authenticate.")
     else:
         return user_token_state
 
@@ -88,7 +88,7 @@ async def auth_sub() -> str:  # type: ignore
     try:
         return os.environ["TEST_AUTH_USER_SUB"].replace("auth|0", "")
     except KeyError:
-        pytest.skip("No test user sub environment variable.")
+        pytest.fail("No test user sub environment variable.")
 
 
 @fixture
@@ -99,4 +99,4 @@ async def credentials() -> dict[str, str]:  # type: ignore
             "password": os.environ["TEST_AUTH_PASSWORD"]
         }
     except KeyError:
-        pytest.skip("No test user credentials.")
+        pytest.fail("No test user credentials.")
