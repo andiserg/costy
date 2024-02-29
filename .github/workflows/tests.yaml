@@ -23,7 +23,7 @@ jobs:
       AUTH0_AUTHORIZE_URL: ${{ vars.AUTH0_AUTHORIZE_URL }}
       AUTH0_CONNECTION: ${{ vars.AUTH0_CONNECTION }}
       AUTH0_ISSUER: ${{ vars.AUTH0_ISSUER }}
-      AUTH0_JWKS_URI }: ${{ vars.AUTH0_JWKS_URI }}
+      AUTH0_JWKS_URI: ${{ vars.AUTH0_JWKS_URI }}
       AUTH0_REGISTER_URL: ${{ vars.AUTH0_REGISTER_URL }}
       TEST_DB_URL : ${{ vars.TEST_DB_URL }}
 
