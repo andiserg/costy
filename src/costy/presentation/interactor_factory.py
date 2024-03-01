@@ -9,7 +9,6 @@ from costy.application.category.read_available_categories import (
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.read_list_operation import ReadListOperation
-from costy.application.operation.read_operation import ReadOperation
 from costy.application.user.create_user import CreateUser
 
 
@@ -26,12 +25,6 @@ class InteractorFactory(ABC):
     def create_operation(
         self, id_provider: IdProvider
     ) -> AsyncContextManager[CreateOperation]:
-        pass
-
-    @abstractmethod
-    def read_operation(
-        self, id_provider: IdProvider
-    ) -> AsyncContextManager[ReadOperation]:
         pass
 
     @abstractmethod

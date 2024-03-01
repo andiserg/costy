@@ -20,7 +20,6 @@ from costy.application.category.read_available_categories import (
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.read_list_operation import ReadListOperation
-from costy.application.operation.read_operation import ReadOperation
 from costy.application.user.create_user import CreateUser
 from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
@@ -87,19 +86,6 @@ class IoC(InteractorFactory):
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 id_provider, depends.uow
-            )
-
-    @asynccontextmanager
-    async def read_operation(
-            self, id_provider: IdProvider
-    ) -> AsyncIterator[ReadOperation]:
-        async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
-            yield ReadOperation(
-                OperationService(),
-                OperationGateway(depends.session, self._tables["operations"], self._retort),
-                id_provider,
-                depends.uow
             )
 
     @asynccontextmanager
