@@ -1,7 +1,7 @@
 import pytest
 from adaptix import P, loader, name_mapping
 from litestar.testing import AsyncTestClient
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 from costy.domain.models.operation import Operation
 
@@ -65,3 +65,45 @@ async def test_get_list_operations(
         result = await client.get("/operations", headers=headers)
 
         assert loader_retort.load(result.json(), list[Operation]) == operations
+
+
+@pytest.mark.asyncio
+async def test_delete_operation(
+    app,
+    user_token,
+    create_sub_user,
+    db_session,
+    db_tables,
+    db_category_id,
+    retort,
+    clean_up_db
+):
+    operation = Operation(
+        id=None,
+        amount=100,
+        description="test",
+        category_id=db_category_id,
+        time=1111,
+        user_id=create_sub_user
+    )
+    retort = retort.extend(
+        recipe=[
+            name_mapping(
+                Operation,
+                skip=['id'],
+            ),
+        ]
+    )
+    stmt = insert(db_tables["operations"]).values(retort.dump(operation))
+    operation_id = (await db_session.execute(stmt)).inserted_primary_key[0]
+    await db_session.commit()
+
+    async with AsyncTestClient(app) as client:
+        headers = {"Authorization": f"Bearer {user_token}"}
+
+        result = await client.delete(f"/operations/{operation_id}", headers=headers)
+
+        assert result.status_code == 204
+
+    stmt = select(db_tables["operations"]).where(db_tables["operations"].c.id == operation_id)
+    assert list(await db_session.execute(stmt)) == []

@@ -1,7 +1,7 @@
 import pytest
 from adaptix import P, loader, name_mapping
 from litestar.testing import AsyncTestClient
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 from costy.domain.models.category import Category, CategoryType
 
@@ -66,3 +66,42 @@ async def test_get_list_categoris(
         result = await client.get("/categories", headers=headers)
 
         assert loader_retort.load(result.json(), list[Category]) == categories
+
+
+@pytest.mark.asyncio
+async def test_delete_category(
+    app,
+    user_token,
+    create_sub_user,
+    db_session,
+    db_tables,
+    retort,
+    clean_up_db
+):
+    category = Category(
+        id=None,
+        name="test_category",
+        user_id=create_sub_user,
+        kind=CategoryType.PERSONAL.value
+    )
+    retort = retort.extend(
+        recipe=[
+            name_mapping(
+                Category,
+                skip=['id'],
+            ),
+        ]
+    )
+    stmt = insert(db_tables["categories"]).values(retort.dump(category))
+    created_category_id = (await db_session.execute(stmt)).inserted_primary_key[0]
+    await db_session.commit()
+
+    async with AsyncTestClient(app) as client:
+        headers = {"Authorization": f"Bearer {user_token}"}
+
+        result = await client.delete(f"/categories/{created_category_id}", headers=headers)
+
+        assert result.status_code == 204
+
+    stmt = select(db_tables["operations"]).where(db_tables["categories"].c.id == created_category_id)
+    assert list(await db_session.execute(stmt)) == []

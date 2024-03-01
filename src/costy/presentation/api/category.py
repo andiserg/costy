@@ -1,4 +1,4 @@
-from litestar import Controller, get, post
+from litestar import Controller, delete, get, post
 
 from costy.application.category.dto import NewCategoryDTO
 from costy.application.common.id_provider import IdProvider
@@ -29,3 +29,13 @@ class CategoryController(Controller):
     ) -> CategoryId:
         async with ioc.create_category(id_provider) as create_category:
             return await create_category(data)
+
+    @delete("{category_id:int}")
+    async def delete_category(
+        self,
+        category_id: int,
+        ioc: InteractorFactory,
+        id_provider: IdProvider,
+    ) -> None:
+        async with ioc.delete_category(id_provider) as delete_category:
+            await delete_category(CategoryId(category_id))
