@@ -68,20 +68,23 @@ async def test_get_list_categoris(
         assert loader_retort.load(result.json(), list[Category]) == categories
 
 
+@pytest.mark.parametrize("request_own", [True, False])  # [True, False] - test don't finish
 @pytest.mark.asyncio
 async def test_delete_category(
+    request_own: bool,
     app,
     user_token,
     create_sub_user,
     db_session,
     db_tables,
+    db_user_id,
     retort,
     clean_up_db
 ):
     category = Category(
         id=None,
         name="test_category",
-        user_id=create_sub_user,
+        user_id=create_sub_user if request_own else db_user_id,
         kind=CategoryType.PERSONAL.value
     )
     retort = retort.extend(
@@ -96,12 +99,15 @@ async def test_delete_category(
     created_category_id = (await db_session.execute(stmt)).inserted_primary_key[0]
     await db_session.commit()
 
+    expected_status_code = 204 if request_own else 403
     async with AsyncTestClient(app) as client:
         headers = {"Authorization": f"Bearer {user_token}"}
 
         result = await client.delete(f"/categories/{created_category_id}", headers=headers)
 
-        assert result.status_code == 204
+        assert result.status_code == expected_status_code
 
-    stmt = select(db_tables["operations"]).where(db_tables["categories"].c.id == created_category_id)
-    assert list(await db_session.execute(stmt)) == []
+    stmt = select(db_tables["categories"]).where(db_tables["categories"].c.id == created_category_id)
+    result = list(await db_session.execute(stmt))
+
+    assert result == [] if request_own else result != []

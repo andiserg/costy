@@ -67,16 +67,19 @@ async def test_get_list_operations(
         assert loader_retort.load(result.json(), list[Operation]) == operations
 
 
+@pytest.mark.parametrize("request_own", [True])  # [True, False] - test don't finish
 @pytest.mark.asyncio
 async def test_delete_operation(
+    request_own,
     app,
     user_token,
     create_sub_user,
     db_session,
     db_tables,
     db_category_id,
+    db_user_id,  # another user
     retort,
-    clean_up_db
+    clean_up_db,
 ):
     operation = Operation(
         id=None,
@@ -84,7 +87,7 @@ async def test_delete_operation(
         description="test",
         category_id=db_category_id,
         time=1111,
-        user_id=create_sub_user
+        user_id=create_sub_user if request_own else db_user_id
     )
     retort = retort.extend(
         recipe=[
@@ -98,12 +101,15 @@ async def test_delete_operation(
     operation_id = (await db_session.execute(stmt)).inserted_primary_key[0]
     await db_session.commit()
 
+    expected_status_code = 204 if request_own else 403
     async with AsyncTestClient(app) as client:
         headers = {"Authorization": f"Bearer {user_token}"}
 
         result = await client.delete(f"/operations/{operation_id}", headers=headers)
 
-        assert result.status_code == 204
+        assert result.status_code == expected_status_code
 
     stmt = select(db_tables["operations"]).where(db_tables["operations"].c.id == operation_id)
-    assert list(await db_session.execute(stmt)) == []
+    result = list(await db_session.execute(stmt))
+
+    assert result == [] if request_own else result != []

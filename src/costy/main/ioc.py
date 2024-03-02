@@ -23,6 +23,7 @@ from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.delete_operation import DeleteOperation
 from costy.application.operation.read_list_operation import ReadListOperation
 from costy.application.user.create_user import CreateUser
+from costy.domain.services.access import AccessService
 from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
 from costy.domain.services.user import UserService
@@ -110,6 +111,7 @@ class IoC(InteractorFactory):
         async with self._init_depends() as depends:
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield DeleteOperation(
+                AccessService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 id_provider,
                 depends.uow
@@ -135,6 +137,7 @@ class IoC(InteractorFactory):
         async with self._init_depends() as depends:
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield DeleteCategory(
+                AccessService(),
                 CategoryGateway(depends.session, self._tables["categories"], self._retort),
                 id_provider,
                 depends.uow
