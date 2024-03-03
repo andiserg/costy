@@ -13,7 +13,7 @@ from costy.domain.models.category import CategoryId
 from costy.domain.services.access import AccessService
 
 
-class CategoryGateway(Protocol, CategoryReader, CategoryDeleter):
+class CategoryGateway(CategoryReader, CategoryDeleter, Protocol):
     ...
 
 

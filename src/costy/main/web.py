@@ -5,10 +5,7 @@ from httpx import AsyncClient
 from litestar import Litestar
 from litestar.di import Provide
 
-from costy.domain.exceptions.access import (
-    AccessDeniedError,
-    AuthenticationError,
-)
+from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
     get_auth_settings,
@@ -22,10 +19,7 @@ from costy.infrastructure.db.main import (
 from costy.infrastructure.db.orm import create_tables
 from costy.main.ioc import IoC
 from costy.presentation.api.dependencies.id_provider import get_id_provider
-from costy.presentation.api.exception_handlers import (
-    access_denied_handler,
-    auth_error_handler,
-)
+from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.routers.authenticate import (
     AuthenticationController,
 )
@@ -80,9 +74,8 @@ def init_app(db_url: str | None = None) -> Litestar:
             "id_provider_pure": Provide(id_provider_factory)
         },
         on_shutdown=[finalization],
-        # debug=True,
+        debug=True,
         exception_handlers={
-            AuthenticationError: auth_error_handler,
-            AccessDeniedError: access_denied_handler
+            BaseError: base_error_handler
         }
     )

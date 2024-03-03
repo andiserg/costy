@@ -13,7 +13,7 @@ from costy.domain.models.operation import OperationId
 from costy.domain.services.access import AccessService
 
 
-class OperationGateway(Protocol, OperationReader, OperationDeleter):
+class OperationGateway(OperationReader, OperationDeleter, Protocol):
     ...
 
 
