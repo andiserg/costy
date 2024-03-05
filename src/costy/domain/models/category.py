@@ -12,7 +12,7 @@ class CategoryType(Enum):
     PERSONAL = "personal"
 
 
-@dataclass
+@dataclass(slots=True)
 class Category:
     id: CategoryId | None
     name: str

@@ -14,14 +14,16 @@ from costy.adapters.db.uow import OrmUoW
 from costy.adapters.db.user_gateway import UserGateway
 from costy.application.authenticate import Authenticate
 from costy.application.category.create_category import CreateCategory
+from costy.application.category.delete_category import DeleteCategory
 from costy.application.category.read_available_categories import (
     ReadAvailableCategories,
 )
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
+from costy.application.operation.delete_operation import DeleteOperation
 from costy.application.operation.read_list_operation import ReadListOperation
-from costy.application.operation.read_operation import ReadOperation
 from costy.application.user.create_user import CreateUser
+from costy.domain.services.access import AccessService
 from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
 from costy.domain.services.user import UserService
@@ -90,19 +92,6 @@ class IoC(InteractorFactory):
             )
 
     @asynccontextmanager
-    async def read_operation(
-            self, id_provider: IdProvider
-    ) -> AsyncIterator[ReadOperation]:
-        async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
-            yield ReadOperation(
-                OperationService(),
-                OperationGateway(depends.session, self._tables["operations"], self._retort),
-                id_provider,
-                depends.uow
-            )
-
-    @asynccontextmanager
     async def read_list_operation(
             self, id_provider: IdProvider
     ) -> AsyncIterator[ReadListOperation]:
@@ -116,6 +105,19 @@ class IoC(InteractorFactory):
             )
 
     @asynccontextmanager
+    async def delete_operation(
+            self, id_provider: IdProvider
+    ) -> AsyncIterator[DeleteOperation]:
+        async with self._init_depends() as depends:
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            yield DeleteOperation(
+                AccessService(),
+                OperationGateway(depends.session, self._tables["operations"], self._retort),
+                id_provider,
+                depends.uow
+            )
+
+    @asynccontextmanager
     async def create_category(
             self, id_provider: IdProvider
     ) -> AsyncIterator[CreateCategory]:
@@ -123,6 +125,19 @@ class IoC(InteractorFactory):
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield CreateCategory(
                 CategoryService(),
+                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                id_provider,
+                depends.uow
+            )
+
+    @asynccontextmanager
+    async def delete_category(
+            self, id_provider: IdProvider
+    ) -> AsyncIterator[DeleteCategory]:
+        async with self._init_depends() as depends:
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            yield DeleteCategory(
+                AccessService(),
                 CategoryGateway(depends.session, self._tables["categories"], self._retort),
                 id_provider,
                 depends.uow

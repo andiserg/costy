@@ -1,12 +1,27 @@
 import pytest
 
 from costy.domain.models.category import Category, CategoryType
+from costy.domain.models.user import UserId
+from tests.common.database import create_user
+
+
+def create_categories(user_id: UserId) -> tuple[Category, Category]:
+    return (
+        Category(id=None, name="general category"),
+        Category(
+            id=None,
+            name="user category",
+            user_id=user_id,
+            kind=CategoryType.PERSONAL.value
+        )
+    )
+
 
 
 @pytest.mark.asyncio
-async def test_save_category(category_gateway, db_session, db_tables, db_user_id):
-    general_category = Category(id=None, name="general category")
-    personal_category = Category(id=None, name="user category", user_id=db_user_id, kind=CategoryType.PERSONAL.value)
+async def test_save_category(category_gateway, db_session, db_tables):
+    user_id = await create_user(db_session, db_tables["users"])
+    general_category, personal_category = create_categories(user_id)
 
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
@@ -16,9 +31,9 @@ async def test_save_category(category_gateway, db_session, db_tables, db_user_id
 
 
 @pytest.mark.asyncio
-async def test_get_category(category_gateway, db_session, db_tables, db_user_id):
-    general_category = Category(id=None, name="general category")
-    personal_category = Category(id=None, name="user category", user_id=db_user_id, kind=CategoryType.PERSONAL.value)
+async def test_get_category(category_gateway, db_session, db_tables):
+    user_id = await create_user(db_session, db_tables["users"])
+    general_category, personal_category = create_categories(user_id)
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
 
@@ -30,9 +45,9 @@ async def test_get_category(category_gateway, db_session, db_tables, db_user_id)
 
 
 @pytest.mark.asyncio
-async def test_delete_category(category_gateway, db_session, db_tables, db_user_id):
-    general_category = Category(id=None, name="general category")
-    personal_category = Category(id=None, name="user category", user_id=db_user_id, kind=CategoryType.PERSONAL.value)
+async def test_delete_category(category_gateway, db_session, db_tables):
+    user_id = await create_user(db_session, db_tables["users"])
+    general_category, personal_category = create_categories(user_id)
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
 
@@ -44,17 +59,18 @@ async def test_delete_category(category_gateway, db_session, db_tables, db_user_
 
 
 @pytest.mark.asyncio
-async def test_find_categories(category_gateway, db_session, db_tables, db_user_id):
+async def test_find_categories(category_gateway, db_session, db_tables):
+    user_id = await create_user(db_session, db_tables["users"])
     created_categories = []
     for i in range(5):
         category = Category(
             id=None,
             name=f"category {i}",
-            user_id=db_user_id,
+            user_id=user_id,
         )
         await category_gateway.save_category(category)
         created_categories.append(category)
 
-    categories = await category_gateway.find_categories(db_user_id)
+    categories = await category_gateway.find_categories(user_id)
 
     assert categories == created_categories

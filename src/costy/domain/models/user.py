@@ -4,7 +4,7 @@ from typing import NewType
 UserId = NewType("UserId", int)
 
 
-@dataclass
+@dataclass(slots=True)
 class User:
     id: UserId | None
     auth_id: str | None

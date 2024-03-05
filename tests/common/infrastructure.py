@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import (
 
 from costy.infrastructure.db.main import get_metadata
 from costy.infrastructure.db.orm import create_tables
-from costy.main.web import init_app
+from tests.common.app import init_test_app
 
 
 @fixture(scope='session')
@@ -39,12 +39,18 @@ async def db_sessionmaker(db_engine: AsyncEngine) -> async_sessionmaker[AsyncSes
     return async_sessionmaker(db_engine)
 
 
-@fixture
+@fixture(scope='session')
 async def db_session(db_sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncIterator[AsyncSession]:
     session = db_sessionmaker()
     yield session
     # clean up database
     await session.rollback()
+
+
+@fixture(autouse=True)
+async def rollback_session(db_session):
+    yield
+    await db_session.rollback()
 
 
 @fixture(scope='session')
@@ -73,7 +79,7 @@ async def web_session() -> AsyncIterator[ClientSession]:
 
 @fixture
 async def app(db_url) -> Litestar:
-    return init_app(db_url)
+    return await init_test_app(db_url, mock_auth=True)
 
 
 @fixture
