@@ -18,3 +18,14 @@ class CategoryDTO:
     id: CategoryId | None
     name: str
     kind: CategoryType
+
+
+@dataclass
+class UpdateCategoryData:
+    name: str
+
+
+@dataclass
+class UpdateCategoryDTO:
+    category_id: CategoryId
+    data: UpdateCategoryData

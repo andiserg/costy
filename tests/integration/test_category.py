@@ -96,3 +96,45 @@ async def test_delete_category(
     result = list(await db_session.execute(stmt))
 
     assert result == []
+
+
+@pytest.mark.asyncio
+async def test_update_category(
+    app,
+    db_session,
+    db_tables,
+    auth_sub,
+    retort,
+    clean_up_db
+):
+    user_id = await create_user(db_session, db_tables["users"], auth_sub)
+
+    category = Category(
+        id=None,
+        name="test_category",
+        user_id=user_id,
+        kind=CategoryType.PERSONAL.value
+    )
+    retort = retort.extend(recipe=[name_mapping(Category, skip=['id'])])
+
+    dumped_category = retort.dump(category)
+    stmt = insert(db_tables["categories"]).values(dumped_category)
+    created_category_id = (await db_session.execute(stmt)).inserted_primary_key[0]
+    await db_session.commit()
+
+    update_data = {"name": "upd_test_category"}
+
+    async with AsyncTestClient(app) as client:
+        headers = {"Authorization": "Bearer aboba"}
+
+        result = await client.put(f"/categories/{created_category_id}", headers=headers, json=update_data)
+
+        assert result.status_code == 200
+
+    dumped_category["name"] = update_data["name"]
+    dumped_category["id"] = created_category_id
+
+    stmt = select(db_tables["categories"]).where(db_tables["categories"].c.id == created_category_id)
+    result = next((await db_session.execute(stmt)).mappings(), None)
+
+    assert result == dumped_category
