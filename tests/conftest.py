@@ -1,6 +1,6 @@
 pytest_plugins = [
-    "tests.fixtures.adapters",
-    "tests.fixtures.infrastructure",
-    "tests.fixtures.data",
-    "tests.fixtures.database",
+    "tests.common.adapters",
+    "tests.common.infrastructure",
+    "tests.common.data",
+    "tests.common.database",
 ]

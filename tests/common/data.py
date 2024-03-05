@@ -67,26 +67,10 @@ async def auth_id() -> str:
     return "auth_id"
 
 
-# global is used because tests cannot use a "session" fixed fixture in this case
-user_token_state = None
-
-
-@fixture
-async def user_token(auth_adapter, credentials):  # type: ignore
-    global user_token_state
-    if not user_token_state:
-        response = await auth_adapter.authenticate(credentials["username"], credentials["password"])
-        if response:
-            return response
-        pytest.fail("Failed to test user authenticate.")
-    else:
-        return user_token_state
-
-
 @fixture
 async def auth_sub() -> str:  # type: ignore
     try:
-        return os.environ["TEST_AUTH_USER_SUB"].replace("auth|0", "")
+        return os.environ["TEST_AUTH_USER_SUB"].replace("auth0|", "")
     except KeyError:
         pytest.fail("No test user sub environment variable.")
 
