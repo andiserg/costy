@@ -1,5 +1,5 @@
 from adaptix import Retort
-from sqlalchemy import Table, delete, insert, select
+from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.operation_gateway import (
@@ -48,3 +48,12 @@ class OperationGateway(OperationReader, OperationSaver, OperationDeleter, Operat
             query = query.where(self.table.c.time <= to_time)
         result = await self.session.execute(query)
         return self.retort.load(result.mappings(), list[Operation])
+
+    async def update_operation(self, operation_id: OperationId, operation: Operation) -> None:
+        values = self.retort.dump(operation)
+
+        if not values:
+            return
+
+        query = update(self.table).where(self.table.c.id == operation_id).values(**values)
+        await self.session.execute(query)

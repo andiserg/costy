@@ -1,7 +1,12 @@
-from litestar import Controller, delete, get, post
+from litestar import Controller, delete, get, post, put
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.operation.dto import ListOperationDTO, NewOperationDTO
+from costy.application.operation.dto import (
+    ListOperationDTO,
+    NewOperationDTO,
+    UpdateOperationData,
+    UpdateOperationDTO,
+)
 from costy.domain.models.operation import Operation, OperationId
 from costy.presentation.interactor_factory import InteractorFactory
 
@@ -40,3 +45,15 @@ class OperationController(Controller):
     ) -> None:
         async with ioc.delete_operation(id_provider) as delete_operation:
             await delete_operation(OperationId(operation_id))
+
+    @put("{operation_id:int}")
+    async def update_operation(
+        self,
+        operation_id: int,
+        ioc: InteractorFactory,
+        id_provider: IdProvider,
+        data: UpdateOperationData,
+    ) -> None:
+        async with ioc.update_operation(id_provider) as update_operation:
+            request_data = UpdateOperationDTO(OperationId(operation_id), data)
+            await update_operation(request_data)

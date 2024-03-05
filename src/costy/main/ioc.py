@@ -18,10 +18,12 @@ from costy.application.category.delete_category import DeleteCategory
 from costy.application.category.read_available_categories import (
     ReadAvailableCategories,
 )
+from costy.application.category.update_category import UpdateCategory
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
 from costy.application.operation.delete_operation import DeleteOperation
 from costy.application.operation.read_list_operation import ReadListOperation
+from costy.application.operation.update_operation import UpdateOperation
 from costy.application.user.create_user import CreateUser
 from costy.domain.services.access import AccessService
 from costy.domain.services.category import CategoryService
@@ -118,6 +120,20 @@ class IoC(InteractorFactory):
             )
 
     @asynccontextmanager
+    async def update_operation(
+            self, id_provider: IdProvider
+    ) -> AsyncIterator[UpdateOperation]:
+        async with self._init_depends() as depends:
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            yield UpdateOperation(
+                OperationService(),
+                AccessService(),
+                OperationGateway(depends.session, self._tables["operations"], self._retort),
+                id_provider,
+                depends.uow
+            )
+
+    @asynccontextmanager
     async def create_category(
             self, id_provider: IdProvider
     ) -> AsyncIterator[CreateCategory]:
@@ -137,6 +153,20 @@ class IoC(InteractorFactory):
         async with self._init_depends() as depends:
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield DeleteCategory(
+                AccessService(),
+                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                id_provider,
+                depends.uow
+            )
+
+    @asynccontextmanager
+    async def update_category(
+            self, id_provider: IdProvider
+    ) -> AsyncIterator[UpdateCategory]:
+        async with self._init_depends() as depends:
+            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            yield UpdateCategory(
+                CategoryService(),
                 AccessService(),
                 CategoryGateway(depends.session, self._tables["categories"], self._retort),
                 id_provider,

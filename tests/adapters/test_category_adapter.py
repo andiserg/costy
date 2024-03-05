@@ -17,7 +17,6 @@ def create_categories(user_id: UserId) -> tuple[Category, Category]:
     )
 
 
-
 @pytest.mark.asyncio
 async def test_save_category(category_gateway, db_session, db_tables):
     user_id = await create_user(db_session, db_tables["users"])
@@ -74,3 +73,21 @@ async def test_find_categories(category_gateway, db_session, db_tables):
     categories = await category_gateway.find_categories(user_id)
 
     assert categories == created_categories
+
+
+@pytest.mark.asyncio
+async def test_update_category(category_gateway, db_session, db_tables):
+    user_id = await create_user(db_session, db_tables["users"])
+    category = Category(id=None, name="test", user_id=user_id, kind=CategoryType.PERSONAL.value)
+    await category_gateway.save_category(category)
+
+    updated_category = Category(
+        category.id,
+        name="upd_test",
+        user_id=user_id,
+        kind=CategoryType.PERSONAL.value
+    )
+
+    await category_gateway.update_category(category.id, updated_category)
+
+    assert await category_gateway.get_category(category.id) == updated_category

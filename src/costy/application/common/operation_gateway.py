@@ -35,3 +35,10 @@ class OperationDeleter(Protocol):
     @abstractmethod
     async def delete_operation(self, operation_id: OperationId) -> None:
         raise NotImplementedError
+
+
+@runtime_checkable
+class OperationUpdater(Protocol):
+    @abstractmethod
+    async def update_operation(self, operation_id: OperationId, operation: Operation) -> None:
+        raise NotImplementedError

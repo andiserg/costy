@@ -79,3 +79,23 @@ async def test_find_operations_by_user(operation_gateway, db_session, db_tables)
     operations = await operation_gateway.find_operations_by_user(user_id)
 
     assert operations == created_operations
+
+
+@pytest.mark.asyncio
+async def test_update_operation(operation_gateway, db_session, db_tables):
+    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    operation = create_operation(user_id, category_id)
+    await operation_gateway.save_operation(operation)
+
+    updated_operation = Operation(
+        id=operation.id,
+        amount=200,
+        description="test data",
+        category_id=category_id,
+        time=2222,
+        user_id=user_id
+    )
+
+    await operation_gateway.update_operation(operation.id, updated_operation)
+
+    assert await operation_gateway.get_operation(operation.id) == updated_operation

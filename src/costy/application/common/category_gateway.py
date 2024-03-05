@@ -31,3 +31,10 @@ class CategoryDeleter(Protocol):
     @abstractmethod
     async def delete_category(self, category_id: CategoryId) -> None:
         raise NotImplementedError
+
+
+@runtime_checkable
+class CategoryUpdater(Protocol):
+    @abstractmethod
+    async def update_category(self, category_id: CategoryId, category: Category) -> None:
+        raise NotImplementedError
