@@ -43,8 +43,6 @@ async def db_sessionmaker(db_engine: AsyncEngine) -> async_sessionmaker[AsyncSes
 async def db_session(db_sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncIterator[AsyncSession]:
     session = db_sessionmaker()
     yield session
-    # clean up database
-    await session.rollback()
 
 
 @fixture(autouse=True)
@@ -77,7 +75,7 @@ async def web_session() -> AsyncIterator[ClientSession]:
         yield client
 
 
-@fixture
+@fixture(scope='session')
 async def app(db_url) -> Litestar:
     return await init_test_app(db_url, mock_auth=True)
 

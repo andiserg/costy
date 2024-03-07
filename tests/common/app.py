@@ -76,9 +76,6 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
             web_session
         )
 
-    async def finalization():
-        await web_session.aclose()
-
     return Litestar(
         route_handlers=(
             AuthenticationController,
@@ -91,9 +88,8 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
             "id_provider": Provide(get_id_provider),
             "id_provider_pure": Provide(id_provider_factory)
         },
-        on_shutdown=[finalization],
         debug=True,
         exception_handlers={
             BaseError: base_error_handler
-        }
+        },
     )

@@ -24,3 +24,13 @@ def base_error_handler(request: Request, error: BaseError) -> Response:
             },
             status_code=detail[1]
         )
+
+
+def access_denied_error_handler(request: Request, error: AccessDeniedError) -> Response:
+    return Response(
+        content={
+            "error": "aaaaaa",
+            "args": error.args
+        },
+        status_code=401
+    )

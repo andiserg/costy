@@ -67,7 +67,7 @@ async def auth_id() -> str:
     return "auth_id"
 
 
-@fixture
+@fixture(scope="session")
 async def auth_sub() -> str:  # type: ignore
     try:
         return os.environ["TEST_AUTH_USER_SUB"].replace("auth0|", "")
