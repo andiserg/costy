@@ -22,11 +22,10 @@ async def create_depends(
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip
 async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_db):
     _, category_id = await create_depends(db_session, db_tables, auth_sub)
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(app=app) as client:
         headers = {"Authorization": "Bearer aboba"}
         data = {
             "amount": 100,
@@ -39,7 +38,6 @@ async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_d
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip
 async def test_get_list_operations(
     app,
     db_session,
@@ -76,7 +74,7 @@ async def test_get_list_operations(
         assert loader_retort.load(result.json(), list[Operation]) == operations
 
 
-async def create_operation(user_id, category_id, session, table, retort):
+async def create_operation(user_id, category_id, session: AsyncSession, table, retort):
     operation = Operation(
         id=None,
         amount=100,
@@ -100,7 +98,6 @@ async def create_operation(user_id, category_id, session, table, retort):
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip
 async def test_delete_operation_own(
     app,
     db_session,
@@ -110,16 +107,16 @@ async def test_delete_operation_own(
     clean_up_db,
 ):
     user_id, category_id = await create_depends(db_session, db_tables, auth_sub)
-    operation_id = await create_operation(user_id, category_id, db_session, db_tables["operations"], retort)
+    created_operation_id = await create_operation(user_id, category_id, db_session, db_tables["operations"], retort)
 
     async with AsyncTestClient(app) as client:
         headers = {"Authorization": "Bearer aboba"}
 
-        result = await client.delete(f"/operations/{operation_id}", headers=headers)
+        result = await client.delete(f"/operations/{created_operation_id}", headers=headers)
 
         assert result.status_code == 204
 
-    stmt = select(db_tables["operations"]).where(db_tables["operations"].c.id == operation_id)
+    stmt = select(db_tables["operations"]).where(db_tables["operations"].c.id == created_operation_id)
     result = list(await db_session.execute(stmt))
 
     assert result == []
@@ -152,8 +149,8 @@ async def test_delete_operation_someone(
     assert result != []
 
 
-@pytest.mark.asyncio
 @pytest.mark.skip
+@pytest.mark.asyncio
 async def test_delete_operation_not_exists(
     app,
     db_session,
@@ -169,6 +166,7 @@ async def test_delete_operation_not_exists(
         headers = {"Authorization": "Bearer aboba"}
 
         result = await client.delete("/operations/9999", headers=headers)
+
 
         assert result.status_code == 400
 
