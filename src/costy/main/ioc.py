@@ -10,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from costy.adapters.auth.auth_gateway import AuthGateway
 from costy.adapters.db.category_gateway import CategoryGateway
 from costy.adapters.db.operation_gateway import OperationGateway
-from costy.adapters.db.uow import OrmUoW
 from costy.adapters.db.user_gateway import UserGateway
 from costy.application.authenticate import Authenticate
 from costy.application.category.create_category import CreateCategory
@@ -37,7 +36,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 class Depends:
     session: AsyncSession
     web_session: AsyncClient
-    uow: OrmUoW
+    uow: AsyncSession
     user_gateway: UserGateway
 
 
@@ -60,7 +59,7 @@ class IoC(InteractorFactory):
     async def _init_depends(self) -> AsyncIterator[Depends]:
         session = self._session_factory()
         user_gateway = UserGateway(session, self._tables["users"], self._retort)
-        yield Depends(session, self._web_session, OrmUoW(session), user_gateway)
+        yield Depends(session, self._web_session, session, user_gateway)
         await session.close()
 
     @asynccontextmanager
