@@ -49,4 +49,9 @@ jobs:
         pip install -e .[ci-tests]
     - name: Test with pytest
       run: |
-        pytest tests
+        pytest tests --cov
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: AndrewSergienko/costy
