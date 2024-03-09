@@ -1,8 +1,7 @@
 from typing import List, Optional
 
-from costy.domain.services.category import CategoryService
-
 from ...domain.models.category import Category
+from ...domain.services.category import CategoryService
 from ..common.category_gateway import CategoriesReader
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor

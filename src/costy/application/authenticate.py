@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from costy.application.common.auth_gateway import AuthLoger
-from costy.application.common.interactor import Interactor
-from costy.application.common.uow import UoW
+from .common.auth_gateway import AuthLoger
+from .common.interactor import Interactor
+from .common.uow import UoW
 
 
 @dataclass

@@ -1,6 +1,5 @@
-from costy.domain.models.user import UserId
-from costy.domain.services.user import UserService
-
+from ...domain.models.user import UserId
+from ...domain.services.user import UserService
 from ..common.auth_gateway import AuthRegister
 from ..common.interactor import Interactor
 from ..common.uow import UoW

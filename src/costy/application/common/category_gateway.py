@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
-from costy.domain.models.category import Category, CategoryId
-from costy.domain.models.user import UserId
+from ...domain.models.category import Category, CategoryId
+from ...domain.models.user import UserId
 
 
 @runtime_checkable

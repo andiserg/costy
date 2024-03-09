@@ -1,17 +1,14 @@
 from typing import Protocol
 
-from costy.application.common.id_provider import IdProvider
-from costy.application.common.interactor import Interactor
-from costy.application.common.operation_gateway import (
-    OperationReader,
-    OperationUpdater,
-)
-from costy.application.common.uow import UoW
-from costy.application.operation.dto import UpdateOperationDTO
-from costy.domain.exceptions.access import AccessDeniedError
-from costy.domain.exceptions.base import InvalidRequestError
-from costy.domain.services.access import AccessService
-from costy.domain.services.operation import OperationService
+from ...domain.exceptions.access import AccessDeniedError
+from ...domain.exceptions.base import InvalidRequestError
+from ...domain.services.access import AccessService
+from ...domain.services.operation import OperationService
+from ..common.id_provider import IdProvider
+from ..common.interactor import Interactor
+from ..common.operation_gateway import OperationReader, OperationUpdater
+from ..common.uow import UoW
+from ..operation.dto import UpdateOperationDTO
 
 
 class OperationGateway(OperationReader, OperationUpdater, Protocol):
