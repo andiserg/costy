@@ -1,8 +1,7 @@
 from typing import List
 
-from costy.domain.models.operation import Operation
-from costy.domain.services.operation import OperationService
-
+from ...domain.models.operation import Operation
+from ...domain.services.operation import OperationService
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationsReader

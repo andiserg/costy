@@ -1,10 +1,10 @@
-from costy.application.common.id_provider import IdProvider
-from costy.application.common.interactor import Interactor
-from costy.application.common.operation_gateway import OperationSaver
-from costy.application.common.uow import UoW
-from costy.application.operation.dto import NewOperationDTO
-from costy.domain.models.operation import OperationId
-from costy.domain.services.operation import OperationService
+from ...domain.models.operation import OperationId
+from ...domain.services.operation import OperationService
+from ..common.id_provider import IdProvider
+from ..common.interactor import Interactor
+from ..common.operation_gateway import OperationSaver
+from ..common.uow import UoW
+from ..operation.dto import NewOperationDTO
 
 
 class CreateOperation(Interactor[NewOperationDTO, OperationId]):

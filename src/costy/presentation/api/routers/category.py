@@ -25,7 +25,7 @@ class CategoryController(Controller):
             return await read_available_categories()
 
     @post()
-    async def create_operation(
+    async def create_category(
         self,
         ioc: InteractorFactory,
         id_provider: IdProvider,

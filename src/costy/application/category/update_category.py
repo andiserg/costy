@@ -1,17 +1,14 @@
 from typing import Protocol
 
-from costy.application.category.dto import UpdateCategoryDTO
-from costy.application.common.category_gateway import (
-    CategoryReader,
-    CategoryUpdater,
-)
-from costy.application.common.id_provider import IdProvider
-from costy.application.common.interactor import Interactor
-from costy.application.common.uow import UoW
-from costy.domain.exceptions.access import AccessDeniedError
-from costy.domain.exceptions.base import InvalidRequestError
-from costy.domain.services.access import AccessService
-from costy.domain.services.category import CategoryService
+from ...domain.exceptions.access import AccessDeniedError
+from ...domain.exceptions.base import InvalidRequestError
+from ...domain.services.access import AccessService
+from ...domain.services.category import CategoryService
+from ..category.dto import UpdateCategoryDTO
+from ..common.category_gateway import CategoryReader, CategoryUpdater
+from ..common.id_provider import IdProvider
+from ..common.interactor import Interactor
+from ..common.uow import UoW
 
 
 class CategoryGateway(CategoryReader, CategoryUpdater, Protocol):
