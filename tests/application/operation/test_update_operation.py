@@ -3,11 +3,11 @@ from unittest.mock import Mock
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.common.uow import UoW
-from costy.application.operation.dto import (
+from costy.application.common.operation.dto import (
     UpdateOperationData,
     UpdateOperationDTO,
 )
+from costy.application.common.uow import UoW
 from costy.application.operation.update_operation import (
     OperationGateway,
     UpdateOperation,
@@ -30,12 +30,12 @@ async def interactor(
 ) -> UpdateOperation:
     operation_gateway = Mock(spec=OperationGateway)
     operation_gateway.get_operation.return_value = Operation(
-        operation_id,
-        1000,
-        "desc",
-        1111,
-        user_id,
-        category_id
+        id=operation_id,
+        amount=1000,
+        description="desc",
+        time=1111,
+        user_id=user_id,
+        category_id=category_id
     )
     uow = Mock(spec=UoW)
     return UpdateOperation(OperationService(), AccessService(), operation_gateway, id_provider, uow)

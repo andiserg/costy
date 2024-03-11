@@ -5,9 +5,9 @@ from pytest_asyncio import fixture
 
 from costy.application.common.auth_gateway import AuthRegister
 from costy.application.common.uow import UoW
-from costy.application.common.user_gateway import UserSaver
+from costy.application.common.user.dto import NewUserDTO
+from costy.application.common.user.user_gateway import UserSaver
 from costy.application.user.create_user import CreateUser
-from costy.application.user.dto import NewUserDTO
 from costy.domain.models.user import User, UserId
 from costy.domain.services.user import UserService
 

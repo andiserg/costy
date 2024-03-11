@@ -2,7 +2,7 @@ from adaptix import Retort
 from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.operation_gateway import (
+from costy.application.common.operation.operation_gateway import (
     OperationDeleter,
     OperationReader,
     OperationSaver,

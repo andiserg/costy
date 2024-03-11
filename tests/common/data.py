@@ -4,9 +4,9 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.application.authenticate import LoginInputDTO
-from costy.application.category.dto import NewCategoryDTO
-from costy.application.operation.dto import NewOperationDTO
-from costy.application.user.dto import NewUserDTO
+from costy.application.common.category.dto import NewCategoryDTO
+from costy.application.common.operation.dto import NewOperationDTO
+from costy.application.common.user.dto import NewUserDTO
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import User, UserId

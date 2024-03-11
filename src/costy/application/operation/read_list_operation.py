@@ -1,12 +1,15 @@
 from typing import List
 
+from costy.application.common.operation.dto import ListOperationDTO
+from costy.application.common.operation.operation_gateway import (
+    OperationsReader,
+)
+
 from ...domain.models.operation import Operation
 from ...domain.services.operation import OperationService
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.operation_gateway import OperationsReader
 from ..common.uow import UoW
-from .dto import ListOperationDTO
 
 
 class ReadListOperation(Interactor[ListOperationDTO, List[Operation]]):

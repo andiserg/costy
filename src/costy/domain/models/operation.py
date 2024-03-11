@@ -7,11 +7,12 @@ from costy.domain.models.user import UserId
 OperationId = NewType("OperationId", int)
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, kw_only=True)
 class Operation:
-    id: OperationId | None
+    id: OperationId | None = None
     amount: int
-    description: str | None
+    description: str | None = None
     time: int
     user_id: UserId
-    category_id: CategoryId
+    category_id: CategoryId | None = None
+    bank_name: str | None = None

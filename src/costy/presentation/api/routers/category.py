@@ -1,6 +1,6 @@
 from litestar import Controller, delete, get, post, put
 
-from costy.application.category.dto import (
+from costy.application.common.category.dto import (
     NewCategoryDTO,
     UpdateCategoryData,
     UpdateCategoryDTO,

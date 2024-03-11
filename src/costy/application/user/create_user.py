@@ -1,10 +1,11 @@
+from costy.application.common.user.dto import NewUserDTO
+from costy.application.common.user.user_gateway import UserSaver
+
 from ...domain.models.user import UserId
 from ...domain.services.user import UserService
 from ..common.auth_gateway import AuthRegister
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-from ..common.user_gateway import UserSaver
-from .dto import NewUserDTO
 
 
 class CreateUser(Interactor[NewUserDTO, UserId]):

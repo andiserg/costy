@@ -3,9 +3,11 @@ from unittest.mock import Mock
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.common.operation_gateway import OperationsReader
+from costy.application.common.operation.dto import ListOperationDTO
+from costy.application.common.operation.operation_gateway import (
+    OperationsReader,
+)
 from costy.application.common.uow import UoW
-from costy.application.operation.dto import ListOperationDTO
 from costy.application.operation.read_list_operation import ReadListOperation
 
 

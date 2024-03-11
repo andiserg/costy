@@ -4,10 +4,10 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.common.operation_gateway import OperationSaver
+from costy.application.common.operation.dto import NewOperationDTO
+from costy.application.common.operation.operation_gateway import OperationSaver
 from costy.application.common.uow import UoW
 from costy.application.operation.create_operation import CreateOperation
-from costy.application.operation.dto import NewOperationDTO
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
 

@@ -1,12 +1,12 @@
+from costy.application.common.category.category_gateway import CategorySaver
+from costy.application.common.category.dto import NewCategoryDTO
 from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
 
 from ...domain.exceptions.access import AuthenticationError
-from ..common.category_gateway import CategorySaver
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-from .dto import NewCategoryDTO
 
 
 class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):

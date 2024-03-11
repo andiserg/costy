@@ -1,16 +1,14 @@
 from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
-from ...domain.models.operation import Operation, OperationId
-from ...domain.models.user import UserId
+from costy.domain.models.operation import Operation, OperationId
+from costy.domain.models.user import UserId
 
 
 @runtime_checkable
 class OperationReader(Protocol):
     @abstractmethod
-    async def get_operation(
-            self, operation_id: OperationId
-    ) -> Operation | None:
+    async def get_operation(self, operation_id: OperationId) -> Operation | None:
         raise NotImplementedError
 
 
@@ -18,6 +16,13 @@ class OperationReader(Protocol):
 class OperationSaver(Protocol):
     @abstractmethod
     async def save_operation(self, operation: Operation) -> None:
+        raise NotImplementedError
+
+
+@runtime_checkable
+class OperationsBulkSaver(Protocol):
+    @abstractmethod
+    async def save_operations(self, operations: list[Operation]) -> None:
         raise NotImplementedError
 
 

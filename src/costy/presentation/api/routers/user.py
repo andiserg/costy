@@ -1,6 +1,6 @@
 from litestar import Controller, post
 
-from costy.application.user.dto import NewUserDTO
+from costy.application.common.user.dto import NewUserDTO
 from costy.domain.models.user import UserId
 from costy.presentation.interactor_factory import InteractorFactory
 
