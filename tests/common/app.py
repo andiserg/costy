@@ -13,6 +13,7 @@ from costy.domain.models.user import UserId
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
     get_auth_settings,
+    get_banks_conf,
     get_db_connection_url,
 )
 from costy.infrastructure.db.main import (
@@ -48,9 +49,11 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
     session_factory = get_sessionmaker(get_engine(db_url))
     web_session = AsyncClient()
 
+    banks_conf = get_banks_conf()
+
     retort = Retort()
     auth_settings = get_auth_settings()
-    ioc = IoC(session_factory, web_session, tables, retort, auth_settings)
+    ioc = IoC(session_factory, web_session, tables, retort, auth_settings, banks_conf)
 
     if mock_auth:
         sub = os.environ.get("TEST_AUTH_USER_SUB")

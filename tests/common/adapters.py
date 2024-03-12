@@ -6,7 +6,7 @@ from pytest_asyncio import fixture
 
 from costy.adapters.auth.auth_gateway import AuthGateway
 from costy.adapters.bankapi.bank_gateway import BankGateway
-from costy.adapters.bankapi.bankapi import BankApiGateway
+from costy.adapters.bankapi.bankapi import BankAPIGateway
 from costy.adapters.bankapi.monobank import MonobankGateway
 from costy.adapters.db.category_gateway import CategoryGateway
 from costy.adapters.db.operation_gateway import OperationGateway
@@ -80,4 +80,4 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), 'r') as f:
         banks_info = json.load(f)
 
-    return BankApiGateway(db_session, web_session, db_tables["bankapis"], retort, gateway_map, banks_info)
+    return BankAPIGateway(db_session, web_session, db_tables["bankapis"], retort, gateway_map, banks_info)

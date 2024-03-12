@@ -11,5 +11,5 @@ class BankAPI:
     id: BankApiId | None = None
     name: str
     access_data: dict
-    updated_at: int | None
+    updated_at: int | None = None
     user_id: UserId

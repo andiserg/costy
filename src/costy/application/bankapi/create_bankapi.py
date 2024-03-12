@@ -35,7 +35,7 @@ class CreateBankAPI(Interactor[CreateBankApiDTO, None]):
 
         access_data_template = await self.bankapi_gateway.get_bank_access_data_template(data.name)
         if tuple(data.access_data) != access_data_template:
-            raise InvalidRequestError("Invalid bank access data")
+            raise InvalidRequestError("Invalid bank access data.")
 
         bankapi = self.bankapi_service.create(
             data.name,

@@ -9,6 +9,7 @@ from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
     get_auth_settings,
+    get_banks_conf,
     get_db_connection_url,
 )
 from costy.infrastructure.db.main import (
@@ -23,6 +24,7 @@ from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.routers.authenticate import (
     AuthenticationController,
 )
+from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
 from costy.presentation.api.routers.user import UserController
@@ -44,8 +46,10 @@ def init_app() -> Litestar:
     session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
     web_session = AsyncClient()
 
+    banks_conf = get_banks_conf()
+
     auth_settings = get_auth_settings()
-    ioc = IoC(session_factory, web_session, tables, Retort(), auth_settings)
+    ioc = IoC(session_factory, web_session, tables, Retort(), auth_settings, banks_conf)
 
     id_provider_factory = create_id_provider_factory(
         auth_settings.audience,
@@ -64,6 +68,7 @@ def init_app() -> Litestar:
             UserController,
             OperationController,
             CategoryController,
+            BankAPIController
         ),
         dependencies={
             "ioc": Provide(singleton(ioc)),

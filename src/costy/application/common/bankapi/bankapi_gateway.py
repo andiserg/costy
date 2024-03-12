@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
 from costy.application.common.bankapi.dto import BankOperationDTO
-from costy.domain.models.bankapi import BankAPI
+from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.user import UserId
 
 
@@ -23,12 +23,19 @@ class BankAPIOperationsReader(Protocol):
 @runtime_checkable
 class BankAPIDeleter(Protocol):
     @abstractmethod
-    async def delete_bankapi(self, bankapi_id: BankAPI) -> None:
+    async def delete_bankapi(self, bankapi_id: BankApiId) -> None:
         raise NotImplementedError
 
 
 @runtime_checkable
 class BankAPIReader(Protocol):
+    @abstractmethod
+    async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
+        raise NotImplementedError
+
+
+@runtime_checkable
+class BanksAPIReader(Protocol):
     @abstractmethod
     async def get_bankapi_list(self, user_id: UserId) -> list[BankAPI]:
         raise NotImplementedError

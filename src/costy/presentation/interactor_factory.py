@@ -2,6 +2,12 @@ from abc import ABC, abstractmethod
 from typing import AsyncContextManager
 
 from costy.application.authenticate import Authenticate
+from costy.application.bankapi.create_bankapi import CreateBankAPI
+from costy.application.bankapi.delete_bankapi import DeleteBankAPI
+from costy.application.bankapi.read_bankapi_list import ReadBankapiList
+from costy.application.bankapi.update_bank_operations import (
+    UpdateBankOperations,
+)
 from costy.application.category.create_category import CreateCategory
 from costy.application.category.delete_category import DeleteCategory
 from costy.application.category.read_available_categories import (
@@ -71,4 +77,28 @@ class InteractorFactory(ABC):
     def read_available_categories(
         self, id_provider: IdProvider
     ) -> AsyncContextManager[ReadAvailableCategories]:
+        pass
+
+    @abstractmethod
+    def create_bankapi(
+        self, id_provider: IdProvider
+    ) -> AsyncContextManager[CreateBankAPI]:
+        pass
+
+    @abstractmethod
+    def delete_bankapi(
+        self, id_provider: IdProvider
+    ) -> AsyncContextManager[DeleteBankAPI]:
+        pass
+
+    @abstractmethod
+    def read_bankapi_list(
+        self, id_provider: IdProvider
+    ) -> AsyncContextManager[ReadBankapiList]:
+        pass
+
+    @abstractmethod
+    def update_bank_operations(
+        self, id_provider: IdProvider
+    ) -> AsyncContextManager[UpdateBankOperations]:
         pass

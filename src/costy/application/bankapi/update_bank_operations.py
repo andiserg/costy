@@ -7,7 +7,7 @@ from ...domain.services.operation import OperationService
 from ..common.bankapi.bankapi_gateway import (
     BankAPIBulkUpdater,
     BankAPIOperationsReader,
-    BankAPIReader,
+    BanksAPIReader,
 )
 from ..common.category.category_gateway import CategoryFinder
 from ..common.id_provider import IdProvider
@@ -16,7 +16,7 @@ from ..common.operation.operation_gateway import OperationsBulkSaver
 from ..common.uow import UoW
 
 
-class BankAPIGateway(BankAPIBulkUpdater, BankAPIReader, BankAPIOperationsReader, Protocol):
+class BankAPIGateway(BankAPIBulkUpdater, BanksAPIReader, BankAPIOperationsReader, Protocol):
     pass
 
 

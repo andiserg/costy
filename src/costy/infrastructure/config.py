@@ -1,5 +1,8 @@
+import json
 import os
 from dataclasses import dataclass
+from importlib import resources
+from typing import Any
 
 
 class SettingError(Exception):
@@ -50,3 +53,9 @@ def _get_env_var(name: str) -> str:
         return os.environ[name]
     except KeyError:
         raise SettingError(f'Environment variable "{name}" not exists')
+
+
+def get_banks_conf() -> dict[str, Any]:
+    with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
+        confs = json.load(f)
+    return confs

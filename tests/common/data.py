@@ -7,6 +7,7 @@ from costy.application.authenticate import LoginInputDTO
 from costy.application.common.category.dto import NewCategoryDTO
 from costy.application.common.operation.dto import NewOperationDTO
 from costy.application.common.user.dto import NewUserDTO
+from costy.domain.models.bankapi import BankApiId
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import User, UserId
@@ -25,6 +26,11 @@ async def operation_id() -> OperationId:
 @fixture
 async def category_id() -> CategoryId:
     return CategoryId(999)
+
+
+@fixture
+async def bankapi_id() -> BankApiId:
+    return BankApiId(888)
 
 
 @fixture

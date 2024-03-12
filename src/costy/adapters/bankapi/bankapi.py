@@ -12,18 +12,20 @@ from costy.application.common.bankapi.bankapi_gateway import (
     BankAPIOperationsReader,
     BankAPIReader,
     BankAPISaver,
+    BanksAPIReader,
 )
 from costy.application.common.bankapi.dto import BankOperationDTO
 from costy.domain.exceptions.base import InvalidRequestError
-from costy.domain.models.bankapi import BankAPI
+from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.user import UserId
 
 
-class BankApiGateway(
+class BankAPIGateway(
     BankAPISaver,
     BankAPIDeleter,
     BankAPIBanksReader,
     BankAPIReader,
+    BanksAPIReader,
     BankAPIBulkUpdater,
     BankAPIOperationsReader
 ):
@@ -43,6 +45,11 @@ class BankApiGateway(
         self._bank_gateways = bank_gateways
         self._banks_info = banks_info
 
+    async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
+        stmt = select(self._table).where(self._table.c.id == bankapi_id)
+        result = (await self._db_session.execute(stmt)).mappings()
+        return self._retort.load(result, BankAPI)
+
     async def save_bankapi(self, bankapi: BankAPI) -> None:
         retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=['id'])])
         values = retort.dump(bankapi)
@@ -50,7 +57,7 @@ class BankApiGateway(
         result = await self._db_session.execute(query)
         bankapi.id = result.inserted_primary_key[0]
 
-    async def delete_bankapi(self, bankapi_id: BankAPI) -> None:
+    async def delete_bankapi(self, bankapi_id: BankApiId) -> None:
         query = delete(self._table).where(self._table.c.id == bankapi_id)
         await self._db_session.execute(query)
 
@@ -69,8 +76,13 @@ class BankApiGateway(
         return self._retort.load(result, list[BankAPI])
 
     async def update_bankapis(self, bankapis: list[BankAPI]) -> None:
-        values = self._retort.dump(bankapis, list[BankAPI])
-        await self._db_session.execute(update(self._table), values)
+        stmts = (
+            update(self._table)
+            .where(self._table.c.id == bankapi.id)
+            .values(updated_at=bankapi.updated_at) for bankapi in bankapis
+        )
+        for stmt in stmts:
+            await self._db_session.execute(stmt)
 
     async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
         bank_gateway = self._bank_gateways[bankapi.name]

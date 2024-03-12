@@ -57,7 +57,6 @@ async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio
-@pytest.mark.skip
 async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
     service = BankAPIService()
 
