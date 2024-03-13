@@ -41,7 +41,6 @@ class MonobankGateway(BankGateway):
             url = f"{self._bank_conf['url']}/{from_time}/{to_time}"
             response = await self._web_session.get(url, headers=access_data)
             operations = response.json()
-            print(operations)
             total_operations.extend(operations)
             # The maximum operation limit in response is 500 items
             from_time = operations[-1]["time"] if len(operations) == 500 else None
