@@ -34,7 +34,7 @@ class BankAPIController(Controller):
         ioc: InteractorFactory,
         id_provider: IdProvider,
         bankapi_id: int,
-    ):
+    ) -> None:
         async with ioc.delete_bankapi(id_provider) as delete_bankapi:
             return await delete_bankapi(BankApiId(bankapi_id))
 
@@ -43,6 +43,6 @@ class BankAPIController(Controller):
         self,
         ioc: InteractorFactory,
         id_provider: IdProvider
-    ):
+    ) -> None:
         async with ioc.update_bank_operations(id_provider) as update_bank_operations:
             return await update_bank_operations()

@@ -81,3 +81,15 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
         banks_info = json.load(f)
 
     return BankAPIGateway(db_session, web_session, db_tables["bankapis"], retort, gateway_map, banks_info)
+
+
+@fixture(scope="session")
+async def mock_monobank_gateway(bank_operations):
+    class MockMonobankGateway:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def fetch_operations(self, *args, **kwargs):
+            return bank_operations
+
+    return {"monobank", MockMonobankGateway()}

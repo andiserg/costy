@@ -1,9 +1,11 @@
 import os
+from random import choice, randint
 
 import pytest
 from pytest_asyncio import fixture
 
 from costy.application.authenticate import LoginInputDTO
+from costy.application.common.bankapi.dto import BankOperationDTO
 from costy.application.common.category.dto import NewCategoryDTO
 from costy.application.common.operation.dto import NewOperationDTO
 from costy.application.common.user.dto import NewUserDTO
@@ -13,7 +15,7 @@ from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import User, UserId
 
 
-@fixture
+@fixture(scope="session")
 async def user_id() -> UserId:
     return UserId(999)
 
@@ -136,4 +138,24 @@ async def category_list(user_id):
         Category(id=0, name="test", user_id=user_id),
         Category(id=1, name="test", user_id=user_id),
         Category(id=2, name="test", user_id=user_id),
+    ]
+
+
+@fixture(scope="session")
+async def bank_operations(user_id):
+    mcc_list = [1, 2, 3]
+
+    return [
+        BankOperationDTO(
+            operation=Operation(
+                id=None,
+                amount=100,
+                description="desc",
+                time=1111,
+                user_id=user_id,
+                category_id=None
+            ),
+            mcc=choice(mcc_list)
+        )
+        for i in range(randint(5, 10))
     ]

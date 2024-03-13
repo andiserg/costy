@@ -47,8 +47,8 @@ class BankAPIGateway(
 
     async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
         stmt = select(self._table).where(self._table.c.id == bankapi_id)
-        result = (await self._db_session.execute(stmt)).mappings()
-        return self._retort.load(result, BankAPI)
+        result = next((await self._db_session.execute(stmt)).mappings(), None)
+        return self._retort.load(result, BankAPI) if result else None
 
     async def save_bankapi(self, bankapi: BankAPI) -> None:
         retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=['id'])])
@@ -66,7 +66,7 @@ class BankAPIGateway(
 
     async def get_bank_access_data_template(self, bank_name: str) -> tuple[str, ...]:
         try:
-            return tuple(self._banks_info[bank_name].keys())
+            return tuple(self._banks_info[bank_name]["access_fields"])
         except KeyError:
             raise InvalidRequestError("Invalid data template bank name")
 

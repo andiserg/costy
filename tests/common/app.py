@@ -29,6 +29,7 @@ from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.routers.authenticate import (
     AuthenticationController,
 )
+from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
 from costy.presentation.api.routers.user import UserController
@@ -39,7 +40,7 @@ class MockIdProvider(IdProvider):
         pass
 
 
-async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
+async def init_test_app(db_url: str | None = None, mock_auth: bool = True, mock_bank_gateways=None):
     if not db_url:
         db_url = get_db_connection_url()
 
@@ -54,6 +55,9 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
     retort = Retort()
     auth_settings = get_auth_settings()
     ioc = IoC(session_factory, web_session, tables, retort, auth_settings, banks_conf)
+
+    if not mock_bank_gateways:
+        ioc._bank_gateways = mock_bank_gateways
 
     if mock_auth:
         sub = os.environ.get("TEST_AUTH_USER_SUB")
@@ -85,6 +89,7 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True):
             UserController,
             OperationController,
             CategoryController,
+            BankAPIController
         ),
         dependencies={
             "ioc": Provide(singleton(ioc)),
