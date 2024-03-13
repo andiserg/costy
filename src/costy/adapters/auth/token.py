@@ -6,7 +6,7 @@ from jose import exceptions as jwt_exc
 from jose import jwt
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.common.user_gateway import UserReader
+from costy.application.common.user.user_gateway import UserReader
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import UserId
 

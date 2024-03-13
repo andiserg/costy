@@ -1,7 +1,7 @@
 from litestar import Controller, delete, get, post, put
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.operation.dto import (
+from costy.application.common.operation.dto import (
     ListOperationDTO,
     NewOperationDTO,
     UpdateOperationData,

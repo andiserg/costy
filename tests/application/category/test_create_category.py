@@ -4,8 +4,8 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.application.category.create_category import CreateCategory
-from costy.application.category.dto import NewCategoryDTO
-from costy.application.common.category_gateway import CategorySaver
+from costy.application.common.category.category_gateway import CategorySaver
+from costy.application.common.category.dto import NewCategoryDTO
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.uow import UoW
 from costy.domain.models.category import Category, CategoryId, CategoryType

@@ -4,11 +4,11 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.adapters.db.category_gateway import CategoryGateway
-from costy.application.category.dto import (
+from costy.application.category.update_category import UpdateCategory
+from costy.application.common.category.dto import (
     UpdateCategoryData,
     UpdateCategoryDTO,
 )
-from costy.application.category.update_category import UpdateCategory
 from costy.application.common.uow import UoW
 from costy.domain.exceptions.access import AccessDeniedError
 from costy.domain.exceptions.base import InvalidRequestError

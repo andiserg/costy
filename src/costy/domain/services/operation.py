@@ -1,4 +1,4 @@
-from costy.domain.models.category import CategoryId
+from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel
@@ -37,3 +37,7 @@ class OperationService:
         }
         for name, value in params.items():
             setattr(operation, name, value)
+
+    def set_category(self, operation: Operation, category: Category | type[Sentinel]) -> None:
+        if category is not Sentinel:
+            operation.category_id = category.id  # type: ignore

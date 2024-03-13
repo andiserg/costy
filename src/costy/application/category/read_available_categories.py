@@ -1,12 +1,13 @@
 from typing import List, Optional
 
+from costy.application.common.category.category_gateway import CategoriesReader
+from costy.application.common.category.dto import ReadAvailableCategoriesDTO
+
 from ...domain.models.category import Category
 from ...domain.services.category import CategoryService
-from ..common.category_gateway import CategoriesReader
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.uow import UoW
-from .dto import ReadAvailableCategoriesDTO
 
 
 class ReadAvailableCategories(Interactor[None, List[Category]]):

@@ -82,7 +82,7 @@ async def test_update_category(category_gateway, db_session, db_tables):
     await category_gateway.save_category(category)
 
     updated_category = Category(
-        category.id,
+        id=category.id,
         name="upd_test",
         user_id=user_id,
         kind=CategoryType.PERSONAL.value
@@ -91,3 +91,21 @@ async def test_update_category(category_gateway, db_session, db_tables):
     await category_gateway.update_category(category.id, updated_category)
 
     assert await category_gateway.get_category(category.id) == updated_category
+
+
+@pytest.mark.asyncio
+async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
+    mcc_codes = [1, 2]
+    categories = [
+        Category(
+            name=f"test #{mcc_code}",
+            kind=CategoryType.BANK.value,
+            mcc=mcc_code
+        ) for mcc_code in mcc_codes
+    ]
+    for category in categories:
+        await category_gateway.save_category(category)
+
+    result = await category_gateway.find_categories_by_mcc_codes(mcc_codes)
+
+    assert result == {category.mcc: category for category in categories}

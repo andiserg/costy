@@ -6,7 +6,7 @@ from pytest_asyncio import fixture
 from costy.application.category.read_available_categories import (
     ReadAvailableCategories,
 )
-from costy.application.common.category_gateway import CategoriesReader
+from costy.application.common.category.category_gateway import CategoriesReader
 from costy.application.common.uow import UoW
 
 

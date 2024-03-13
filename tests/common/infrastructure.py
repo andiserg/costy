@@ -76,8 +76,8 @@ async def web_session() -> AsyncIterator[ClientSession]:
 
 
 @fixture(scope='session')
-async def app(db_url) -> Litestar:
-    return await init_test_app(db_url, mock_auth=True)
+async def app(db_url, mock_monobank_gateway) -> Litestar:
+    return await init_test_app(db_url, mock_auth=True, mock_bank_gateways=mock_monobank_gateway)
 
 
 @fixture

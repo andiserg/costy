@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
-from ...domain.models.category import Category, CategoryId
-from ...domain.models.user import UserId
+from costy.domain.models.category import Category, CategoryId
+from costy.domain.models.user import UserId
 
 
 @runtime_checkable
@@ -37,4 +37,11 @@ class CategoryDeleter(Protocol):
 class CategoryUpdater(Protocol):
     @abstractmethod
     async def update_category(self, category_id: CategoryId, category: Category) -> None:
+        raise NotImplementedError
+
+
+@runtime_checkable
+class CategoryFinder(Protocol):
+    @abstractmethod
+    async def find_categories_by_mcc_codes(self, mcc_codes: tuple[int, ...]) -> dict[int, Category]:
         raise NotImplementedError

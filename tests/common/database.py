@@ -29,7 +29,7 @@ async def clean_up_db(db_session, db_tables):
 
 
 async def clean_tables(db_session, db_tables):
-    tables_order = ["operations", "categories", "users"]
+    tables_order = ["bankapis", "operations", "categories", "users"]
     for table in tables_order:
         await db_session.execute(delete(db_tables[table]))
     await db_session.commit()

@@ -1,0 +1,6 @@
+{
+  "monobank": {
+    "url": "https://api.monobank.ua/personal/statement/0",
+    "access_fields": ["X-Token"]
+  }
+}
