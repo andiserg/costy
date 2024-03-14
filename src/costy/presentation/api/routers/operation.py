@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from litestar import Controller, delete, get, post, put
 
 from costy.application.common.id_provider import IdProvider
@@ -7,12 +9,24 @@ from costy.application.common.operation.dto import (
     UpdateOperationData,
     UpdateOperationDTO,
 )
+from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation, OperationId
+from costy.domain.sentinel import Sentinel
 from costy.presentation.interactor_factory import InteractorFactory
+
+
+@dataclass(kw_only=True)
+class UpdateOperationPureData:
+    """Dataclass without user defined types for OpenAPI"""
+    amount: int | None = None
+    description: str | None = ""  # Sentinel value
+    time: int | None = None
+    category_id: CategoryId | None = None
 
 
 class OperationController(Controller):
     path = '/operations'
+    tags = ("Operations",)
 
     @get()
     async def get_list_operations(
@@ -52,8 +66,14 @@ class OperationController(Controller):
         operation_id: int,
         ioc: InteractorFactory,
         id_provider: IdProvider,
-        data: UpdateOperationData,
+        pure_data: UpdateOperationPureData,
     ) -> None:
         async with ioc.update_operation(id_provider) as update_operation:
+            data = UpdateOperationData(
+                amount=pure_data.amount,
+                description=pure_data.description if pure_data.description != "" else Sentinel,
+                time=pure_data.time,
+                category_id=pure_data.category_id if pure_data.category_id is not None else Sentinel
+            )
             request_data = UpdateOperationDTO(OperationId(operation_id), data)
             await update_operation(request_data)

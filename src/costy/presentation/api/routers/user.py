@@ -7,6 +7,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 
 class UserController(Controller):
     path = "/users"
+    tags = ("Users",)
 
     @post()
     async def register(self, ioc: InteractorFactory, data: NewUserDTO) -> dict[str, UserId]:

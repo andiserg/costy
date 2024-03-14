@@ -12,6 +12,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 
 class CategoryController(Controller):
     path = '/categories'
+    tags = ("Categories",)
 
     @get()
     async def get_list_categories(

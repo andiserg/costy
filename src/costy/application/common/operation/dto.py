@@ -22,10 +22,10 @@ class ListOperationDTO:
 
 @dataclass(kw_only=True)
 class UpdateOperationData:
-    amount: int | type[Sentinel] = Sentinel
+    amount: int | None = None
     description: str | None | type[Sentinel] = Sentinel
-    time: int | type[Sentinel] = Sentinel
-    category_id: CategoryId | type[Sentinel] = Sentinel
+    time: int | None = None
+    category_id: CategoryId | None | type[Sentinel] = Sentinel
 
 
 @dataclass

@@ -78,5 +78,6 @@ def init_app() -> Litestar:
         on_shutdown=[finalization],
         exception_handlers={
             BaseError: base_error_handler
-        }
+        },
+        debug=True
     )
