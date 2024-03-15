@@ -18,7 +18,7 @@ class MonobankGateway(BankGateway):
         retort: Retort
     ):
         self._web_session = web_session
-        self._bank_conf = bank_conf
+        self._bank_conf = bank_conf["monobank"]
         self._retort = retort.extend(recipe=[loader(P[Operation].id, lambda _: None)])
 
     async def fetch_operations(
@@ -47,6 +47,7 @@ class MonobankGateway(BankGateway):
 
         for operation in total_operations:
             operation["user_id"] = user_id
+            operation["bank_name"] = "monobank"
 
         loaded_operations = self._retort.load(total_operations, list[Operation])
         return [

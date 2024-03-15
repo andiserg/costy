@@ -56,7 +56,7 @@ async def monobank_adapter(web_session, retort) -> MonobankGateway:
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks = json.load(f)
 
-    return MonobankGateway(web_session, banks["monobank"], retort)
+    return MonobankGateway(web_session, banks, retort)
 
 
 @fixture

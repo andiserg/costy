@@ -50,7 +50,7 @@ jobs:
         pip install -e .[ci-tests]
     - name: Test with pytest
       run: |
-        pytest tests --cov
+        pytest tests --cov="../src"
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:

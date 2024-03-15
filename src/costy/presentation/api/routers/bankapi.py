@@ -8,6 +8,7 @@ from costy.presentation.interactor_factory import InteractorFactory
 
 class BankAPIController(Controller):
     path = "bankapi"
+    tags = ("Banks integration",)
 
     @get()
     async def get_bankapi_list(

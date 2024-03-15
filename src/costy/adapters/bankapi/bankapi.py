@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from adaptix import Retort, name_mapping
 from httpx import AsyncClient
@@ -86,4 +87,5 @@ class BankAPIGateway(
 
     async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
         bank_gateway = self._bank_gateways[bankapi.name]
-        return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id)
+        from_time = datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
+        return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id, from_time)
