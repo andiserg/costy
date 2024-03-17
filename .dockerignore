@@ -1,0 +1,4 @@
+tests
+.github
+.venv
+costy.egg-info
