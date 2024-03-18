@@ -54,3 +54,4 @@ dmypy.json
 /pytest.ini
 /docker-compose.yml
 /keycloak/
+/kubeconf/secrets.yml
