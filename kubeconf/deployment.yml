@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: costy-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: costy-app
+  template:
+    metadata:
+      labels:
+        app: costy-app
+    spec:
+      containers:
+        - name: app
+          image: sergienkoandrew/costy
+          ports:
+            - containerPort: 80
+          command: [ "/bin/sh","-c" ]
+          args: ["python -m uvicorn costy.main.web:init_app --reload --factory --host 0.0.0.0 --port 80"]
+          readinessProbe:
+            httpGet:
+              path: /schema/openapi.json
+              port: 80
+            periodSeconds: 5
+            failureThreshold: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          env:
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: db_name
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: db_password
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: db_host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: db_port
+            - name: AUTH0_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: auth0_client_id
+            - name: AUTH0_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: costy-secrets
+                  key: auth0_client_secret
+            - name: AUTH0_AUDIENCE
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_audience
+            - name: AUTH0_AUTHORIZE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_authorize_url
+            - name: AUTH0_CONNECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_connection
+            - name: AUTH0_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_issuer
+            - name: AUTH0_JWKS_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_jwks_uri
+            - name: AUTH0_REGISTER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: costy-config
+                  key: auth0_register_url

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: costy-config
+
+data:
+  auth0_audience: "https://dev-66quvcmw46dh86sh.us.auth0.com/api/v2/"
+  auth0_authorize_url: "https://dev-66quvcmw46dh86sh.us.auth0.com/oauth/token"
+  auth0_connection: "Username-Password-Authentication"
+  auth0_issuer: "https://dev-66quvcmw46dh86sh.us.auth0.com/"
+  auth0_jwks_uri: "https://dev-66quvcmw46dh86sh.us.auth0.com/.well-known/jwks.json"
+  auth0_register_url: "https://dev-66quvcmw46dh86sh.us.auth0.com/dbconnections/signup"
