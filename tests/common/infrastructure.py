@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.orm import create_tables
+from costy.infrastructure.db.tables import create_tables
 from tests.common.app import init_test_app
 
 

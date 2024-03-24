@@ -19,4 +19,3 @@ class Category:
     name: str
     kind: str = CategoryType.GENERAL.value
     user_id: UserId | None = None
-    mcc: int | None = None

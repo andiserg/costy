@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy import insert
 
 from costy.domain.models.category import Category, CategoryType
 from costy.domain.models.user import UserId
@@ -100,12 +101,18 @@ async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
         Category(
             name=f"test #{mcc_code}",
             kind=CategoryType.BANK.value,
-            mcc=mcc_code
         ) for mcc_code in mcc_codes
     ]
     for category in categories:
         await category_gateway.save_category(category)
+    await db_session.execute(
+        insert(db_tables["category_mcc"]),
+        [
+            {"category_id": c.id, "mcc": mcc}
+            for c, mcc in zip(categories, mcc_codes)
+        ],
+    )
 
     result = await category_gateway.find_categories_by_mcc_codes(mcc_codes)
 
-    assert result == {category.mcc: category for category in categories}
+    assert result == {mcc: category for category, mcc in zip(categories, mcc_codes)}

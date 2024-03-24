@@ -79,7 +79,6 @@ async def interactor(id_provider, user_id, existing_mcc) -> UpdateBankOperations
             mcc: Category(
                 id=mcc * 10,
                 name="test",
-                mcc=mcc
             ) for mcc in mcc_codes if mcc in existing_mcc
         }
 

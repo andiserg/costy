@@ -40,7 +40,6 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
             Column("kind", String, default="general"),
-            Column("mcc", Integer, nullable=True),
         ),
         "bankapis": Table(
             "bankapis",
@@ -51,4 +50,10 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             Column("updated_at", Integer, nullable=True),
             Column("user_id", Integer, ForeignKey("users.id"))
         ),
+        "category_mcc": Table(
+            "category_mcc",
+            metadata,
+            Column("category_id", Integer, ForeignKey("categories.id")),
+            Column("mcc", Integer)
+        )
     }
