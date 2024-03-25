@@ -3,6 +3,7 @@ from typing import Any, Callable, Coroutine, TypeVar
 from adaptix import Retort
 from httpx import AsyncClient
 from litestar import Litestar
+from litestar.config.cors import CORSConfig
 from litestar.di import Provide
 
 from costy.domain.exceptions.base import BaseError
@@ -59,6 +60,8 @@ def init_app() -> Litestar:
         web_session
     )
 
+    cors_config = CORSConfig(allow_origins=["*"])
+
     async def finalization():
         await web_session.aclose()
 
@@ -79,5 +82,6 @@ def init_app() -> Litestar:
         exception_handlers={
             BaseError: base_error_handler
         },
-        debug=True
+        debug=True,
+        cors_config=cors_config
     )
