@@ -1,7 +1,6 @@
 from typing import Protocol
 
 from ...domain.models.operation import Operation
-from ...domain.sentinel import Sentinel
 from ...domain.services.bankapi import BankAPIService
 from ...domain.services.operation import OperationService
 from ..common.bankapi.bankapi_gateway import (
@@ -9,7 +8,7 @@ from ..common.bankapi.bankapi_gateway import (
     BankAPIOperationsReader,
     BanksAPIReader,
 )
-from ..common.category.category_gateway import CategoryFinder
+from ..common.category.category_gateway import CategoriesFinder, CategoryFinder
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 from ..common.operation.operation_gateway import OperationsBulkSaver
@@ -20,6 +19,10 @@ class BankAPIGateway(BankAPIBulkUpdater, BanksAPIReader, BankAPIOperationsReader
     pass
 
 
+class CategoryGateway(CategoriesFinder, CategoryFinder, Protocol):
+    pass
+
+
 class UpdateBankOperations(Interactor[None, None]):
     def __init__(
         self,
@@ -27,7 +30,7 @@ class UpdateBankOperations(Interactor[None, None]):
         operation_service: OperationService,
         bankapi_gateway: BankAPIGateway,
         operation_gateway: OperationsBulkSaver,
-        category_gateway: CategoryFinder,
+        category_gateway: CategoryGateway,
         id_provider: IdProvider,
         uow: UoW
     ):
@@ -42,6 +45,7 @@ class UpdateBankOperations(Interactor[None, None]):
     async def __call__(self, data=None) -> None:
         user_id = await self._id_provider.get_current_user_id()
         bankapis = await self._bankapi_gateway.get_bankapi_list(user_id)
+        default_category = await self._category_gateway.find_category(name="Інше", kind="general")
 
         operations: list[Operation] = []
         for bankapi in bankapis:
@@ -50,10 +54,9 @@ class UpdateBankOperations(Interactor[None, None]):
             mcc_categories = await self._category_gateway.find_categories_by_mcc_codes(mcc_codes)
 
             for bank_operation in bank_operations:
-                self._operation_service.set_category(
-                    bank_operation.operation,
-                    mcc_categories.get(bank_operation.mcc, Sentinel)
-                )
+                category = mcc_categories.get(bank_operation.mcc, default_category)
+                if category:
+                    self._operation_service.set_category(bank_operation.operation, category)
 
             operations.extend(bank_operation.operation for bank_operation in bank_operations)
             self._bankapi_service.update_time(bankapi)

@@ -55,5 +55,12 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             metadata,
             Column("category_id", Integer, ForeignKey("categories.id")),
             Column("mcc", Integer)
+        ),
+        "category_icons": Table(
+            "category_icons",
+            metadata,
+            Column("category_id", Integer, ForeignKey("categories.id"), unique=True),
+            Column("icon_color", String, nullable=True),
+            Column("icon_name", String, nullable=True),
         )
     }

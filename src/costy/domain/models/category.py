@@ -10,7 +10,6 @@ CategoryId = NewType("CategoryId", int)
 class CategoryType(Enum):
     GENERAL = "general"
     PERSONAL = "personal"
-    BANK = "bank"
 
 
 @dataclass(slots=True, kw_only=True)

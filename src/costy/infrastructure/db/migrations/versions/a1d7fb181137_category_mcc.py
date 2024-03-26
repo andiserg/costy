@@ -34,21 +34,21 @@ def upgrade() -> None:
     op.drop_column('categories', 'mcc')
     # ### end Alembic commands ###
 
-    with open(str(resources.files("costy.adapters.bankapi") / "_mcc.json")) as f:
-        mcc_data = json.load(f)
+    with open(str(resources.files("costy.infrastructure.db") / "_default_categories.json")) as f:
+        data = json.load(f)
 
     conn = op.get_bind()
     metadata = get_metadata()
     tables = create_tables(metadata)
 
-    bank_category_names = set(mcc_data.keys())
+    bank_category_names = set(item["name"] for item in data)
 
     existed_bank_category_names = set(
         map(
             itemgetter(0),
             conn.execute(
                 select(tables['categories'].c.name)
-                .where(tables['categories'].c.kind == "bank")
+                .where(tables['categories'].c.kind == "general")
                 .where(tables['categories'].c.name.in_(bank_category_names))
             )
         )
@@ -58,15 +58,17 @@ def upgrade() -> None:
         tables['categories'],
         [{
             "name": category_name,
-            "kind": "bank",
+            "kind": "general",
             "user_id": None,
         } for category_name in (bank_category_names - existed_bank_category_names)]
     )
 
-    bank_categories = conn.execute(
+    categories = conn.execute(
         select(tables['categories'].c.name, tables['categories'].c.id)
-        .where(tables['categories'].c.kind == "bank")
+        .where(tables['categories'].c.kind == "general")
     )
+
+    data = {item["name"]: item for item in data}
 
     op.bulk_insert(
         tables['category_mcc'],
@@ -75,7 +77,7 @@ def upgrade() -> None:
                 "category_id": category_id,
                 "mcc": mcc
             }
-            for category_name, category_id in bank_categories for mcc in mcc_data[category_name]
+            for category_name, category_id in categories for mcc in data[category_name].get('mcc', [])
         ]
     )
 

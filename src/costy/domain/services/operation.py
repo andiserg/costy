@@ -44,6 +44,5 @@ class OperationService:
         for name, value in params.items():
             setattr(operation, name, value)
 
-    def set_category(self, operation: Operation, category: Category | type[Sentinel]) -> None:
-        if category is not Sentinel:
-            operation.category_id = category.id  # type: ignore
+    def set_category(self, operation: Operation, category: Category) -> None:
+        operation.category_id = category.id  # type: ignore

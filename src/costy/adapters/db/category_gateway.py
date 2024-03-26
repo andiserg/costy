@@ -3,24 +3,28 @@ from sqlalchemy import Table, delete, insert, join, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.category.category_gateway import (
+    CategoriesFinder,
     CategoriesReader,
     CategoryDeleter,
     CategoryFinder,
     CategoryReader,
     CategorySaver,
     CategoryUpdater,
+    SentinelOptional,
 )
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
+from costy.domain.sentinel import Sentinel
 
 
 class CategoryGateway(
     CategoryReader,
+    CategoryFinder,
     CategorySaver,
     CategoryDeleter,
     CategoriesReader,
     CategoryUpdater,
-    CategoryFinder
+    CategoriesFinder
 ):
     def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table, retort: Retort):
         self.session = session
@@ -28,11 +32,34 @@ class CategoryGateway(
         self.mcc_table = mcc_table
         self.retort = retort
 
-    async def get_category(self, category_id: CategoryId) -> Category | None:
+    async def get_category_by_id(self, category_id: CategoryId) -> Category | None:
         query = select(self.category_table).where(self.category_table.c.id == category_id)
         result = await self.session.execute(query)
         data = next(result.mappings(), None)
         return self.retort.load(data, Category) if data else None
+
+    async def find_category(
+        self,
+        name: SentinelOptional[str] = Sentinel,
+        kind: SentinelOptional[str] = Sentinel,
+        user_id: SentinelOptional[UserId] = Sentinel
+    ) -> Category | None:
+        if not any(param is not Sentinel for param in (name, kind, user_id)):
+            return None
+
+        params = {
+            "name": name,
+            "kind": kind,
+            "user_id": user_id
+        }
+
+        stmt = select(self.category_table)
+        for param_name, param_value in params.items():
+            if param_value is not Sentinel:
+                stmt = stmt.where(self.category_table.c[param_name] == param_value)
+
+        result = (await self.session.execute(stmt)).fetchone()
+        return self.retort.load(result._mapping, Category)
 
     async def save_category(self, category: Category) -> None:
         values = self.retort.dump(category)

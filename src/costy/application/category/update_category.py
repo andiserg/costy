@@ -36,7 +36,7 @@ class UpdateCategory(Interactor[UpdateCategoryDTO, None]):
 
     async def __call__(self, data: UpdateCategoryDTO) -> None:
         user_id = await self.id_provider.get_current_user_id()
-        category = await self.category_db_gateway.get_category(data.category_id)
+        category = await self.category_db_gateway.get_category_by_id(data.category_id)
 
         if not category or not category.id:
             raise InvalidRequestError("Category not exist")

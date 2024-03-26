@@ -112,6 +112,7 @@ async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
             for c, mcc in zip(categories, mcc_codes)
         ],
     )
+    mcc_codes.append(3)
 
     result = await category_gateway.find_categories_by_mcc_codes(mcc_codes)
 

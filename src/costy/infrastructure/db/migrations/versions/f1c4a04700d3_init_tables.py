@@ -5,10 +5,15 @@ Revises:
 Create Date: 2024-01-30 22:55:38.115617
 
 """
+import json
+from importlib import resources
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+
+from costy.infrastructure.db.main import get_metadata
+from costy.infrastructure.db.tables import create_tables
 
 # revision identifiers, used by Alembic.
 revision: str = 'f1c4a04700d3'
@@ -46,6 +51,22 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
+
+    metadata = get_metadata()
+    tables = create_tables(metadata)
+
+    with open(str(resources.files("costy.infrastructure.db") / "_default_categories.json")) as f:
+        categories_data: list[dict] = json.load(f)
+
+    categories = [
+        {
+            "name": item["name"],
+            "kind": "general",
+            "user_id": None
+        } for item in categories_data
+    ]
+
+    op.bulk_insert(tables["categories"], categories)
 
 
 def downgrade() -> None:
