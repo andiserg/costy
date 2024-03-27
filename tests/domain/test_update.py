@@ -31,7 +31,7 @@ from costy.domain.services.operation import OperationService
     (
         CategoryService(),
         Category(id=None, name="test", kind=CategoryType.GENERAL.value, user_id=UserId(9999)),
-        ("test_new",),
+        ("test_new", None),
         Category(id=None, name="test_new", kind=CategoryType.GENERAL.value, user_id=UserId(9999))
     ),
 ])

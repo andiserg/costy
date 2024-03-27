@@ -1,12 +1,9 @@
 from abc import abstractmethod
-from typing import Protocol, TypeAlias, TypeVar, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
-from costy.domain.sentinel import Sentinel
-
-ParamT = TypeVar("ParamT")
-SentinelOptional: TypeAlias = ParamT | None | type[Sentinel]
+from costy.domain.sentinel import Sentinel, SentinelOptional
 
 
 @runtime_checkable

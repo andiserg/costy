@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 
-from costy.domain.models.category import CategoryId, CategoryType
+from costy.domain.models.category import CategoryId
+from costy.domain.sentinel import Sentinel, SentinelOptional
 
 
-@dataclass
+@dataclass(slots=True, kw_only=True)
 class NewCategoryDTO:
     name: str
+    view: dict | None = None
 
 
 @dataclass
@@ -13,16 +15,10 @@ class ReadAvailableCategoriesDTO:
     ...
 
 
-@dataclass
-class CategoryDTO:
-    id: CategoryId | None
-    name: str
-    kind: CategoryType
-
-
-@dataclass
+@dataclass(slots=True, kw_only=True)
 class UpdateCategoryData:
-    name: str
+    name: str | None = None
+    view: SentinelOptional[dict] = Sentinel
 
 
 @dataclass

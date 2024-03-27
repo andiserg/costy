@@ -44,6 +44,6 @@ class UpdateCategory(Interactor[UpdateCategoryDTO, None]):
         if not self.access_service.ensure_can_edit(category, user_id):
             raise AccessDeniedError("User can't edit this operation.")
 
-        self.category_service.update(category, data.data.name)
+        self.category_service.update(category, data.data.name, data.data.view)
         await self.category_db_gateway.update_category(category.id, category)
         await self.uow.commit()
