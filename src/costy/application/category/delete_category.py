@@ -33,7 +33,7 @@ class DeleteCategory(Interactor[CategoryId, None]):
 
     async def __call__(self, category_id: CategoryId) -> None:
         user_id = await self.id_provider.get_current_user_id()
-        category = await self.category_gateway.get_category(category_id)
+        category = await self.category_gateway.get_category_by_id(category_id)
 
         if not category:
             raise InvalidRequestError("Category not exist")

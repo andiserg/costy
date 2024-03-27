@@ -1,3 +1,5 @@
+from dataclasses import dataclass, field
+
 from litestar import Controller, delete, get, post, put
 
 from costy.application.common.category.dto import (
@@ -7,7 +9,14 @@ from costy.application.common.category.dto import (
 )
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.category import Category, CategoryId
+from costy.domain.sentinel import Sentinel
 from costy.presentation.interactor_factory import InteractorFactory
+
+
+@dataclass(slots=True, kw_only=True)
+class UpdateCategoryPureData:
+    name: str | None = None
+    view: dict | None = field(default_factory=dict)
 
 
 class CategoryController(Controller):
@@ -51,8 +60,14 @@ class CategoryController(Controller):
         category_id: int,
         ioc: InteractorFactory,
         id_provider: IdProvider,
-        data: UpdateCategoryData,
+        data: UpdateCategoryPureData,
     ) -> None:
         async with ioc.update_category(id_provider) as update_category:
-            request_data = UpdateCategoryDTO(CategoryId(category_id), data)
-            await update_category(request_data)
+            input_data = UpdateCategoryDTO(
+                CategoryId(category_id),
+                UpdateCategoryData(
+                    name=data.name,
+                    view=data.view if data.view != {} else Sentinel
+                )
+            )
+            await update_category(input_data)

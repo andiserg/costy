@@ -158,7 +158,12 @@ class IoC(InteractorFactory):
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield CreateCategory(
                 CategoryService(),
-                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                CategoryGateway(
+                    depends.session,
+                    self._tables["categories"],
+                    self._tables["category_mcc"],
+                    self._retort
+                ),
                 id_provider,
                 depends.uow
             )
@@ -171,7 +176,12 @@ class IoC(InteractorFactory):
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield DeleteCategory(
                 AccessService(),
-                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                CategoryGateway(
+                    depends.session,
+                    self._tables["categories"],
+                    self._tables["category_mcc"],
+                    self._retort
+                ),
                 id_provider,
                 depends.uow
             )
@@ -185,7 +195,12 @@ class IoC(InteractorFactory):
             yield UpdateCategory(
                 CategoryService(),
                 AccessService(),
-                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                CategoryGateway(
+                    depends.session,
+                    self._tables["categories"],
+                    self._tables["category_mcc"],
+                    self._retort
+                ),
                 id_provider,
                 depends.uow
             )
@@ -198,7 +213,12 @@ class IoC(InteractorFactory):
             id_provider.user_gateway = depends.user_gateway  # type: ignore
             yield ReadAvailableCategories(
                 CategoryService(),
-                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                CategoryGateway(
+                    depends.session,
+                    self._tables["categories"],
+                    self._tables["category_mcc"],
+                    self._retort
+                ),
                 id_provider,
                 depends.uow
             )
@@ -279,7 +299,12 @@ class IoC(InteractorFactory):
                     self._banks_conf
                 ),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
-                CategoryGateway(depends.session, self._tables["categories"], self._retort),
+                CategoryGateway(
+                    depends.session,
+                    self._tables["categories"],
+                    self._tables["category_mcc"],
+                    self._retort
+                ),
                 id_provider,
                 depends.uow,
             )

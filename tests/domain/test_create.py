@@ -31,8 +31,8 @@ from costy.domain.services.user import UserService
     ),
     (
         CategoryService(),
-        ("test", CategoryType.GENERAL, UserId(9999)),
-        Category(id=None, name="test", kind=CategoryType.GENERAL.value, user_id=UserId(9999), mcc=None)
+        ("test", CategoryType.GENERAL, UserId(9999), None),
+        Category(id=None, name="test", kind=CategoryType.GENERAL.value, user_id=UserId(9999), view=None)
     ),
     (
         BankAPIService(),

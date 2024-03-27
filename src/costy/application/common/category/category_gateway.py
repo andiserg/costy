@@ -3,6 +3,7 @@ from typing import Protocol, runtime_checkable
 
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
+from costy.domain.sentinel import Sentinel, SentinelOptional
 
 
 @runtime_checkable
@@ -15,7 +16,19 @@ class CategorySaver(Protocol):
 @runtime_checkable
 class CategoryReader(Protocol):
     @abstractmethod
-    async def get_category(self, category_id: CategoryId) -> Category | None:
+    async def get_category_by_id(self, category_id: CategoryId) -> Category | None:
+        raise NotImplementedError
+
+
+@runtime_checkable
+class CategoryFinder(Protocol):
+    @abstractmethod
+    async def find_category(
+        self,
+        name: SentinelOptional[str] = Sentinel,
+        kind: SentinelOptional[str] = Sentinel,
+        user_id: SentinelOptional[UserId] = Sentinel
+    ) -> Category | None:
         raise NotImplementedError
 
 
@@ -41,7 +54,7 @@ class CategoryUpdater(Protocol):
 
 
 @runtime_checkable
-class CategoryFinder(Protocol):
+class CategoriesFinder(Protocol):
     @abstractmethod
     async def find_categories_by_mcc_codes(self, mcc_codes: tuple[int, ...]) -> dict[int, Category]:
         raise NotImplementedError

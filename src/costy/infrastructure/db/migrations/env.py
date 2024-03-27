@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from costy.infrastructure.config import get_db_connection_url
 from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.orm import create_tables
+from costy.infrastructure.db.tables import create_tables
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

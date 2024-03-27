@@ -36,7 +36,7 @@ async def user_gateway(db_session, db_tables, retort) -> UserGateway:
 
 @fixture
 async def category_gateway(db_session, db_tables, retort) -> CategoryGateway:
-    return CategoryGateway(db_session, db_tables["categories"], retort)
+    return CategoryGateway(db_session, db_tables["categories"], db_tables["category_mcc"], retort)
 
 
 @fixture
