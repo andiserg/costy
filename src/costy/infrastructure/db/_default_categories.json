@@ -1,8 +1,10 @@
 [
   {
     "name": "Авто",
-    "icon_name": "car",
-    "icon_color": "#7c7c7d",
+    "view": {
+      "icon_name": "car",
+      "icon_color": "#7c7c7d"
+    },
     "mcc": [
       5013,
       5531,
@@ -26,8 +28,10 @@
   },
   {
     "name": "АЗС",
-    "icon_name": "gasoline",
-    "icon_color": "#7f821d",
+    "view": {
+      "icon_name": "gasoline",
+      "icon_color": "#7f821d"
+    },
     "mcc": [
       5172,
       5299,
@@ -37,37 +41,47 @@
   },
   {
     "name": "Благодійність",
-    "icon_name": "heart",
-    "icon_color": "#457bd1",
+    "view": {
+      "icon_name": "heart",
+      "icon_color": "#457bd1"
+    },
     "mcc": [
       8398
     ]
   },
   {
     "name": "Податки",
-    "icon_name": "law",
-    "icon_color": "#28c97c"
+    "view": {
+      "icon_name": "law",
+      "icon_color": "#28c97c"
+    }
   },
   {
     "name": "Вантажні перевезення",
-    "icon_name": "truck",
-    "icon_color": "#a3a3a3",
+    "view": {
+      "icon_name": "truck",
+      "icon_color": "#a3a3a3"
+    },
     "mcc": [
       4214
     ]
   },
   {
     "name": "Готівка",
-    "icon_name": "dollar",
-    "icon_color": "#006915",
+    "view": {
+      "icon_name": "dollar",
+      "icon_color": "#006915"
+    },
     "mcc": [
       3882
     ]
   },
   {
     "name": "Переказ коштів",
-    "icon_name": "dollar",
-    "icon_color": "#04c92c",
+    "view": {
+      "icon_name": "dollar",
+      "icon_color": "#04c92c"
+    },
     "mcc": [
       4829,
       6531,
@@ -85,18 +99,24 @@
   },
   {
     "name": "Інвестиції",
-    "icon_name": "dollar",
-    "icon_color": "#003a9e"
+    "view": {
+      "icon_name": "dollar",
+      "icon_color": "#003a9e"
+    }
   },
   {
     "name": "Інше",
-    "icon_name": "info",
-    "icon_color": "#575757"
+    "view": {
+      "icon_name": "info",
+      "icon_color": "#575757"
+    }
   },
   {
     "name": "Канцтовари",
-    "icon_name": "pen",
-    "icon_color": "#d9324b",
+    "view": {
+      "icon_name": "pen",
+      "icon_color": "#d9324b"
+    },
     "mcc": [
       5111,
       5943
@@ -104,8 +124,10 @@
   },
   {
     "name": "Кафе та ресторани",
-    "icon_name": "food",
-    "icon_color": "#741cb8",
+    "view": {
+      "icon_name": "food",
+      "icon_color": "#741cb8"
+    },
     "mcc": [
       5309,
       5462,
@@ -118,8 +140,10 @@
   },
   {
     "name": "Квіти",
-    "icon_name": "flower",
-    "icon_color": "#a918c9",
+    "view": {
+      "icon_name": "flower",
+      "icon_color": "#a918c9"
+    },
     "mcc": [
       5193,
       5992
@@ -127,8 +151,10 @@
   },
   {
     "name": "Кіно",
-    "icon_name": "ticket",
-    "icon_color": "#cc861d",
+    "view": {
+      "icon_name": "ticket",
+      "icon_color": "#cc861d"
+    },
     "mcc": [
       7832,
       7833
@@ -136,18 +162,24 @@
   },
   {
     "name": "Книги",
-    "icon_name": "book",
-    "icon_color": "#f55192"
+    "view": {
+      "icon_name": "book",
+      "icon_color": "#f55192"
+    }
   },
   {
     "name": "Комуналка та інтернет",
-    "icon_name": "house",
-    "icon_color": "#51a8f5"
+    "view": {
+      "icon_name": "house",
+      "icon_color": "#51a8f5"
+    }
   },
   {
     "name": "Краса та здоров'я",
-    "icon_name": "heart",
-    "icon_color": "#ed0ea3",
+    "view": {
+      "icon_name": "heart",
+      "icon_color": "#ed0ea3"
+    },
     "mcc": [
       5122,
       5698,
@@ -173,8 +205,10 @@
   },
   {
     "name": "Кур'єрські послуги",
-    "icon_name": "mail",
-    "icon_color": "#807e7f",
+    "view": {
+      "icon_name": "mail",
+      "icon_color": "#807e7f"
+    },
     "mcc": [
       4215,
       5811
@@ -182,8 +216,10 @@
   },
   {
     "name": "Одяг та взуття",
-    "icon_name": "clothes",
-    "icon_color": "#db4632",
+    "view": {
+      "icon_name": "clothes",
+      "icon_color": "#db4632"
+    },
     "mcc": [
       5137,
       5651,
@@ -203,8 +239,10 @@
   },
   {
     "name": "Побутова техніка",
-    "icon_name": "washing-machine",
-    "icon_color": "#db6e32",
+    "view": {
+      "icon_name": "washing-machine",
+      "icon_color": "#db6e32"
+    },
     "mcc": [
       5722,
       5732
@@ -212,13 +250,17 @@
   },
   {
     "name": "Погашення кредиту",
-    "icon_name": "dollar",
-    "icon_color": "#166335"
+    "view": {
+      "icon_name": "dollar",
+      "icon_color": "#166335"
+    }
   },
   {
     "name": "Подорожі",
-    "icon_name": "travel",
-    "icon_color": "#44c276",
+    "view": {
+      "icon_name": "travel",
+      "icon_color": "#44c276"
+    },
     "mcc": [
       3000,
       3001,
@@ -966,16 +1008,20 @@
   },
   {
     "name": "Поповнення мобільного",
-    "icon_name": "phone",
-    "icon_color": "#445575",
+    "view": {
+      "icon_name": "phone",
+      "icon_color": "#445575"
+    },
     "mcc": [
       4814
     ]
   },
   {
     "name": "Продукти та супермаркети",
-    "icon_name": "shopping-cart",
-    "icon_color": "#d49d3d",
+    "view": {
+      "icon_name": "shopping-cart",
+      "icon_color": "#d49d3d"
+    },
     "mcc": [
       5262,
       5297,
@@ -989,8 +1035,10 @@
   },
   {
     "name": "Ремонт",
-    "icon_name": "hammer",
-    "icon_color": "#457a73",
+    "view": {
+      "icon_name": "hammer",
+      "icon_color": "#457a73"
+    },
     "mcc": [
       1520,
       1711,
@@ -1013,8 +1061,10 @@
   },
   {
     "name": "Товари для дому",
-    "icon_name": "taxi",
-    "icon_color": "#d1aa1b",
+    "view": {
+      "icon_name": "taxi",
+      "icon_color": "#d1aa1b"
+    },
     "mcc": [
       5251,
       5200,
@@ -1024,8 +1074,10 @@
   },
   {
     "name": "Розваги та спорт",
-    "icon_name": "ball",
-    "icon_color": "#1769cf",
+    "view": {
+      "icon_name": "ball",
+      "icon_color": "#1769cf"
+    },
     "mcc": [
       5816,
       5940,
@@ -1052,16 +1104,20 @@
   },
   {
     "name": "Таксі",
-    "icon_name": "taxi",
-    "icon_color": "#d1aa1b",
+    "view": {
+      "icon_name": "taxi",
+      "icon_color": "#d1aa1b"
+    },
     "mcc": [
       4121
     ]
   },
   {
     "name": "Тварини",
-    "icon_name": "dog",
-    "icon_color": "#967d18",
+    "view": {
+      "icon_name": "dog",
+      "icon_color": "#967d18"
+    },
     "mcc": [
       742,
       5995
@@ -1069,16 +1125,20 @@
   },
   {
     "name": "Штрафи",
-    "icon_name": "law",
-    "icon_color": "#ed282f",
+    "view": {
+      "icon_name": "law",
+      "icon_color": "#ed282f"
+    },
     "mcc": [
       9222
     ]
   },
   {
     "name": "Ювелірні вироби",
-    "icon_name": "watch",
-    "icon_color": "#b5cc23",
+    "view": {
+      "icon_name": "watch",
+      "icon_color": "#b5cc23"
+    },
     "mcc": [
       5094,
       5933
@@ -1086,8 +1146,10 @@
   },
   {
     "name": "Громадський транспорт",
-    "icon_name": "bus",
-    "icon_color": "#66645b",
+    "view": {
+      "icon_name": "bus",
+      "icon_color": "#66645b"
+    },
     "mcc": [
       4011,
       4789,
@@ -1098,8 +1160,10 @@
   },
   {
     "name": "Цифрові товари",
-    "icon_name": "internet",
-    "icon_color": "#1583c2",
+    "view": {
+      "icon_name": "internet",
+      "icon_color": "#1583c2"
+    },
     "mcc": [
       5968,
       7311,
@@ -1111,8 +1175,10 @@
   },
   {
     "name": "Освіта",
-    "icon_name": "education-cap",
-    "icon_color": "#363636",
+    "view": {
+      "icon_name": "education-cap",
+      "icon_color": "#363636"
+    },
     "mcc": [
       8211,
       8220,
@@ -1124,7 +1190,9 @@
   },
   {
     "name": "Пошта",
-    "icon_name": "mail",
-    "icon_color": "#0087a6"
+    "view": {
+      "icon_name": "mail",
+      "icon_color": "#0087a6"
+    }
   }
 ]

@@ -36,6 +36,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('kind', sa.String(), nullable=True),
+    sa.Column('view', sa.JSON(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -62,7 +63,8 @@ def upgrade() -> None:
         {
             "name": item["name"],
             "kind": "general",
-            "user_id": None
+            "user_id": None,
+            "view": item["view"]
         } for item in categories_data
     ]
 

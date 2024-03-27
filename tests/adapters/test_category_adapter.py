@@ -37,8 +37,8 @@ async def test_get_category(category_gateway, db_session, db_tables):
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
 
-    created_general_category = await category_gateway.get_category(general_category.id)
-    created_personal_category = await category_gateway.get_category(personal_category.id)
+    created_general_category = await category_gateway.get_category_by_id(general_category.id)
+    created_personal_category = await category_gateway.get_category_by_id(personal_category.id)
 
     assert general_category == created_general_category
     assert personal_category == created_personal_category
@@ -54,8 +54,8 @@ async def test_delete_category(category_gateway, db_session, db_tables):
     await category_gateway.delete_category(general_category.id)
     await category_gateway.delete_category(personal_category.id)
 
-    assert await category_gateway.get_category(general_category.id) is None
-    assert await category_gateway.get_category(personal_category.id) is None
+    assert await category_gateway.get_category_by_id(general_category.id) is None
+    assert await category_gateway.get_category_by_id(personal_category.id) is None
 
 
 @pytest.mark.asyncio
@@ -91,7 +91,7 @@ async def test_update_category(category_gateway, db_session, db_tables):
 
     await category_gateway.update_category(category.id, updated_category)
 
-    assert await category_gateway.get_category(category.id) == updated_category
+    assert await category_gateway.get_category_by_id(category.id) == updated_category
 
 
 @pytest.mark.asyncio
@@ -100,7 +100,7 @@ async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
     categories = [
         Category(
             name=f"test #{mcc_code}",
-            kind=CategoryType.BANK.value,
+            kind=CategoryType.GENERAL.value,
         ) for mcc_code in mcc_codes
     ]
     for category in categories:

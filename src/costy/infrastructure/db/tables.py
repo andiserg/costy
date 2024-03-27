@@ -40,6 +40,7 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
             Column("kind", String, default="general"),
+            Column("view", JSON, nullable=True)
         ),
         "bankapis": Table(
             "bankapis",
@@ -48,19 +49,12 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             Column("name", String),
             Column("access_data", JSON),
             Column("updated_at", Integer, nullable=True),
-            Column("user_id", Integer, ForeignKey("users.id"))
+            Column("user_id", Integer, ForeignKey("users.id")),
         ),
         "category_mcc": Table(
             "category_mcc",
             metadata,
             Column("category_id", Integer, ForeignKey("categories.id")),
             Column("mcc", Integer)
-        ),
-        "category_icons": Table(
-            "category_icons",
-            metadata,
-            Column("category_id", Integer, ForeignKey("categories.id"), unique=True),
-            Column("icon_color", String, nullable=True),
-            Column("icon_name", String, nullable=True),
         )
     }

@@ -25,7 +25,7 @@ async def interactor(
         id_provider
 ) -> UpdateCategory:
     category_gateway = Mock(spec=CategoryGateway)
-    category_gateway.get_category.return_value = Category(
+    category_gateway.get_category_by_id.return_value = Category(
         id=category_id,
         name="test",
         user_id=user_id

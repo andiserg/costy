@@ -8,9 +8,10 @@ from costy.application.bankapi.update_bank_operations import (
     UpdateBankOperations,
 )
 from costy.application.common.bankapi.dto import BankOperationDTO
+from costy.application.common.category.category_gateway import CategoryFinder
 from costy.application.common.uow import UoW
 from costy.domain.models.bankapi import BankAPI, BankApiId
-from costy.domain.models.category import Category
+from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation
 from costy.domain.services.bankapi import BankAPIService
 from costy.domain.services.operation import OperationService
@@ -26,7 +27,8 @@ async def interactor(id_provider, user_id, existing_mcc) -> UpdateBankOperations
     bankapi_gateway = Mock()
     bankapi_gateway.operations = []
     operation_gateway = Mock()
-    category_gateway = Mock()
+    category_gateway = Mock(spec=CategoryFinder)
+    category_gateway.find_category.return_value = Category(id=CategoryId(9999), name="Other")
     mcc_list = existing_mcc + [4, 5]
 
     async def get_bankapi_list(*args, **kwargs):
@@ -106,6 +108,6 @@ async def test_update_bank_operations(interactor, existing_mcc):
         (
             bank_operation.mcc in existing_mcc and operation.category_id
         ) or (
-            bank_operation.mcc not in existing_mcc and not operation.category_id
+            bank_operation.mcc not in existing_mcc and operation.category_id == 9999
         ) for bank_operation, operation in zip(bank_operations, result)
     )
