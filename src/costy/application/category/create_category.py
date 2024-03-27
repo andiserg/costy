@@ -28,7 +28,7 @@ class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):
         if not user_id:
             raise AuthenticationError("User not found")
 
-        category = self.category_service.create(data.name, CategoryType.PERSONAL, user_id)
+        category = self.category_service.create(data.name, CategoryType.PERSONAL, user_id, data.view)
         await self.category_db_gateway.save_category(category)
         category_id = category.id
         await self.uow.commit()

@@ -21,7 +21,7 @@ from costy.infrastructure.db.main import (
     get_metadata,
     get_sessionmaker,
 )
-from costy.infrastructure.db.orm import create_tables
+from costy.infrastructure.db.tables import create_tables
 from costy.main.ioc import IoC
 from costy.main.web import singleton
 from costy.presentation.api.dependencies.id_provider import get_id_provider

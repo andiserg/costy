@@ -15,7 +15,7 @@ from costy.domain.sentinel import Sentinel
 from costy.presentation.interactor_factory import InteractorFactory
 
 
-@dataclass(kw_only=True)
+@dataclass(slots=True, kw_only=True)
 class UpdateOperationPureData:
     """Dataclass without user defined types for OpenAPI"""
     amount: int | None = None
@@ -73,7 +73,7 @@ class OperationController(Controller):
                 amount=pure_data.amount,
                 description=pure_data.description if pure_data.description != "" else Sentinel,
                 time=pure_data.time,
-                category_id=pure_data.category_id if pure_data.category_id is not None else Sentinel
+                category_id=pure_data.category_id or Sentinel
             )
             request_data = UpdateOperationDTO(OperationId(operation_id), data)
             await update_operation(request_data)

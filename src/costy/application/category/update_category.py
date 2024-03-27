@@ -36,7 +36,7 @@ class UpdateCategory(Interactor[UpdateCategoryDTO, None]):
 
     async def __call__(self, data: UpdateCategoryDTO) -> None:
         user_id = await self.id_provider.get_current_user_id()
-        category = await self.category_db_gateway.get_category(data.category_id)
+        category = await self.category_db_gateway.get_category_by_id(data.category_id)
 
         if not category or not category.id:
             raise InvalidRequestError("Category not exist")
@@ -44,6 +44,6 @@ class UpdateCategory(Interactor[UpdateCategoryDTO, None]):
         if not self.access_service.ensure_can_edit(category, user_id):
             raise AccessDeniedError("User can't edit this operation.")
 
-        self.category_service.update(category, data.data.name)
+        self.category_service.update(category, data.data.name, data.data.view)
         await self.category_db_gateway.update_category(category.id, category)
         await self.uow.commit()

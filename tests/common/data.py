@@ -42,7 +42,7 @@ async def user_entity() -> User:
 
 @fixture
 async def category_info() -> NewCategoryDTO:
-    return NewCategoryDTO("test")
+    return NewCategoryDTO(name="test", view=None)
 
 
 @fixture
