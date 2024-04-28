@@ -1,9 +1,6 @@
 from typing import Protocol
 
-from costy.application.common.bankapi.bankapi_gateway import (
-    BankAPIDeleter,
-    BankAPIReader,
-)
+from costy.application.common.bankapi.bankapi_gateway import BankAPIDeleter, BankAPIReader
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.interactor import Interactor
 from costy.application.common.uow import UoW
@@ -23,7 +20,7 @@ class DeleteBankAPI(Interactor[BankApiId, None]):
         access_service: AccessService,
         bankapi_gateway: BankAPIGateway,
         id_provider: IdProvider,
-        uow: UoW
+        uow: UoW,
     ):
         self._access_service = access_service
         self._bankapi_gateway = bankapi_gateway

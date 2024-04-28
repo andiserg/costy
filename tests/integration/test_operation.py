@@ -13,15 +13,15 @@ from tests.common.database import create_category, create_user
 async def create_depends(
         session: AsyncSession,
         tables: dict[str, Table],
-        auth_sub
+        auth_sub,
 ) -> tuple[UserId, CategoryId]:
     return (
         await create_user(session, tables["users"], auth_sub),
-        await create_category(session, tables["categories"])
+        await create_category(session, tables["categories"]),
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_db):
     _, category_id = await create_depends(db_session, db_tables, auth_sub)
 
@@ -29,7 +29,7 @@ async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_d
         headers = {"Authorization": "Bearer aboba"}
         data = {
             "amount": 100,
-            "category_id": category_id
+            "category_id": category_id,
         }
         result = await client.post("/operations", json=data, headers=headers)
 
@@ -37,19 +37,19 @@ async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_d
         assert isinstance(result.json(), int)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_list_operations(
     app,
     db_session,
     db_tables,
     auth_sub,
     retort,
-    clean_up_db
+    clean_up_db,
 ):
     user_id, category_id = await create_depends(db_session, db_tables, auth_sub)
 
     loader_retort = retort.extend(recipe=[loader(P[Operation].id, lambda _: None)])
-    retort = retort.extend(recipe=[name_mapping(Operation, skip=['id'])])
+    retort = retort.extend(recipe=[name_mapping(Operation, skip=["id"])])
 
     operations = [
         Operation(
@@ -58,7 +58,7 @@ async def test_get_list_operations(
             description="test",
             category_id=category_id,
             time=1111,
-            user_id=user_id
+            user_id=user_id,
         )
         for _ in range(10)
     ]
@@ -81,15 +81,15 @@ async def create_operation(user_id, category_id, session: AsyncSession, table, r
         description="test",
         category_id=category_id,
         time=1111,
-        user_id=user_id
+        user_id=user_id,
     )
     retort = retort.extend(
         recipe=[
             name_mapping(
                 Operation,
-                skip=['id'],
+                skip=["id"],
             ),
-        ]
+        ],
     )
     stmt = insert(table).values(retort.dump(operation))
     operation_id = (await session.execute(stmt)).inserted_primary_key[0]
@@ -97,7 +97,7 @@ async def create_operation(user_id, category_id, session: AsyncSession, table, r
     return operation_id
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_operation_own(
     app,
     db_session,
@@ -122,8 +122,8 @@ async def test_delete_operation_own(
     assert result == []
 
 
-@pytest.mark.asyncio
-@pytest.mark.skip
+@pytest.mark.asyncio()
+@pytest.mark.skip()
 async def test_delete_operation_someone(
     app,
     db_session,
@@ -149,8 +149,8 @@ async def test_delete_operation_someone(
     assert result != []
 
 
-@pytest.mark.skip
-@pytest.mark.asyncio
+@pytest.mark.skip()
+@pytest.mark.asyncio()
 async def test_delete_operation_not_exists(
     app,
     db_session,

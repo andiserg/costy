@@ -13,7 +13,12 @@ from costy.domain.models.user import UserId
 
 
 @fixture
-async def interactor(id_provider: IdProvider, category_id: OperationId, user_id: UserId, operation_info: NewOperationDTO) -> CreateOperation:
+async def interactor(
+        id_provider: IdProvider,
+        category_id: OperationId,
+        user_id: UserId,
+        operation_info: NewOperationDTO,
+) -> CreateOperation:
     operation_service = Mock()
     operation_service.create.return_value = Operation(
         id=None,
@@ -33,6 +38,6 @@ async def interactor(id_provider: IdProvider, category_id: OperationId, user_id:
     return CreateOperation(operation_service, operation_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_operation(interactor: CreateOperation, operation_info: NewOperationDTO, category_id: OperationId) -> None:
     assert await interactor(operation_info) == category_id

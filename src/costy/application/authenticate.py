@@ -17,5 +17,4 @@ class Authenticate(Interactor[LoginInputDTO, str | None]):
         self.uow = uow
 
     async def __call__(self, data: LoginInputDTO) -> str | None:
-        token = await self.auth_gateway.authenticate(data.email, data.password)
-        return token
+        return await self.auth_gateway.authenticate(data.email, data.password)

@@ -6,7 +6,7 @@ from costy.domain.models.bankapi import BankAPI
 from tests.common.database import create_user
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_bankapi(app, db_session, db_tables, auth_sub, clean_up_db):
     await create_user(db_session, db_tables["users"], auth_sub)
 
@@ -14,21 +14,21 @@ async def test_create_bankapi(app, db_session, db_tables, auth_sub, clean_up_db)
         headers = {"Authorization": "Bearer aboba"}
         data = {
             "name": "monobank",
-            "access_data": {"X-Token": "aboba"}
+            "access_data": {"X-Token": "aboba"},
         }
         result = await client.post("/bankapi", json=data, headers=headers)
 
         assert result.status_code == 201
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_bankapi(app, db_session, db_tables, auth_sub, clean_up_db, bankapi_gateway):
     user_id = await create_user(db_session, db_tables["users"], auth_sub)
 
     bankapi = BankAPI(
         user_id=user_id,
         name="monobank",
-        access_data={"X-Token": "aboba"}
+        access_data={"X-Token": "aboba"},
     )
 
     await bankapi_gateway.save_bankapi(bankapi)

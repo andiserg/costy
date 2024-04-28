@@ -32,4 +32,4 @@ class CreateCategory(Interactor[NewCategoryDTO, CategoryId]):
         await self.category_db_gateway.save_category(category)
         category_id = category.id
         await self.uow.commit()
-        return category_id  # type: ignore
+        return category_id  # type: ignore[return-value]

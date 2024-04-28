@@ -10,11 +10,11 @@ from costy.domain.services.operation import OperationService
 from costy.domain.services.user import UserService
 
 
-@pytest.mark.parametrize("domain_service, data, expected_model", [
+@pytest.mark.parametrize(["domain_service", "data", "expected_model"], [
     (
         UserService(),
         ("auth_id",),
-        User(id=None, auth_id="auth_id")
+        User(id=None, auth_id="auth_id"),
     ),
     (
         OperationService(),
@@ -26,20 +26,20 @@ from costy.domain.services.user import UserService
             time=10000,
             user_id=UserId(9999),
             category_id=CategoryId(9999),
-            bank_name=None
-        )
+            bank_name=None,
+        ),
     ),
     (
         CategoryService(),
         ("test", CategoryType.GENERAL, UserId(9999), None),
-        Category(id=None, name="test", kind=CategoryType.GENERAL.value, user_id=UserId(9999), view=None)
+        Category(id=None, name="test", kind=CategoryType.GENERAL.value, user_id=UserId(9999), view=None),
     ),
     (
         BankAPIService(),
         ("test", {"key": "test"}, UserId(9999)),
-        BankAPI(name="test", access_data={"key": "test"}, updated_at=None, user_id=UserId(9999))
-    )
+        BankAPI(name="test", access_data={"key": "test"}, updated_at=None, user_id=UserId(9999)),
+    ),
 ])
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_domain_service(domain_service, data, expected_model):  # type: ignore
     assert domain_service.create(*data) == expected_model

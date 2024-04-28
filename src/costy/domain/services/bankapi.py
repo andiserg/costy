@@ -10,7 +10,7 @@ class BankAPIService:
             name=bank_name,
             access_data=access_data,
             updated_at=None,
-            user_id=user_id
+            user_id=user_id,
         )
 
     def update_time(self, bankapi: BankAPI):

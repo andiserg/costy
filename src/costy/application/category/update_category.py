@@ -1,9 +1,6 @@
 from typing import Protocol
 
-from costy.application.common.category.category_gateway import (
-    CategoryReader,
-    CategoryUpdater,
-)
+from costy.application.common.category.category_gateway import CategoryReader, CategoryUpdater
 from costy.application.common.category.dto import UpdateCategoryDTO
 
 from ...domain.exceptions.access import AccessDeniedError

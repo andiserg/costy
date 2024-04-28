@@ -71,13 +71,13 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
                 time=1111*i,
                 user_id=user_id,
             ),
-            mcc=i*1000
+            mcc=i*1000,
         )
         for i in range(10)
     ]
 
     gateway_map = {"test_bank": bank_adapter}
-    with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), 'r') as f:
+    with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks_info = json.load(f)
 
     return BankAPIGateway(db_session, web_session, db_tables["bankapis"], retort, gateway_map, banks_info)

@@ -3,11 +3,7 @@ from typing import Protocol
 from ...domain.models.operation import Operation
 from ...domain.services.bankapi import BankAPIService
 from ...domain.services.operation import OperationService
-from ..common.bankapi.bankapi_gateway import (
-    BankAPIBulkUpdater,
-    BankAPIOperationsReader,
-    BanksAPIReader,
-)
+from ..common.bankapi.bankapi_gateway import BankAPIBulkUpdater, BankAPIOperationsReader, BanksAPIReader
 from ..common.category.category_gateway import CategoriesFinder, CategoryFinder
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
@@ -32,7 +28,7 @@ class UpdateBankOperations(Interactor[None, None]):
         operation_gateway: OperationsBulkSaver,
         category_gateway: CategoryGateway,
         id_provider: IdProvider,
-        uow: UoW
+        uow: UoW,
     ):
         self._bankapi_service = bankapi_service
         self._operation_service = operation_service

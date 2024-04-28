@@ -3,15 +3,9 @@ from unittest.mock import Mock
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.common.operation.dto import (
-    UpdateOperationData,
-    UpdateOperationDTO,
-)
+from costy.application.common.operation.dto import UpdateOperationData, UpdateOperationDTO
 from costy.application.common.uow import UoW
-from costy.application.operation.update_operation import (
-    OperationGateway,
-    UpdateOperation,
-)
+from costy.application.operation.update_operation import OperationGateway, UpdateOperation
 from costy.domain.exceptions.access import AccessDeniedError
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.category import CategoryId
@@ -26,7 +20,7 @@ async def interactor(
         operation_id: OperationId,
         user_id: UserId,
         category_id: CategoryId,
-        id_provider
+        id_provider,
 ) -> UpdateOperation:
     operation_gateway = Mock(spec=OperationGateway)
     operation_gateway.get_operation.return_value = Operation(
@@ -35,13 +29,13 @@ async def interactor(
         description="desc",
         time=1111,
         user_id=user_id,
-        category_id=category_id
+        category_id=category_id,
     )
     uow = Mock(spec=UoW)
     return UpdateOperation(OperationService(), AccessService(), operation_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_operation(interactor: UpdateOperation, operation_id: OperationId):
     update_data = UpdateOperationDTO(operation_id, UpdateOperationData(amount=2000))
     try:

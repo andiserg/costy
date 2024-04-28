@@ -30,7 +30,7 @@ class OperationsBulkSaver(Protocol):
 class OperationsReader(Protocol):
     @abstractmethod
     async def find_operations_by_user(
-        self, user_id: UserId, from_time: int | None, to_time: int | None
+        self, user_id: UserId, from_time: int | None, to_time: int | None,
     ) -> list[Operation]:
         raise NotImplementedError
 

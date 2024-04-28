@@ -25,7 +25,7 @@ class UpdateOperationPureData:
 
 
 class OperationController(Controller):
-    path = '/operations'
+    path = "/operations"
     tags = ("Operations",)
 
     @get()
@@ -73,7 +73,7 @@ class OperationController(Controller):
                 amount=pure_data.amount,
                 description=pure_data.description if pure_data.description != "" else Sentinel,
                 time=pure_data.time,
-                category_id=pure_data.category_id or Sentinel
+                category_id=pure_data.category_id or Sentinel,
             )
             request_data = UpdateOperationDTO(OperationId(operation_id), data)
             await update_operation(request_data)

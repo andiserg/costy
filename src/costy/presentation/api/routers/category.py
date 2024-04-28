@@ -2,11 +2,7 @@ from dataclasses import dataclass, field
 
 from litestar import Controller, delete, get, post, put
 
-from costy.application.common.category.dto import (
-    NewCategoryDTO,
-    UpdateCategoryData,
-    UpdateCategoryDTO,
-)
+from costy.application.common.category.dto import NewCategoryDTO, UpdateCategoryData, UpdateCategoryDTO
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.sentinel import Sentinel
@@ -20,7 +16,7 @@ class UpdateCategoryPureData:
 
 
 class CategoryController(Controller):
-    path = '/categories'
+    path = "/categories"
     tags = ("Categories",)
 
     @get()
@@ -30,7 +26,7 @@ class CategoryController(Controller):
         id_provider: IdProvider,
     ) -> list[Category]:
         async with ioc.read_available_categories(
-            id_provider
+            id_provider,
         ) as read_available_categories:
             return await read_available_categories()
 
@@ -67,7 +63,7 @@ class CategoryController(Controller):
                 CategoryId(category_id),
                 UpdateCategoryData(
                     name=data.name,
-                    view=data.view if data.view != {} else Sentinel
-                )
+                    view=data.view if data.view != {} else Sentinel,
+                ),
             )
             await update_category(input_data)

@@ -1,17 +1,13 @@
 from typing import Protocol
 
-from costy.application.common.operation.dto import UpdateOperationDTO
-from costy.application.common.operation.operation_gateway import (
-    OperationReader,
-    OperationUpdater,
-)
-
 from ...domain.exceptions.access import AccessDeniedError
 from ...domain.exceptions.base import InvalidRequestError
 from ...domain.services.access import AccessService
 from ...domain.services.operation import OperationService
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
+from ..common.operation.dto import UpdateOperationDTO
+from ..common.operation.operation_gateway import OperationReader, OperationUpdater
 from ..common.uow import UoW
 
 
@@ -49,7 +45,7 @@ class UpdateOperation(Interactor[UpdateOperationDTO, None]):
             data.data.amount,
             data.data.description,
             data.data.time,
-            data.data.category_id
+            data.data.category_id,
         )
         await self.operation_db_gateway.update_operation(operation.id, operation)
         await self.uow.commit()

@@ -32,7 +32,7 @@ async def interactor(id_provider: IdProvider, bankapi_id) -> CreateBankAPI:
     return CreateBankAPI(BankAPIService(), bankapi_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_bankapi(interactor: CreateBankAPI):
     data = CreateBankApiDTO(name="test_bank", access_data={"key": "value"})
     try:
@@ -41,7 +41,7 @@ async def test_create_bankapi(interactor: CreateBankAPI):
         pytest.fail("Interactor raises InvalidRequestError")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_bankapi_with_invalid_bank(interactor: CreateBankAPI):
     data = CreateBankApiDTO(name="invalid_bank", access_data={"key": "value"})
 
@@ -51,7 +51,7 @@ async def test_create_bankapi_with_invalid_bank(interactor: CreateBankAPI):
     assert error.value.args[0] == "This bank is not supported."
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_bankapi_with_invalid_access_data(interactor: CreateBankAPI):
     data = CreateBankApiDTO(name="test_bank", access_data={"invalid_key": "value"})
 

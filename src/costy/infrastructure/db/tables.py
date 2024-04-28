@@ -1,12 +1,4 @@
-from sqlalchemy import (
-    JSON,
-    Column,
-    ForeignKey,
-    Integer,
-    MetaData,
-    String,
-    Table,
-)
+from sqlalchemy import JSON, Column, ForeignKey, Integer, MetaData, String, Table
 
 
 def create_tables(metadata: MetaData) -> dict[str, Table]:
@@ -15,7 +7,7 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             "users",
             metadata,
             Column("id", Integer, primary_key=True),
-            Column("auth_id", String, unique=True, index=True, nullable=False)
+            Column("auth_id", String, unique=True, index=True, nullable=False),
         ),
         "operations": Table(
             "operations",
@@ -29,9 +21,9 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
                 "category_id",
                 Integer,
                 ForeignKey("categories.id"),
-                nullable=True
+                nullable=True,
             ),
-            Column("bank_name", String, nullable=True)
+            Column("bank_name", String, nullable=True),
         ),
         "categories": Table(
             "categories",
@@ -40,7 +32,7 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             Column("name", String, nullable=False),
             Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
             Column("kind", String, default="general"),
-            Column("view", JSON, nullable=True)
+            Column("view", JSON, nullable=True),
         ),
         "bankapis": Table(
             "bankapis",
@@ -55,6 +47,6 @@ def create_tables(metadata: MetaData) -> dict[str, Table]:
             "category_mcc",
             metadata,
             Column("category_id", Integer, ForeignKey("categories.id")),
-            Column("mcc", Integer)
-        )
+            Column("mcc", Integer),
+        ),
     }

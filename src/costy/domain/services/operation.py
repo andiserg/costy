@@ -30,8 +30,8 @@ class OperationService:
         time: int | None = None,
         category_id: CategoryId | None | type[Sentinel] = Sentinel,
     ):
-        exclude_params = ('self', 'operation', 'exclude_params', 'sentinel_params')
-        sentinel_params = ('description', 'category_id')
+        exclude_params = ("self", "operation", "exclude_params", "sentinel_params")
+        sentinel_params = ("description", "category_id")
         params = {
             name: value for name, value in locals().items() if
             (name not in exclude_params) and
@@ -45,4 +45,4 @@ class OperationService:
             setattr(operation, name, value)
 
     def set_category(self, operation: Operation, category: Category) -> None:
-        operation.category_id = category.id  # type: ignore
+        operation.category_id = category.id

@@ -27,7 +27,7 @@ class CategoryFinder(Protocol):
         self,
         name: SentinelOptional[str] = Sentinel,
         kind: SentinelOptional[str] = Sentinel,
-        user_id: SentinelOptional[UserId] = Sentinel
+        user_id: SentinelOptional[UserId] = Sentinel,
     ) -> Category | None:
         raise NotImplementedError
 

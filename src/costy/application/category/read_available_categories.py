@@ -24,7 +24,7 @@ class ReadAvailableCategories(Interactor[None, List[Category]]):
         self.uow = uow
 
     async def __call__(
-        self, data: Optional[ReadAvailableCategoriesDTO] = None
+        self, data: Optional[ReadAvailableCategoriesDTO] = None,
     ) -> List[Category]:
         user_id = await self.id_provider.get_current_user_id()
         return await self.category_db_gateway.find_categories(user_id)

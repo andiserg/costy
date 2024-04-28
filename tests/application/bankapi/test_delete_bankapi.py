@@ -29,7 +29,7 @@ async def interactor(id_provider: IdProvider, bankapi_id, user_id) -> DeleteBank
     return DeleteBankAPI(AccessService(), bankapi_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_bankapi(interactor: DeleteBankAPI, bankapi_id):
     try:
         await interactor(bankapi_id)
@@ -37,7 +37,7 @@ async def test_delete_bankapi(interactor: DeleteBankAPI, bankapi_id):
         pytest.fail("Interactor raises InvalidRequestError")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_bankapi_with_invalid_id(interactor: DeleteBankAPI):
     with pytest.raises(InvalidRequestError) as error:
         await interactor(BankApiId(10000))
@@ -45,7 +45,7 @@ async def test_delete_bankapi_with_invalid_id(interactor: DeleteBankAPI):
     assert error.value.args[0] == "Invalid bankapi id."
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_bankapi_without_permissions(interactor: DeleteBankAPI, bankapi_id):
     interactor._id_provider.get_current_user_id.return_value = -1  # type: ignore
 

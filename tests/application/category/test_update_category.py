@@ -5,10 +5,7 @@ from pytest_asyncio import fixture
 
 from costy.adapters.db.category_gateway import CategoryGateway
 from costy.application.category.update_category import UpdateCategory
-from costy.application.common.category.dto import (
-    UpdateCategoryData,
-    UpdateCategoryDTO,
-)
+from costy.application.common.category.dto import UpdateCategoryData, UpdateCategoryDTO
 from costy.application.common.uow import UoW
 from costy.domain.exceptions.access import AccessDeniedError
 from costy.domain.exceptions.base import InvalidRequestError
@@ -22,19 +19,19 @@ from costy.domain.services.category import CategoryService
 async def interactor(
         user_id: UserId,
         category_id: CategoryId,
-        id_provider
+        id_provider,
 ) -> UpdateCategory:
     category_gateway = Mock(spec=CategoryGateway)
     category_gateway.get_category_by_id.return_value = Category(
         id=category_id,
         name="test",
-        user_id=user_id
+        user_id=user_id,
     )
     uow = Mock(spec=UoW)
     return UpdateCategory(CategoryService(), AccessService(), category_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_category(interactor: UpdateCategory, category_id: CategoryId):
     update_data = UpdateCategoryDTO(category_id, UpdateCategoryData(name="upd_test"))
     try:

@@ -3,9 +3,7 @@ from unittest.mock import Mock
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.category.read_available_categories import (
-    ReadAvailableCategories,
-)
+from costy.application.category.read_available_categories import ReadAvailableCategories
 from costy.application.common.category.category_gateway import CategoriesReader
 from costy.application.common.uow import UoW
 
@@ -19,6 +17,6 @@ async def interactor(id_provider, category_list) -> ReadAvailableCategories:
     return ReadAvailableCategories(category_service, category_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_read_list_operation(interactor, category_list):
     assert await interactor() == category_list
