@@ -85,7 +85,7 @@ class BankAPIGateway(
         for stmt in stmts:
             await self._db_session.execute(stmt)
 
-    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
+    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO] | None:
         bank_gateway = self._bank_gateways[bankapi.name]
         from_time = datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
         return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id, from_time)

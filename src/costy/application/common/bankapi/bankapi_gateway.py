@@ -16,7 +16,7 @@ class BankAPISaver(Protocol):
 @runtime_checkable
 class BankAPIOperationsReader(Protocol):
     @abstractmethod
-    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
+    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO] | None:
         raise NotImplementedError
 
 

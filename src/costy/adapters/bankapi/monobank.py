@@ -16,7 +16,8 @@ logger = logging.getLogger("bankAPI: " + __name__)
 class MonobankGateway(BankGateway):
     SUCCESS_CODE = 200
     FAILED_CODE = 403
-    OPERATION_LIMIT = 500
+    OPERATIONS_LIMIT = 500
+    OPERATIONS_DAYS_LIMIT = 31
 
     def __init__(
         self,
@@ -34,18 +35,18 @@ class MonobankGateway(BankGateway):
         user_id: UserId,
         from_time: datetime | None = None,
     ) -> list[BankOperationDTO] | None:
-        to_time = datetime.now()
-        from_time = from_time or datetime.now() - timedelta(days=31)
+        to_timestamp = int(datetime.now().timestamp())
 
-        if from_time > to_time:
-            raise InvalidRequestError("Parameter to_time must be greater than from_time")
-
-        from_time = int(from_time.timestamp())  # type: ignore[assignment]
-        to_time = int(to_time.timestamp())  # type: ignore[assignment]
+        if from_time:
+            from_timestamp = int(from_time.timestamp())
+            if from_timestamp > to_timestamp:
+                raise InvalidRequestError("Parameter to_time must be greater than from_time")
+        else:
+            from_timestamp = int((datetime.now() - timedelta(days=self.OPERATIONS_DAYS_LIMIT)).timestamp())
 
         total_operations = []
-        while to_time:
-            url = f"{self._bank_conf['url']}/{from_time}/{to_time}"
+        while to_timestamp:
+            url = f"{self._bank_conf['url']}/{from_timestamp}/{to_timestamp}"
             response = await self._web_session.get(url, headers=access_data)
 
             if response.status_code == self.FAILED_CODE:
@@ -67,8 +68,8 @@ class MonobankGateway(BankGateway):
             operations = response.json()
             total_operations.extend(operations)
 
-            # The maximum operation limit in response is 500 items
-            to_time = operations[-1]["time"] if len(operations) == self.OPERATION_LIMIT else None
+            # The maximum operations limit in response is 500 items
+            to_timestamp = operations[-1]["time"] if len(operations) == self.OPERATIONS_LIMIT else None
 
         for operation in total_operations:
             operation["user_id"] = user_id

@@ -46,6 +46,11 @@ class UpdateBankOperations(Interactor[None, None]):
         operations: list[Operation] = []
         for bankapi in bankapis:
             bank_operations = await self._bankapi_gateway.read_bank_operations(bankapi)
+
+            if bank_operations is None:
+                # if bank_operations is None, it means a BankAPI communication error
+                continue
+
             mcc_codes = tuple(operation.mcc for operation in bank_operations)
             mcc_categories = await self._category_gateway.find_categories_by_mcc_codes(mcc_codes)
 

@@ -13,5 +13,5 @@ class BankGateway(Protocol):
         access_data: dict,
         user_id: UserId,
         from_time: datetime | None = None,
-    ) -> list[BankOperationDTO]:
+    ) -> list[BankOperationDTO] | None:
         raise NotImplementedError
