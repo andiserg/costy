@@ -13,7 +13,8 @@ dependencies = [
     'alembic',
     'adaptix',
     'aiohttp',
-    'python-jose'
+    'python-jose',
+    'prometheus-client'
 ]
 
 [project.optional-dependencies]
