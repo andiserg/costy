@@ -1,9 +1,9 @@
+import logging
 from datetime import datetime, timedelta
 from typing import Any, Literal
 
 from httpx import AsyncClient
-from jose import exceptions as jwt_exc
-from jose import jwt
+from jose import exceptions as jwt_exc, jwt
 
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.user.user_gateway import UserReader
@@ -15,13 +15,15 @@ Algorithm = Literal[
     "RS256", "RS384", "RS512",
 ]
 
+logger = logging.getLogger(__name__)
+
 
 class JwtTokenProcessor:
     def __init__(
-            self,
-            algorithm: Algorithm,
-            audience: str,
-            issuer: str,
+        self,
+        algorithm: Algorithm,
+        audience: str,
+        issuer: str,
     ):
         self.algorithm = algorithm
         self.audience = audience
@@ -36,19 +38,20 @@ class JwtTokenProcessor:
                     "kid": key["kid"],
                     "use": key["use"],
                     "n": key["n"],
-                    "e": key["e"]
+                    "e": key["e"],
                 }
         return rsa_key
 
     def validate_token(self, token: str, jwks: dict[Any, Any]) -> str:
         invalid_header_error = AuthenticationError(
-            {"detail": "Invalid header. Use an RS256 signed JWT Access Token"}
+            {"detail": "Invalid header. Use an RS256 signed JWT Access Token"},
         )
         try:
             unverified_header = jwt.get_unverified_header(token)
         except jwt_exc.JWTError:
             raise invalid_header_error
         if unverified_header["alg"] == "HS256":
+            logger.info("Token decode error. Invalid encode algorithm: %s", unverified_header["alg"])
             raise invalid_header_error
         rsa_key = self._fetch_rsa_key(jwks, unverified_header)
         try:
@@ -57,18 +60,21 @@ class JwtTokenProcessor:
                 rsa_key,
                 algorithms=[self.algorithm],
                 audience=self.audience,
-                issuer=self.issuer
+                issuer=self.issuer,
             )
             return payload["sub"].replace("auth0|", "")
         except jwt_exc.ExpiredSignatureError:
             raise AuthenticationError({"detail": "token is expired"})
         except jwt_exc.JWTClaimsError:
+            message = "incorrect claims (check audience and issuer)"
+            logger.exception("Auth token resolving fail. Message: %s", message)
             raise AuthenticationError(
-                {"detail": "incorrect claims (check audience and issuer)"}
+                {"detail": "incorrect claims (check audience and issuer)"},
             )
-        except Exception:
+        except Exception as e:
+            logger.warning("Auth token resolving unknown error. Message: %s", e.args)
             raise AuthenticationError(
-                {"detail": "Unable to parse authentication token."}
+                {"detail": "Unable to parse authentication token."},
             )
 
 
@@ -96,10 +102,10 @@ class KeySetProvider:
 
 class TokenIdProvider(IdProvider):
     def __init__(
-            self,
-            token_processor: JwtTokenProcessor,
-            key_set_provider: KeySetProvider,
-            token: str | None = None
+        self,
+        token_processor: JwtTokenProcessor,
+        key_set_provider: KeySetProvider,
+        token: str | None = None,
     ):
         self.token_processor = token_processor
         self.key_set_provider = key_set_provider

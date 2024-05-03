@@ -51,7 +51,7 @@ async def operation_info() -> NewOperationDTO:
         amount=100,
         description="description",
         time=10000,
-        category_id=CategoryId(999)
+        category_id=CategoryId(999),
     )
 
 
@@ -88,7 +88,7 @@ async def credentials() -> dict[str, str]:  # type: ignore
     try:
         return {
             "username": os.environ["TEST_AUTH_USER"],
-            "password": os.environ["TEST_AUTH_PASSWORD"]
+            "password": os.environ["TEST_AUTH_PASSWORD"],
         }
     except KeyError:
         pytest.fail("No test user credentials.")
@@ -103,7 +103,7 @@ async def operation_list(user_id, category_id):
             amount=100,
             description="test description",
             category_id=category_id,
-            time=1111
+            time=1111,
         ),
         Operation(
             id=1,
@@ -111,7 +111,7 @@ async def operation_list(user_id, category_id):
             amount=100,
             description="test description",
             category_id=category_id,
-            time=1111
+            time=1111,
         ),
         Operation(
             id=2,
@@ -119,7 +119,7 @@ async def operation_list(user_id, category_id):
             amount=100,
             description="test description",
             category_id=category_id,
-            time=1111
+            time=1111,
         ),
         Operation(
             id=3,
@@ -127,8 +127,8 @@ async def operation_list(user_id, category_id):
             amount=100,
             description="test description",
             category_id=category_id,
-            time=1111
-        )
+            time=1111,
+        ),
     ]
 
 
@@ -153,9 +153,9 @@ async def bank_operations(user_id):
                 description="desc",
                 time=1111,
                 user_id=user_id,
-                category_id=None
+                category_id=None,
             ),
-            mcc=choice(mcc_list)
+            mcc=choice(mcc_list),
         )
         for i in range(randint(5, 10))
     ]

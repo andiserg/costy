@@ -14,7 +14,7 @@ class BankAPIController(Controller):
     async def get_bankapi_list(
         self,
         ioc: InteractorFactory,
-        id_provider: IdProvider
+        id_provider: IdProvider,
     ) -> list[BankAPI]:
         async with ioc.read_bankapi_list(id_provider) as read_bankapi_list:
             return await read_bankapi_list()
@@ -43,7 +43,7 @@ class BankAPIController(Controller):
     async def update_bank_operations(
         self,
         ioc: InteractorFactory,
-        id_provider: IdProvider
+        id_provider: IdProvider,
     ) -> None:
         async with ioc.update_bank_operations(id_provider) as update_bank_operations:
             return await update_bank_operations()

@@ -23,12 +23,12 @@ async def interactor(id_provider, user_id) -> ReadBankapiList:
             user_id=user_id,
             name="bank2",
             access_data={"key2": "value2"},
-        )
+        ),
     ]
 
     return ReadBankapiList(bankapi_gateway, id_provider)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_bankapi_list(interactor):
     assert await interactor()

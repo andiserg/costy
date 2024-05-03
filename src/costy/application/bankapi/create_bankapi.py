@@ -19,7 +19,7 @@ class CreateBankAPI(Interactor[CreateBankApiDTO, None]):
         bankapi_service: BankAPIService,
         bankapi_gateway: BankAPIGateway,
         id_provider: IdProvider,
-        uow: UoW
+        uow: UoW,
     ) -> None:
         self.bankapi_service = bankapi_service
         self.bankapi_gateway = bankapi_gateway
@@ -40,7 +40,7 @@ class CreateBankAPI(Interactor[CreateBankApiDTO, None]):
         bankapi = self.bankapi_service.create(
             data.name,
             data.access_data,
-            user_id
+            user_id,
         )
 
         await self.bankapi_gateway.save_bankapi(bankapi)

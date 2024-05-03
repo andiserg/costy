@@ -24,7 +24,7 @@ class CategoryGateway(
     CategoryDeleter,
     CategoriesReader,
     CategoryUpdater,
-    CategoriesFinder
+    CategoriesFinder,
 ):
     def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table, retort: Retort):
         self.session = session
@@ -42,7 +42,7 @@ class CategoryGateway(
         self,
         name: SentinelOptional[str] = Sentinel,
         kind: SentinelOptional[str] = Sentinel,
-        user_id: SentinelOptional[UserId] = Sentinel
+        user_id: SentinelOptional[UserId] = Sentinel,
     ) -> Category | None:
         if not any(param is not Sentinel for param in (name, kind, user_id)):
             return None
@@ -50,7 +50,7 @@ class CategoryGateway(
         params = {
             "name": name,
             "kind": kind,
-            "user_id": user_id
+            "user_id": user_id,
         }
 
         stmt = select(self.category_table)
@@ -59,7 +59,7 @@ class CategoryGateway(
                 stmt = stmt.where(self.category_table.c[param_name] == param_value)
 
         result = (await self.session.execute(stmt)).fetchone()
-        return self.retort.load(result._mapping, Category)
+        return self.retort.load(result._mapping, Category)  # type: ignore[union-attr]
 
     async def save_category(self, category: Category) -> None:
         values = self.retort.dump(category)
@@ -75,7 +75,7 @@ class CategoryGateway(
     async def find_categories(self, user_id: UserId) -> list[Category]:
         filter_expr = or_(
             self.category_table.c.user_id == user_id,
-            self.category_table.c.user_id == None  # noqa: E711
+            self.category_table.c.user_id == None,  # noqa: E711
         )
         query = select(self.category_table).where(filter_expr)
         result = await self.session.execute(query)

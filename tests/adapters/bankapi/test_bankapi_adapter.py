@@ -8,7 +8,7 @@ from costy.domain.services.bankapi import BankAPIService
 from tests.common.database import create_user
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
     user_id = await create_user(db_session, db_tables["users"])
     bankapi = BankAPIService().create("test", {}, user_id)
@@ -18,7 +18,7 @@ async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
     assert bankapi.id is not None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_bankapi(bankapi_gateway, db_session, db_tables):
     user_id = await create_user(db_session, db_tables["users"])
     bankapi = BankAPIService().create("test", {}, user_id)
@@ -28,11 +28,11 @@ async def test_delete_bankapi(bankapi_gateway, db_session, db_tables):
 
     assert list(await db_session.execute(
         select(db_tables["bankapis"])
-        .where(db_tables["bankapis"].c.id == bankapi.id)
+        .where(db_tables["bankapis"].c.id == bankapi.id),
     )) == []
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_supported_banks(bankapi_gateway):
     with open(str(importlib.resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks = json.load(f)
@@ -40,7 +40,7 @@ async def test_get_supported_banks(bankapi_gateway):
     assert await bankapi_gateway.get_supported_banks() == tuple(banks.keys())
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
     user_id = await create_user(db_session, db_tables["users"])
     created_bankapis = [
@@ -56,7 +56,7 @@ async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
     assert bankapis == created_bankapis
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
     service = BankAPIService()
 
@@ -78,7 +78,7 @@ async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
     assert bankapis == created_bankapis
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_read_bank_operations(bankapi_gateway, user_id):
     bankapi = BankAPIService().create("test_bank", {}, user_id)
     assert await bankapi_gateway.read_bank_operations(bankapi)

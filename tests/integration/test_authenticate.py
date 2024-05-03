@@ -10,13 +10,13 @@ async def credentials() -> dict[str, str]:  # type: ignore
     try:
         return {
             "email": os.environ["TEST_AUTH_USER"],
-            "password": os.environ["TEST_AUTH_PASSWORD"]
+            "password": os.environ["TEST_AUTH_PASSWORD"],
         }
     except KeyError:
         pytest.fail("No test user credentials.")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate(app, credentials):
     async with AsyncTestClient(app=app) as client:
         response = await client.post("/auth", json=credentials)

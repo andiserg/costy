@@ -18,14 +18,10 @@ from costy.application.authenticate import Authenticate
 from costy.application.bankapi.create_bankapi import CreateBankAPI
 from costy.application.bankapi.delete_bankapi import DeleteBankAPI
 from costy.application.bankapi.read_bankapi_list import ReadBankapiList
-from costy.application.bankapi.update_bank_operations import (
-    UpdateBankOperations,
-)
+from costy.application.bankapi.update_bank_operations import UpdateBankOperations
 from costy.application.category.create_category import CreateCategory
 from costy.application.category.delete_category import DeleteCategory
-from costy.application.category.read_available_categories import (
-    ReadAvailableCategories,
-)
+from costy.application.category.read_available_categories import ReadAvailableCategories
 from costy.application.category.update_category import UpdateCategory
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
@@ -58,7 +54,7 @@ class IoC(InteractorFactory):
         tables: dict[str, Table],
         retort: Retort,
         auth_settings: AuthSettings,
-        banks_conf: dict[str, Any]
+        banks_conf: dict[str, Any],
     ):
         self._session_factory = session_factory
         self._web_session = web_session
@@ -70,7 +66,7 @@ class IoC(InteractorFactory):
 
     def _init_bank_gateways(self) -> dict[str, BankGateway]:
         return {
-            "monobank": MonobankGateway(self._web_session, self._banks_conf, self._retort)
+            "monobank": MonobankGateway(self._web_session, self._banks_conf, self._retort),
         }
 
     @asynccontextmanager
@@ -85,7 +81,7 @@ class IoC(InteractorFactory):
         async with self._init_depends() as depends:
             yield Authenticate(
                 AuthGateway(depends.session, self._web_session, self._tables["users"], self._settings),
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
@@ -95,103 +91,103 @@ class IoC(InteractorFactory):
                 UserService(),
                 depends.user_gateway,
                 AuthGateway(depends.session, self._web_session, self._tables["users"], self._settings),
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def create_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[CreateOperation]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield CreateOperation(
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
-                id_provider, depends.uow
+                id_provider, depends.uow,
             )
 
     @asynccontextmanager
     async def read_list_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[ReadListOperation]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield ReadListOperation(
                 OperationService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def delete_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[DeleteOperation]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield DeleteOperation(
                 AccessService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def update_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[UpdateOperation]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield UpdateOperation(
                 OperationService(),
                 AccessService(),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def create_category(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[CreateCategory]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield CreateCategory(
                 CategoryService(),
                 CategoryGateway(
                     depends.session,
                     self._tables["categories"],
                     self._tables["category_mcc"],
-                    self._retort
+                    self._retort,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def delete_category(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[DeleteCategory]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield DeleteCategory(
                 AccessService(),
                 CategoryGateway(
                     depends.session,
                     self._tables["categories"],
                     self._tables["category_mcc"],
-                    self._retort
+                    self._retort,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def update_category(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[UpdateCategory]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield UpdateCategory(
                 CategoryService(),
                 AccessService(),
@@ -199,36 +195,36 @@ class IoC(InteractorFactory):
                     depends.session,
                     self._tables["categories"],
                     self._tables["category_mcc"],
-                    self._retort
+                    self._retort,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def read_available_categories(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncIterator[ReadAvailableCategories]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield ReadAvailableCategories(
                 CategoryService(),
                 CategoryGateway(
                     depends.session,
                     self._tables["categories"],
                     self._tables["category_mcc"],
-                    self._retort
+                    self._retort,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def create_bankapi(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncIterator[CreateBankAPI]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield CreateBankAPI(
                 BankAPIService(),
                 BankAPIGateway(
@@ -237,18 +233,18 @@ class IoC(InteractorFactory):
                     self._tables["bankapis"],
                     self._retort,
                     self._bank_gateways,
-                    self._banks_conf
+                    self._banks_conf,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def delete_bankapi(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncIterator[DeleteBankAPI]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield DeleteBankAPI(
                 AccessService(),
                 BankAPIGateway(
@@ -257,18 +253,18 @@ class IoC(InteractorFactory):
                     self._tables["bankapis"],
                     self._retort,
                     self._bank_gateways,
-                    self._banks_conf
+                    self._banks_conf,
                 ),
                 id_provider,
-                depends.uow
+                depends.uow,
             )
 
     @asynccontextmanager
     async def read_bankapi_list(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncIterator[ReadBankapiList]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield ReadBankapiList(
                 BankAPIGateway(
                     depends.session,
@@ -276,17 +272,17 @@ class IoC(InteractorFactory):
                     self._tables["bankapis"],
                     self._retort,
                     self._bank_gateways,
-                    self._banks_conf
+                    self._banks_conf,
                 ),
                 id_provider,
             )
 
     @asynccontextmanager
     async def update_bank_operations(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncIterator[UpdateBankOperations]:
         async with self._init_depends() as depends:
-            id_provider.user_gateway = depends.user_gateway  # type: ignore
+            id_provider.user_gateway = depends.user_gateway  # type: ignore[attr-defined]
             yield UpdateBankOperations(
                 BankAPIService(),
                 OperationService(),
@@ -296,14 +292,14 @@ class IoC(InteractorFactory):
                     self._tables["bankapis"],
                     self._retort,
                     self._bank_gateways,
-                    self._banks_conf
+                    self._banks_conf,
                 ),
                 OperationGateway(depends.session, self._tables["operations"], self._retort),
                 CategoryGateway(
                     depends.session,
                     self._tables["categories"],
                     self._tables["category_mcc"],
-                    self._retort
+                    self._retort,
                 ),
                 id_provider,
                 depends.uow,

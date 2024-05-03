@@ -1,11 +1,10 @@
-from costy.application.common.user.dto import NewUserDTO
-from costy.application.common.user.user_gateway import UserSaver
-
 from ...domain.models.user import UserId
 from ...domain.services.user import UserService
 from ..common.auth_gateway import AuthRegister
 from ..common.interactor import Interactor
 from ..common.uow import UoW
+from ..common.user.dto import NewUserDTO
+from ..common.user.user_gateway import UserSaver
 
 
 class CreateUser(Interactor[NewUserDTO, UserId]):
@@ -27,4 +26,4 @@ class CreateUser(Interactor[NewUserDTO, UserId]):
         await self.user_db_gateway.save_user(user)
         user_id = user.id
         await self.uow.commit()
-        return user_id  # type: ignore
+        return user_id  # type: ignore[return-value]

@@ -28,7 +28,7 @@ class BankAPIGateway(
     BankAPIReader,
     BanksAPIReader,
     BankAPIBulkUpdater,
-    BankAPIOperationsReader
+    BankAPIOperationsReader,
 ):
     def __init__(
         self,
@@ -37,7 +37,7 @@ class BankAPIGateway(
         table: Table,
         retort: Retort,
         bank_gateways: dict[str, BankGateway],
-        banks_info: dict[str, dict]
+        banks_info: dict[str, dict],
     ) -> None:
         self._db_session = db_session
         self._web_session = web_session
@@ -52,7 +52,7 @@ class BankAPIGateway(
         return self._retort.load(result, BankAPI) if result else None
 
     async def save_bankapi(self, bankapi: BankAPI) -> None:
-        retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=['id'])])
+        retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
         values = retort.dump(bankapi)
         query = insert(self._table).values(**values)
         result = await self._db_session.execute(query)
@@ -85,7 +85,7 @@ class BankAPIGateway(
         for stmt in stmts:
             await self._db_session.execute(stmt)
 
-    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
+    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO] | None:
         bank_gateway = self._bank_gateways[bankapi.name]
         from_time = datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
         return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id, from_time)

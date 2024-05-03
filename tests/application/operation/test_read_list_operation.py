@@ -4,9 +4,7 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.application.common.operation.dto import ListOperationDTO
-from costy.application.common.operation.operation_gateway import (
-    OperationsReader,
-)
+from costy.application.common.operation.operation_gateway import OperationsReader
 from costy.application.common.uow import UoW
 from costy.application.operation.read_list_operation import ReadListOperation
 
@@ -20,7 +18,7 @@ async def interactor(id_provider, operation_list) -> ReadListOperation:
     return ReadListOperation(operation_service, operation_gateway, id_provider, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_read_list_operation(interactor, operation_list):
     data = ListOperationDTO(from_time=None, to_time=None)
     assert await interactor(data) == operation_list

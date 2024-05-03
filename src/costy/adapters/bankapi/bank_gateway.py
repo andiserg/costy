@@ -9,9 +9,9 @@ from costy.domain.models.user import UserId
 class BankGateway(Protocol):
     @abstractmethod
     async def fetch_operations(
-            self,
-            access_data: dict,
-            user_id: UserId,
-            from_time: datetime | None = None
-    ) -> list[BankOperationDTO]:
+        self,
+        access_data: dict,
+        user_id: UserId,
+        from_time: datetime | None = None,
+    ) -> list[BankOperationDTO] | None:
         raise NotImplementedError

@@ -8,7 +8,7 @@ class ReadBankapiList(Interactor[None, list[BankAPI]]):
     def __init__(
         self,
         bankapi_gateway: BanksAPIReader,
-        id_provider: IdProvider
+        id_provider: IdProvider,
     ):
         self._bankapi_gateway = bankapi_gateway
         self._id_provider = id_provider

@@ -5,14 +5,10 @@ from costy.application.authenticate import Authenticate
 from costy.application.bankapi.create_bankapi import CreateBankAPI
 from costy.application.bankapi.delete_bankapi import DeleteBankAPI
 from costy.application.bankapi.read_bankapi_list import ReadBankapiList
-from costy.application.bankapi.update_bank_operations import (
-    UpdateBankOperations,
-)
+from costy.application.bankapi.update_bank_operations import UpdateBankOperations
 from costy.application.category.create_category import CreateCategory
 from costy.application.category.delete_category import DeleteCategory
-from costy.application.category.read_available_categories import (
-    ReadAvailableCategories,
-)
+from costy.application.category.read_available_categories import ReadAvailableCategories
 from costy.application.category.update_category import UpdateCategory
 from costy.application.common.id_provider import IdProvider
 from costy.application.operation.create_operation import CreateOperation
@@ -33,72 +29,72 @@ class InteractorFactory(ABC):
 
     @abstractmethod
     def create_operation(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[CreateOperation]:
         pass
 
     @abstractmethod
     def read_list_operation(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[ReadListOperation]:
         pass
 
     @abstractmethod
     def delete_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncContextManager[DeleteOperation]:
         pass
 
     @abstractmethod
     def update_operation(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncContextManager[UpdateOperation]:
         pass
 
     @abstractmethod
     def create_category(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[CreateCategory]:
         pass
 
     @abstractmethod
     def delete_category(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[DeleteCategory]:
         pass
 
     @abstractmethod
     def update_category(
-            self, id_provider: IdProvider
+            self, id_provider: IdProvider,
     ) -> AsyncContextManager[UpdateCategory]:
         pass
 
     @abstractmethod
     def read_available_categories(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[ReadAvailableCategories]:
         pass
 
     @abstractmethod
     def create_bankapi(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[CreateBankAPI]:
         pass
 
     @abstractmethod
     def delete_bankapi(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[DeleteBankAPI]:
         pass
 
     @abstractmethod
     def read_bankapi_list(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[ReadBankapiList]:
         pass
 
     @abstractmethod
     def update_bank_operations(
-        self, id_provider: IdProvider
+        self, id_provider: IdProvider,
     ) -> AsyncContextManager[UpdateBankOperations]:
         pass

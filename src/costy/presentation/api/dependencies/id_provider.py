@@ -5,10 +5,11 @@ from costy.application.common.id_provider import IdProvider
 
 async def get_id_provider(
         headers: dict[str, str],
-        id_provider_pure: IdProvider
+        id_provider_blank: IdProvider,
 ) -> IdProvider:
-    if not headers.get("authorization"):
+    authorization = headers.get("authorization")
+    if not authorization:
         raise HTTPException("Not authenticated", status_code=401)
-    token_type, token = headers.get("authorization", "").split(" ")
-    id_provider_pure.token = token  # type: ignore
-    return id_provider_pure
+    token_type, token = authorization.split(" ")
+    id_provider_blank.token = token  # type: ignore[attr-defined]
+    return id_provider_blank

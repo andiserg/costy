@@ -17,6 +17,6 @@ async def interactor(user_id: UserId, login_info: LoginInputDTO, token) -> Authe
     return Authenticate(auth_gateway, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate(interactor: Authenticate, user_id: UserId, login_info: LoginInputDTO, token: str) -> None:
     assert await interactor(login_info) == token

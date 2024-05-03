@@ -28,6 +28,6 @@ async def interactor(user_id: UserId, user_info: NewUserDTO) -> CreateUser:
     return CreateUser(user_service, user_gateway, auth_gateway, uow)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_create_user(interactor: CreateUser, user_info: NewUserDTO, user_id: UserId) -> None:
     assert await interactor(user_info) == user_id

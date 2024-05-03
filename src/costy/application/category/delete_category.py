@@ -1,9 +1,6 @@
 from typing import Protocol
 
-from costy.application.common.category.category_gateway import (
-    CategoryDeleter,
-    CategoryReader,
-)
+from costy.application.common.category.category_gateway import CategoryDeleter, CategoryReader
 
 from ...domain.exceptions.access import AccessDeniedError
 from ...domain.exceptions.base import InvalidRequestError
@@ -24,7 +21,7 @@ class DeleteCategory(Interactor[CategoryId, None]):
         access_service: AccessService,
         category_gateway: CategoryGateway,
         id_provider: IdProvider,
-        uow: UoW
+        uow: UoW,
     ):
         self.access_service = access_service
         self.category_gateway = category_gateway

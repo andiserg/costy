@@ -1,9 +1,6 @@
 from typing import Protocol
 
-from costy.application.common.operation.operation_gateway import (
-    OperationDeleter,
-    OperationReader,
-)
+from costy.application.common.operation.operation_gateway import OperationDeleter, OperationReader
 
 from ...domain.exceptions.access import AccessDeniedError
 from ...domain.exceptions.base import InvalidRequestError
@@ -24,7 +21,7 @@ class DeleteOperation(Interactor[OperationId, None]):
         access_service: AccessService,
         operation_gateway: OperationGateway,
         id_provider: IdProvider,
-        uow: UoW
+        uow: UoW,
     ):
         self.access_service = access_service
         self.operation_gateway = operation_gateway

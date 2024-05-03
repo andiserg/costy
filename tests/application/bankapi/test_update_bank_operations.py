@@ -4,9 +4,7 @@ from unittest.mock import Mock
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.bankapi.update_bank_operations import (
-    UpdateBankOperations,
-)
+from costy.application.bankapi.update_bank_operations import UpdateBankOperations
 from costy.application.common.bankapi.dto import BankOperationDTO
 from costy.application.common.category.category_gateway import CategoryFinder
 from costy.application.common.uow import UoW
@@ -57,7 +55,7 @@ async def interactor(id_provider, user_id, existing_mcc) -> UpdateBankOperations
                     amount=randint(1, 100),
                     time=1111,
                 ),
-                mcc=choice(mcc_list)
+                mcc=choice(mcc_list),
             )
             for i in range(randint(5, 10))
         ]
@@ -93,11 +91,11 @@ async def interactor(id_provider, user_id, existing_mcc) -> UpdateBankOperations
         operation_gateway,
         category_gateway,
         id_provider,
-        Mock(spec=UoW)
+        Mock(spec=UoW),
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_bank_operations(interactor, existing_mcc):
     await interactor()
 
