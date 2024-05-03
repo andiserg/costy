@@ -12,6 +12,7 @@ repos:
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
+        exclude: "kubeconf"
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer
@@ -20,7 +21,7 @@ repos:
     rev: v0.4.2
     hooks:
       - id: ruff
-        args: [src]
+        pass_filenames: false
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:

@@ -44,6 +44,7 @@ remove_redundant_aliases = true
 
 
 [tool.ruff]
+include = ['src']
 exclude = ['migrations']
 line-length = 120
 
