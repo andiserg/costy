@@ -21,6 +21,9 @@ from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.user import UserId
 
 
+retort = Retort()
+
+
 class BankAPIGateway(
     BankAPISaver,
     BankAPIDeleter,
@@ -35,7 +38,6 @@ class BankAPIGateway(
         db_session: AsyncSession,
         web_session: AsyncClient,
         table: Table,
-        retort: Retort,
         bank_gateways: dict[str, BankGateway],
         banks_info: dict[str, dict],
     ) -> None:

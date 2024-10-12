@@ -11,7 +11,7 @@ from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
 
 logger = logging.getLogger("bankAPI: " + __name__)
-
+retort = Retort()
 
 class MonobankGateway(BankGateway):
     SUCCESS_CODE = 200
@@ -23,7 +23,6 @@ class MonobankGateway(BankGateway):
         self,
         web_session: AsyncClient,
         bank_conf: dict,
-        retort: Retort,
     ):
         self._web_session = web_session
         self._bank_conf = bank_conf["monobank"]

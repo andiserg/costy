@@ -30,18 +30,18 @@ async def auth_adapter(db_session, web_session, db_tables, auth_settings: AuthSe
 
 
 @fixture
-async def user_gateway(db_session, db_tables, retort) -> UserGateway:
-    return UserGateway(db_session, db_tables["users"], retort)
+async def user_gateway(db_session, db_tables) -> UserGateway:
+    return UserGateway(db_session, db_tables["users"])
 
 
 @fixture
-async def category_gateway(db_session, db_tables, retort) -> CategoryGateway:
-    return CategoryGateway(db_session, db_tables["categories"], db_tables["category_mcc"], retort)
+async def category_gateway(db_session, db_tables) -> CategoryGateway:
+    return CategoryGateway(db_session, db_tables["categories"], db_tables["category_mcc"])
 
 
 @fixture
-async def operation_gateway(db_session, db_tables, retort) -> OperationGateway:
-    return OperationGateway(db_session, db_tables["operations"], retort)
+async def operation_gateway(db_session, db_tables) -> OperationGateway:
+    return OperationGateway(db_session, db_tables["operations"])
 
 
 @fixture
@@ -52,11 +52,11 @@ async def id_provider(user_id: UserId) -> IdProvider:
 
 
 @fixture
-async def monobank_adapter(web_session, retort) -> MonobankGateway:
+async def monobank_adapter(web_session) -> MonobankGateway:
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks = json.load(f)
 
-    return MonobankGateway(web_session, banks, retort)
+    return MonobankGateway(web_session, banks)
 
 
 @fixture
@@ -80,7 +80,7 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks_info = json.load(f)
 
-    return BankAPIGateway(db_session, web_session, db_tables["bankapis"], retort, gateway_map, banks_info)
+    return BankAPIGateway(db_session, web_session, db_tables["bankapis"], gateway_map, banks_info)
 
 
 @fixture(scope="session")

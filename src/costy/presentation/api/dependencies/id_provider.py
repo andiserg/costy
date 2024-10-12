@@ -4,8 +4,8 @@ from costy.application.common.id_provider import IdProvider
 
 
 async def get_id_provider(
-        headers: dict[str, str],
-        id_provider_blank: IdProvider,
+    headers: dict[str, str],
+    id_provider_blank: IdProvider,
 ) -> IdProvider:
     authorization = headers.get("authorization")
     if not authorization:

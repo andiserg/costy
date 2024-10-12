@@ -12,9 +12,10 @@ from costy.application.common.operation.operation_gateway import (
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
 
+retort = Retort()
 
 class OperationGateway(OperationReader, OperationSaver, OperationDeleter, OperationsReader, OperationsBulkSaver):
-    def __init__(self, session: AsyncSession, table: Table, retort: Retort):
+    def __init__(self, session: AsyncSession, table: Table):
         self.session = session
         self.table = table
         self.retort = retort

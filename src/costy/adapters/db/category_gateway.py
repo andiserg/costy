@@ -16,6 +16,8 @@ from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel
 
+retort = Retort()
+
 
 class CategoryGateway(
     CategoryReader,
@@ -26,7 +28,7 @@ class CategoryGateway(
     CategoryUpdater,
     CategoriesFinder,
 ):
-    def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table, retort: Retort):
+    def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table):
         self.session = session
         self.category_table = category_table
         self.mcc_table = mcc_table

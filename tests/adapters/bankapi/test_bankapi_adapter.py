@@ -32,6 +32,7 @@ async def test_delete_bankapi(bankapi_gateway, db_session, db_tables):
     )) == []
 
 
+
 @pytest.mark.asyncio()
 async def test_get_supported_banks(bankapi_gateway):
     with open(str(importlib.resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:

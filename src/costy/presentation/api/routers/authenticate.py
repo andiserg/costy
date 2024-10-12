@@ -1,7 +1,8 @@
+from dishka import FromDishka
+from dishka.integrations.litestar import inject
 from litestar import Controller, Response, post
 
-from costy.application.authenticate import LoginInputDTO
-from costy.presentation.interactor_factory import InteractorFactory
+from costy.application.authenticate import LoginInputDTO, Authenticate
 
 
 class AuthenticationController(Controller):
@@ -9,9 +10,9 @@ class AuthenticationController(Controller):
     tags = ("Authentication",)
 
     @post(status_code=200)
-    async def login(self, ioc: InteractorFactory, data: LoginInputDTO) -> Response[dict[str, str]]:
-        async with ioc.authenticate() as authenticate:
-            token = await authenticate(data)
-            if token:
-                return Response({"token": token}, status_code=200)
-            return Response({"error": "Text"}, status_code=400)
+    @inject
+    async def login(self, authenticate: FromDishka[Authenticate], data: LoginInputDTO) -> Response[dict[str, str]]:
+        token = await authenticate(data)
+        if token:
+            return Response({"token": token}, status_code=200)
+        return Response({"error": "Text"}, status_code=400)

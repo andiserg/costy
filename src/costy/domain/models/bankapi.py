@@ -6,7 +6,7 @@ from costy.domain.models.user import UserId
 BankApiId = NewType("BankApiId", int)
 
 
-@dataclass(kw_only=True)
+@dataclass(slots=True, kw_only=True)
 class BankAPI:
     id: BankApiId | None = None
     name: str

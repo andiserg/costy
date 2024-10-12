@@ -1,19 +1,23 @@
 import asyncio
 from typing import Any, Callable, Coroutine, TypeVar
 
-from adaptix import Retort
+from dishka import make_async_container
+from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.di import Provide
+from sqlalchemy import Table
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
-from costy.infrastructure.config import get_auth_settings, get_banks_conf, get_db_connection_url, setup_logger
+from costy.infrastructure.config import get_auth_settings, get_banks_conf, get_db_connection_url, setup_logger, \
+    AuthSettings
 from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
 from costy.infrastructure.db.tables import create_tables
 from costy.infrastructure.metrics import create_metrics, start_metrics_server
-from costy.main.ioc import IoC
+from costy.main.di import DIProvider
 from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.middlewares import create_metrics_middleware
@@ -41,14 +45,14 @@ def init_app() -> Litestar:
     auth_settings = get_auth_settings()
     metrics = create_metrics()
 
-    ioc = IoC(
-        get_sessionmaker(get_engine(get_db_connection_url())),
-        web_session,
-        create_tables(base_metadata),
-        Retort(),
-        auth_settings,
-        get_banks_conf(),
-    )
+
+    container = make_async_container(DIProvider(), context={
+        AsyncClient: web_session,
+        async_sessionmaker[AsyncSession]: get_sessionmaker(get_engine(get_db_connection_url())),
+        dict[str, Table]: create_tables(base_metadata),
+        AuthSettings: auth_settings,
+        dict[str, Any]: get_banks_conf(),
+    })
 
     id_provider_factory = create_id_provider_factory(
         auth_settings.audience,
@@ -64,7 +68,7 @@ def init_app() -> Litestar:
     async def finalization():
         await web_session.aclose()
 
-    return Litestar(
+    app = Litestar(
         route_handlers=(
             AuthenticationController,
             UserController,
@@ -73,7 +77,6 @@ def init_app() -> Litestar:
             BankAPIController,
         ),
         dependencies={
-            "ioc": Provide(singleton(ioc)),
             "id_provider": Provide(get_id_provider),
             "id_provider_blank": Provide(id_provider_factory),
         },
@@ -84,3 +87,6 @@ def init_app() -> Litestar:
         debug=True,
         cors_config=CORSConfig(allow_origins=["*"]),
     )
+    setup_dishka(container, app)
+    return app
+

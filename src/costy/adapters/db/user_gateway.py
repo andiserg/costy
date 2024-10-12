@@ -9,10 +9,10 @@ from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import User, UserId
 
 logger = logging.getLogger(__name__)
-
+retort = Retort()
 
 class UserGateway(UserSaver, UserReader):
-    def __init__(self, session: AsyncSession, table: Table, retort: Retort):
+    def __init__(self, session: AsyncSession, table: Table):
         self.session = session
         self.table = table
         self.retort = retort
