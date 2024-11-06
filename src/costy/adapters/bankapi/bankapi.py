@@ -1,21 +1,22 @@
 from datetime import datetime
+from typing import Any
 
 from adaptix import Retort, name_mapping
 from httpx import AsyncClient
 from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.adapters.bankapi.bank_gateway import BankGateway
-from costy.application.common.bankapi.bankapi_gateway import (
-    BankAPIBanksReader,
-    BankAPIBulkUpdater,
-    BankAPIDeleter,
-    BankAPIOperationsReader,
-    BankAPIReader,
+from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.application.common.bankapi_gateway import (
+    BankOperation,
     BankAPISaver,
+    BankAPIDeleter,
+    BankAPIBanksReader,
+    BankAPIReader,
     BanksAPIReader,
+    BankAPIBulkUpdater,
+    BankAPIOperationsReader,
 )
-from costy.application.common.bankapi.dto import BankOperationDTO
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.user import UserId
@@ -24,7 +25,7 @@ from costy.domain.models.user import UserId
 retort = Retort()
 
 
-class BankAPIGateway(
+class BankAPIAdapter(
     BankAPISaver,
     BankAPIDeleter,
     BankAPIBanksReader,
@@ -38,8 +39,8 @@ class BankAPIGateway(
         db_session: AsyncSession,
         web_session: AsyncClient,
         table: Table,
-        bank_gateways: dict[str, BankGateway],
-        banks_info: dict[str, dict],
+        bank_gateways: dict[str, BankAdapter],
+        banks_info: dict[str, dict[str, Any]],
     ) -> None:
         self._db_session = db_session
         self._web_session = web_session
@@ -82,12 +83,19 @@ class BankAPIGateway(
         stmts = (
             update(self._table)
             .where(self._table.c.id == bankapi.id)
-            .values(updated_at=bankapi.updated_at) for bankapi in bankapis
+            .values(updated_at=bankapi.updated_at)
+            for bankapi in bankapis
         )
         for stmt in stmts:
             await self._db_session.execute(stmt)
 
-    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO] | None:
+    async def read_bank_operations(
+        self, bankapi: BankAPI,
+    ) -> list[BankOperation] | None:
         bank_gateway = self._bank_gateways[bankapi.name]
-        from_time = datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
-        return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id, from_time)
+        from_time = (
+            datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
+        )
+        return await bank_gateway.fetch_operations(
+            bankapi.access_data, bankapi.user_id, from_time,
+        )

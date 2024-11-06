@@ -1,6 +1,5 @@
 import asyncio
-from typing import Any, Callable, Coroutine, TypeVar
-
+from typing import Any
 from dishka import make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
@@ -12,12 +11,17 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
-from costy.infrastructure.config import get_auth_settings, get_banks_conf, get_db_connection_url, setup_logger, \
-    AuthSettings
+from costy.infrastructure.config import (
+    get_auth_settings,
+    get_banks_conf,
+    get_db_connection_url,
+    setup_logger,
+    AuthSettings,
+)
 from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
 from costy.infrastructure.db.tables import create_tables
 from costy.infrastructure.metrics import create_metrics, start_metrics_server
-from costy.main.di import DIProvider
+from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.middlewares import create_metrics_middleware
@@ -26,15 +30,6 @@ from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
 from costy.presentation.api.routers.user import UserController
-
-T = TypeVar("T")
-
-
-def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
-    async def func() -> T:
-        return instance
-
-    return func
 
 
 def init_app() -> Litestar:
@@ -45,14 +40,19 @@ def init_app() -> Litestar:
     auth_settings = get_auth_settings()
     metrics = create_metrics()
 
-
-    container = make_async_container(DIProvider(), context={
-        AsyncClient: web_session,
-        async_sessionmaker[AsyncSession]: get_sessionmaker(get_engine(get_db_connection_url())),
-        dict[str, Table]: create_tables(base_metadata),
-        AuthSettings: auth_settings,
-        dict[str, Any]: get_banks_conf(),
-    })
+    container = make_async_container(
+        DIProvider(),
+        IdDIProvider(),
+        context={
+            AsyncClient: web_session,
+            async_sessionmaker[AsyncSession]: get_sessionmaker(
+                get_engine(get_db_connection_url()),
+            ),
+            dict[str, Table]: create_tables(base_metadata),
+            AuthSettings: auth_settings,
+            dict[str, Any]: get_banks_conf(),
+        },
+    )
 
     id_provider_factory = create_id_provider_factory(
         auth_settings.audience,
@@ -62,10 +62,10 @@ def init_app() -> Litestar:
         web_session,
     )
 
-    async def startup():
+    async def startup() -> None:
         await asyncio.create_task(asyncio.to_thread(start_metrics_server))
 
-    async def finalization():
+    async def finalization() -> None:
         await web_session.aclose()
 
     app = Litestar(
@@ -89,4 +89,3 @@ def init_app() -> Litestar:
     )
     setup_dishka(container, app)
     return app
-

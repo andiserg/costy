@@ -56,10 +56,10 @@ def _get_env_var(name: str) -> str:
 
 def get_banks_conf() -> dict[str, Any]:
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json")) as f:
-        return json.load(f)
+        return json.load(f)  # type: ignore[no-any-return]
 
 
-def setup_logger():
+def setup_logger() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format="%(name)s %(asctime)s %(levelname)s %(message)s",

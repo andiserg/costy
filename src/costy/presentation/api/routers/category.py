@@ -1,15 +1,15 @@
 from dataclasses import dataclass, field
 
-from dishka import AsyncContainer, FromDishka
+from dishka import FromDishka
 from dishka.integrations.litestar import inject
-from litestar import Controller, delete, get, post, put, Request
+from litestar import Controller, delete, get, post, put
 
-from costy.application.category.create_category import CreateCategory
-from costy.application.category.delete_category import DeleteCategory
-from costy.application.category.read_available_categories import ReadAvailableCategories
-from costy.application.category.update_category import UpdateCategory
-from costy.application.common.category.dto import NewCategoryDTO, UpdateCategoryData, UpdateCategoryDTO
-from costy.application.common.id_provider import IdProvider
+from costy.application.category import (
+    create_category,
+    delete_category,
+    read_available_categories,
+    update_category,
+)
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.sentinel import Sentinel
 
@@ -17,7 +17,7 @@ from costy.domain.sentinel import Sentinel
 @dataclass(slots=True, kw_only=True)
 class UpdateCategoryPureData:
     name: str | None = None
-    view: dict | None = field(default_factory=dict)
+    view: dict[str, str] | None = field(default_factory=dict)
 
 
 class CategoryController(Controller):
@@ -28,41 +28,41 @@ class CategoryController(Controller):
     @inject
     async def get_list_categories(
         self,
-        read_available_categories: FromDishka[ReadAvailableCategories]
+        service: FromDishka[read_available_categories.ReadAvailableCategories],
     ) -> list[Category]:
-        return await read_available_categories()
+        return await service(None)
 
     @post()
     @inject
     async def create_category(
         self,
-        create_category: FromDishka[CreateCategory],
-        data: NewCategoryDTO,
+        service: FromDishka[create_category.CreateCategory],
+        data: create_category.InputData,
     ) -> CategoryId:
-        return await create_category(data)
+        return await service(data)
 
     @delete("{category_id:int}")
     @inject
     async def delete_category(
         self,
         category_id: int,
-        delete_category: FromDishka[DeleteCategory]
+        service: FromDishka[delete_category.DeleteCategory],
     ) -> None:
-        await delete_category(CategoryId(category_id))
+        await service(CategoryId(category_id))
 
     @put("{category_id:int}")
     @inject
     async def update_category(
         self,
         category_id: int,
-        update_category: FromDishka[UpdateCategory],
+        service: FromDishka[update_category.UpdateCategory],
         data: UpdateCategoryPureData,
     ) -> None:
-        input_data = UpdateCategoryDTO(
+        input_data = update_category.InputData(
             CategoryId(category_id),
-            UpdateCategoryData(
+            update_category.UpdateCategoryData(
                 name=data.name,
                 view=data.view if data.view != {} else Sentinel,
             ),
         )
-        await update_category(input_data)
+        await service(input_data)

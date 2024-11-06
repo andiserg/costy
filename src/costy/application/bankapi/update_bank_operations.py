@@ -1,17 +1,23 @@
 from typing import Protocol
 
+from ..common.bankapi_gateway import (
+    BankAPIBulkUpdater,
+    BanksAPIReader,
+    BankAPIOperationsReader,
+)
+from ..common.category_gateway import CategoriesFinder, CategoryFinder
+from ..common.operation_gateway import OperationsBulkSaver
 from ...domain.models.operation import Operation
 from ...domain.services.bankapi import BankAPIService
 from ...domain.services.operation import OperationService
-from ..common.bankapi.bankapi_gateway import BankAPIBulkUpdater, BankAPIOperationsReader, BanksAPIReader
-from ..common.category.category_gateway import CategoriesFinder, CategoryFinder
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.operation.operation_gateway import OperationsBulkSaver
-from ..common.uow import UoW
+from ..common.commiter import Commiter
 
 
-class BankAPIGateway(BankAPIBulkUpdater, BanksAPIReader, BankAPIOperationsReader, Protocol):
+class BankAPIGateway(
+    BankAPIBulkUpdater, BanksAPIReader, BankAPIOperationsReader, Protocol,
+):
     pass
 
 
@@ -28,42 +34,50 @@ class UpdateBankOperations(Interactor[None, None]):
         operation_gateway: OperationsBulkSaver,
         category_gateway: CategoryGateway,
         id_provider: IdProvider,
-        uow: UoW,
+        uow: Commiter,
     ):
-        self._bankapi_service = bankapi_service
-        self._operation_service = operation_service
-        self._bankapi_gateway = bankapi_gateway
-        self._operation_gateway = operation_gateway
-        self._category_gateway = category_gateway
-        self._id_provider = id_provider
-        self._uow = uow
+        self.bankapi_service = bankapi_service
+        self.operation_service = operation_service
+        self.bankapi_gateway = bankapi_gateway
+        self.operation_gateway = operation_gateway
+        self.category_gateway = category_gateway
+        self.id_provider = id_provider
+        self.commiter = uow
 
-    async def __call__(self, data=None) -> None:
-        user_id = await self._id_provider.get_current_user_id()
-        bankapis = await self._bankapi_gateway.get_bankapi_list(user_id)
-        default_category = await self._category_gateway.find_category(name="Інше", kind="general")
+    async def __call__(self, data: None) -> None:
+        user_id = await self.id_provider.get_current_user_id()
+        bankapis = await self.bankapi_gateway.get_bankapi_list(user_id)
+        default_category = await self.category_gateway.find_category(
+            name="Інше", kind="general",
+        )
 
         operations: list[Operation] = []
         for bankapi in bankapis:
-            bank_operations = await self._bankapi_gateway.read_bank_operations(bankapi)
+            bank_operations = await self.bankapi_gateway.read_bank_operations(bankapi)
 
             if bank_operations is None:
-                # if bank_operations is None, it means a BankAPI communication error
+                # if bank_operations is None, it means the BankAPI communication error
                 continue
 
             mcc_codes = tuple(operation.mcc for operation in bank_operations)
-            mcc_categories = await self._category_gateway.find_categories_by_mcc_codes(mcc_codes)
+            mcc_categories = await self.category_gateway.find_categories_by_mcc_codes(
+                mcc_codes,
+            )
 
             for bank_operation in bank_operations:
                 category = mcc_categories.get(bank_operation.mcc, default_category)
                 if category:
-                    self._operation_service.set_category(bank_operation.operation, category)
+                    self.operation_service.set_category(
+                        bank_operation.operation, category,
+                    )
 
-            operations.extend(bank_operation.operation for bank_operation in bank_operations)
-            self._bankapi_service.update_time(bankapi)
+            operations.extend(
+                bank_operation.operation for bank_operation in bank_operations
+            )
+            self.bankapi_service.update_time(bankapi)
 
         if operations:
-            await self._operation_gateway.save_operations(operations)
+            await self.operation_gateway.save_operations(operations)
 
-        await self._bankapi_gateway.update_bankapis(bankapis)
-        await self._uow.commit()
+        await self.bankapi_gateway.update_bankapis(bankapis)
+        await self.commiter.commit()

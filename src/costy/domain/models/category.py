@@ -18,4 +18,4 @@ class Category:
     name: str
     kind: str = CategoryType.GENERAL.value
     user_id: UserId | None = None
-    view: dict | None = None
+    view: dict[str, str] | None = None

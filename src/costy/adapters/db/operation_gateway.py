@@ -2,19 +2,26 @@ from adaptix import Retort, name_mapping
 from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.operation.operation_gateway import (
-    OperationDeleter,
+from costy.application.common.operation_gateway import (
     OperationReader,
     OperationSaver,
-    OperationsBulkSaver,
+    OperationDeleter,
     OperationsReader,
+    OperationsBulkSaver,
 )
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
 
 retort = Retort()
 
-class OperationGateway(OperationReader, OperationSaver, OperationDeleter, OperationsReader, OperationsBulkSaver):
+
+class OperationAdapter(
+    OperationReader,
+    OperationSaver,
+    OperationDeleter,
+    OperationsReader,
+    OperationsBulkSaver,
+):
     def __init__(self, session: AsyncSession, table: Table):
         self.session = session
         self.table = table
@@ -57,11 +64,15 @@ class OperationGateway(OperationReader, OperationSaver, OperationDeleter, Operat
         result = await self.session.execute(stmt)
         return self.retort.load(result.mappings(), list[Operation])
 
-    async def update_operation(self, operation_id: OperationId, operation: Operation) -> None:
+    async def update_operation(
+        self, operation_id: OperationId, operation: Operation,
+    ) -> None:
         values = self.retort.dump(operation)
 
         if not values:
             return
 
-        stmt = update(self.table).where(self.table.c.id == operation_id).values(**values)
+        stmt = (
+            update(self.table).where(self.table.c.id == operation_id).values(**values)
+        )
         await self.session.execute(stmt)

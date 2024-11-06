@@ -9,7 +9,9 @@ def create_metrics_middleware(metrics: Metrics) -> type[MiddlewareProtocol]:
         def __init__(self, app: "ASGIApp") -> None:
             self.app = app
 
-        async def __call__(self, scope: "Scope", receive: "Receive", send: "Send") -> None:
+        async def __call__(
+            self, scope: "Scope", receive: "Receive", send: "Send",
+        ) -> None:
             metrics.total_requests.inc(1)
             await self.app(scope, receive, send)
 

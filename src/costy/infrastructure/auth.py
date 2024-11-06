@@ -3,7 +3,12 @@ from typing import Any, Callable, Coroutine
 
 from httpx import AsyncClient
 
-from costy.adapters.auth.token import Algorithm, JwtTokenProcessor, KeySetProvider, TokenIdProvider
+from costy.adapters.auth.token import (
+    Algorithm,
+    JwtTokenProcessor,
+    KeySetProvider,
+    TokenIdProvider,
+)
 
 
 def create_id_provider_factory(

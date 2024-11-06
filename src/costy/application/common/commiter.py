@@ -3,11 +3,7 @@ from typing import Protocol, runtime_checkable
 
 
 @runtime_checkable
-class UoW(Protocol):
+class Commiter(Protocol):
     @abstractmethod
     async def commit(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def rollback(self) -> None:
         raise NotImplementedError

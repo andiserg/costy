@@ -16,5 +16,5 @@ def create_metrics() -> Metrics:
     )
 
 
-def start_metrics_server():
+def start_metrics_server() -> None:
     start_http_server(9090)

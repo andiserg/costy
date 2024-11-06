@@ -6,13 +6,17 @@ from httpx import AsyncClient
 from jose import exceptions as jwt_exc, jwt
 
 from costy.application.common.id_provider import IdProvider
-from costy.application.common.user.user_gateway import UserReader
+from costy.application.common.user_gateway import UserReader
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import UserId
 
 Algorithm = Literal[
-    "HS256", "HS384", "HS512",
-    "RS256", "RS384", "RS512",
+    "HS256",
+    "HS384",
+    "HS512",
+    "RS256",
+    "RS384",
+    "RS512",
 ]
 
 logger = logging.getLogger(__name__)
@@ -29,7 +33,9 @@ class JwtTokenProcessor:
         self.audience = audience
         self.issuer = issuer
 
-    def _fetch_rsa_key(self, jwks: dict[Any, Any], unverified_header: dict[str, str]) -> dict[str, str]:
+    def _fetch_rsa_key(
+        self, jwks: dict[Any, Any], unverified_header: dict[str, str],
+    ) -> dict[str, str]:
         rsa_key = {}
         for key in jwks["keys"]:
             if key["kid"] == unverified_header["kid"]:
@@ -51,7 +57,10 @@ class JwtTokenProcessor:
         except jwt_exc.JWTError:
             raise invalid_header_error
         if unverified_header["alg"] == "HS256":
-            logger.info("Token decode error. Invalid encode algorithm: %s", unverified_header["alg"])
+            logger.info(
+                "Token decode error. Invalid encode algorithm: %s",
+                unverified_header["alg"],
+            )
             raise invalid_header_error
         rsa_key = self._fetch_rsa_key(jwks, unverified_header)
         try:

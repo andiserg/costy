@@ -2,19 +2,19 @@ from dataclasses import dataclass
 
 from .common.auth_gateway import AuthLoger
 from .common.interactor import Interactor
-from .common.uow import UoW
+from .common.commiter import Commiter
 
 
 @dataclass
-class LoginInputDTO:
+class InputData:
     email: str
     password: str
 
 
-class Authenticate(Interactor[LoginInputDTO, str | None]):
-    def __init__(self, auth_gateway: AuthLoger, uow: UoW):
+class Authenticate(Interactor[InputData, str | None]):
+    def __init__(self, auth_gateway: AuthLoger, uow: Commiter):
         self.auth_gateway = auth_gateway
         self.uow = uow
 
-    async def __call__(self, data: LoginInputDTO) -> str | None:
+    async def __call__(self, data: InputData) -> str | None:
         return await self.auth_gateway.authenticate(data.email, data.password)

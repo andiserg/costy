@@ -5,7 +5,7 @@ from costy.domain.models.user import UserId
 
 
 class BankAPIService:
-    def create(self, bank_name: str, access_data: dict, user_id: UserId):
+    def create(self, bank_name: str, access_data: dict[str, str], user_id: UserId) -> BankAPI:
         return BankAPI(
             name=bank_name,
             access_data=access_data,
@@ -13,5 +13,5 @@ class BankAPIService:
             user_id=user_id,
         )
 
-    def update_time(self, bankapi: BankAPI):
+    def update_time(self, bankapi: BankAPI) -> None:
         bankapi.updated_at = int(datetime.now().timestamp())

@@ -1,22 +1,18 @@
-from typing import List, Optional
-
-from costy.application.common.category.category_gateway import CategoriesReader
-from costy.application.common.category.dto import ReadAvailableCategoriesDTO
-
+from ..common.category_gateway import CategoriesReader
 from ...domain.models.category import Category
 from ...domain.services.category import CategoryService
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.uow import UoW
+from ..common.commiter import Commiter
 
 
-class ReadAvailableCategories(Interactor[None, List[Category]]):
+class ReadAvailableCategories(Interactor[None, list[Category]]):
     def __init__(
         self,
         category_service: CategoryService,
         category_db_gateway: CategoriesReader,
         id_provider: IdProvider,
-        uow: UoW,
+        uow: Commiter,
     ):
         self.category_service = category_service
         self.category_db_gateway = category_db_gateway
@@ -24,7 +20,8 @@ class ReadAvailableCategories(Interactor[None, List[Category]]):
         self.uow = uow
 
     async def __call__(
-        self, data: Optional[ReadAvailableCategoriesDTO] = None,
-    ) -> List[Category]:
+        self,
+        data: None,
+    ) -> list[Category]:
         user_id = await self.id_provider.get_current_user_id()
         return await self.category_db_gateway.find_categories(user_id)

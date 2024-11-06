@@ -12,5 +12,7 @@ class HasOptionalUserId(Protocol):
 
 
 class AccessService:
-    def ensure_can_edit(self, entity: HasUserId | HasOptionalUserId, user_id: UserId) -> bool:
+    def ensure_can_edit(
+        self, entity: HasUserId | HasOptionalUserId, user_id: UserId,
+    ) -> bool:
         return entity.user_id == user_id

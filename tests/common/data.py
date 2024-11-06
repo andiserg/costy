@@ -4,11 +4,11 @@ from random import choice, randint
 import pytest
 from pytest_asyncio import fixture
 
-from costy.application.authenticate import LoginInputDTO
-from costy.application.common.bankapi.dto import BankOperationDTO
-from costy.application.common.category.dto import NewCategoryDTO
-from costy.application.common.operation.dto import NewOperationDTO
-from costy.application.common.user.dto import NewUserDTO
+from costy.application.authenticate import InputData
+from costy.application.category import create_category
+from costy.application.common.bankapi_gateway import BankOperation
+from costy.application.operation import create_operation
+from costy.application.user import create_user
 from costy.domain.models.bankapi import BankApiId
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation, OperationId
@@ -41,13 +41,13 @@ async def user_entity() -> User:
 
 
 @fixture
-async def category_info() -> NewCategoryDTO:
-    return NewCategoryDTO(name="test", view=None)
+async def category_info() -> create_category.InputData:
+    return create_category.InputData(name="test", view=None)
 
 
 @fixture
-async def operation_info() -> NewOperationDTO:
-    return NewOperationDTO(
+async def operation_info() -> create_operation.InputData:
+    return create_operation.InputData(
         amount=100,
         description="description",
         time=10000,
@@ -56,13 +56,13 @@ async def operation_info() -> NewOperationDTO:
 
 
 @fixture
-async def user_info() -> NewUserDTO:
-    return NewUserDTO(email="test@email.com", password="password")
+async def user_info() -> create_user.InputData:
+    return create_user.InputData(email="test@email.com", password="password")
 
 
 @fixture
-async def login_info() -> LoginInputDTO:
-    return LoginInputDTO(email="test@email.com", password="password")
+async def login_info() -> InputData:
+    return InputData(email="test@email.com", password="password")
 
 
 @fixture
@@ -146,7 +146,7 @@ async def bank_operations(user_id):
     mcc_list = [1, 2, 3]
 
     return [
-        BankOperationDTO(
+        BankOperation(
             operation=Operation(
                 id=None,
                 amount=100,

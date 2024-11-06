@@ -29,17 +29,17 @@ class OperationService:
         description: str | None | type[Sentinel] = Sentinel,
         time: int | None = None,
         category_id: CategoryId | None | type[Sentinel] = Sentinel,
-    ):
+    ) -> None:
         exclude_params = ("self", "operation", "exclude_params", "sentinel_params")
         sentinel_params = ("description", "category_id")
         params = {
-            name: value for name, value in locals().items() if
-            (name not in exclude_params) and
-            (
-                (name in sentinel_params and value is not Sentinel) or
-                (name not in sentinel_params and value is not None)
+            name: value
+            for name, value in locals().items()
+            if (name not in exclude_params)
+            and (
+                (name in sentinel_params and value is not Sentinel)
+                or (name not in sentinel_params and value is not None)
             )
-
         }
         for name, value in params.items():
             setattr(operation, name, value)

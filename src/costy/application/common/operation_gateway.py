@@ -30,7 +30,10 @@ class OperationsBulkSaver(Protocol):
 class OperationsReader(Protocol):
     @abstractmethod
     async def find_operations_by_user(
-        self, user_id: UserId, from_time: int | None, to_time: int | None,
+        self,
+        user_id: UserId,
+        from_time: int | None,
+        to_time: int | None,
     ) -> list[Operation]:
         raise NotImplementedError
 
@@ -45,5 +48,7 @@ class OperationDeleter(Protocol):
 @runtime_checkable
 class OperationUpdater(Protocol):
     @abstractmethod
-    async def update_operation(self, operation_id: OperationId, operation: Operation) -> None:
+    async def update_operation(
+        self, operation_id: OperationId, operation: Operation,
+    ) -> None:
         raise NotImplementedError

@@ -10,6 +10,6 @@ BankApiId = NewType("BankApiId", int)
 class BankAPI:
     id: BankApiId | None = None
     name: str
-    access_data: dict
+    access_data: dict[str, str]
     updated_at: int | None = None
     user_id: UserId

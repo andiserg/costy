@@ -10,8 +10,8 @@ from litestar import Litestar
 from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from costy.adapters.bankapi.bank_gateway import BankGateway
-from costy.adapters.db.user_gateway import UserGateway
+from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.adapters.db.user_gateway import UserAdapter
 from costy.application.common.id_provider import IdProvider
 from costy.domain.exceptions.base import BaseError
 from costy.domain.models.user import UserId
@@ -34,13 +34,13 @@ class MockIdProvider(IdProvider):
 
 class TestIdDIProvider(Provider):
     id_provider = from_context(IdProvider, scope=Scope.APP)
-    bank_gateways = from_context(dict[str, BankGateway], scope=Scope.APP)
+    bank_gateways = from_context(dict[str, BankAdapter], scope=Scope.APP)
 
 
 async def init_test_app(
     db_url: str | None = None,
     mock_auth: bool = True,
-    mock_bank_gateways: dict[str, BankGateway] | None = None
+    mock_bank_gateways: dict[str, BankAdapter] | None = None
 ):
     if not db_url:
         db_url = get_db_connection_url()
@@ -64,7 +64,7 @@ async def init_test_app(
     }
 
     if not mock_bank_gateways:
-        context[dict[str, BankGateway]] = mock_bank_gateways
+        context[dict[str, BankAdapter]] = mock_bank_gateways
 
     if mock_auth:
         sub = os.environ.get("TEST_AUTH_USER_SUB")
@@ -75,7 +75,7 @@ async def init_test_app(
 
         async def get_user_id():
             async with session_factory() as session:
-                user_gateway = UserGateway(session, tables["users"])
+                user_gateway = UserAdapter(session, tables["users"])
                 return await user_gateway.get_user_id_by_auth_id(sub)
 
         id_provider: IdProvider = MockIdProvider()

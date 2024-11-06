@@ -49,12 +49,16 @@ class CategoryDeleter(Protocol):
 @runtime_checkable
 class CategoryUpdater(Protocol):
     @abstractmethod
-    async def update_category(self, category_id: CategoryId, category: Category) -> None:
+    async def update_category(
+        self, category_id: CategoryId, category: Category,
+    ) -> None:
         raise NotImplementedError
 
 
 @runtime_checkable
 class CategoriesFinder(Protocol):
     @abstractmethod
-    async def find_categories_by_mcc_codes(self, mcc_codes: tuple[int, ...]) -> dict[int, Category]:
+    async def find_categories_by_mcc_codes(
+        self, mcc_codes: tuple[int, ...],
+    ) -> dict[int, Category]:
         raise NotImplementedError

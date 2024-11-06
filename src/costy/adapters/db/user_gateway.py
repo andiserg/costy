@@ -4,14 +4,15 @@ from adaptix import Retort
 from sqlalchemy import Table, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.user.user_gateway import UserReader, UserSaver
+from costy.application.common.user_gateway import UserSaver, UserReader
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import User, UserId
 
 logger = logging.getLogger(__name__)
 retort = Retort()
 
-class UserGateway(UserSaver, UserReader):
+
+class UserAdapter(UserSaver, UserReader):
     def __init__(self, session: AsyncSession, table: Table):
         self.session = session
         self.table = table

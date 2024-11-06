@@ -58,6 +58,6 @@ class AuthGateway(AuthLoger, AuthRegister):
         response = await self.web_session.post(url, data=data)
         response_data = response.json()
         if response.status_code == self.REGISTER_SUCCESS_CODE:
-            return response_data["_id"]
+            return response_data["_id"]  # type: ignore[no-any-return]
         logger.info("Register failed: %s", response_data)
         raise RegisterError(response_data)

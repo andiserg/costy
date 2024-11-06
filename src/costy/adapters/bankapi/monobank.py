@@ -1,11 +1,12 @@
 import logging
 from datetime import datetime, timedelta
+from typing import Any
 
 from adaptix import P, Retort, loader
 from httpx import AsyncClient
 
-from costy.adapters.bankapi.bank_gateway import BankGateway
-from costy.application.common.bankapi.dto import BankOperationDTO
+from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.application.common.bankapi_gateway import BankOperation
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
@@ -13,7 +14,8 @@ from costy.domain.models.user import UserId
 logger = logging.getLogger("bankAPI: " + __name__)
 retort = Retort()
 
-class MonobankGateway(BankGateway):
+
+class MonobankAdapter(BankAdapter):
     SUCCESS_CODE = 200
     FAILED_CODE = 403
     OPERATIONS_LIMIT = 500
@@ -22,7 +24,7 @@ class MonobankGateway(BankGateway):
     def __init__(
         self,
         web_session: AsyncClient,
-        bank_conf: dict,
+        bank_conf: dict[str, Any],
     ):
         self._web_session = web_session
         self._bank_conf = bank_conf["monobank"]
@@ -30,18 +32,24 @@ class MonobankGateway(BankGateway):
 
     async def fetch_operations(
         self,
-        access_data: dict,
+        access_data: dict[str, str],
         user_id: UserId,
         from_time: datetime | None = None,
-    ) -> list[BankOperationDTO] | None:
+    ) -> list[BankOperation] | None:
         to_timestamp = int(datetime.now().timestamp())
 
         if from_time:
             from_timestamp = int(from_time.timestamp())
             if from_timestamp > to_timestamp:
-                raise InvalidRequestError("Parameter to_time must be greater than from_time")
+                raise InvalidRequestError(
+                    "Parameter to_time must be greater than from_time",
+                )
         else:
-            from_timestamp = int((datetime.now() - timedelta(days=self.OPERATIONS_DAYS_LIMIT)).timestamp())
+            from_timestamp = int(
+                (
+                    datetime.now() - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
+                ).timestamp(),
+            )
 
         total_operations = []
         while to_timestamp:
@@ -68,7 +76,11 @@ class MonobankGateway(BankGateway):
             total_operations.extend(operations)
 
             # The maximum operations limit in response is 500 items
-            to_timestamp = operations[-1]["time"] if len(operations) == self.OPERATIONS_LIMIT else None
+            to_timestamp = (
+                operations[-1]["time"]
+                if len(operations) == self.OPERATIONS_LIMIT
+                else None
+            )
 
         for operation in total_operations:
             operation["user_id"] = user_id
@@ -76,6 +88,6 @@ class MonobankGateway(BankGateway):
 
         loaded_operations = self._retort.load(total_operations, list[Operation])
         return [
-            BankOperationDTO(operation=loaded_operation, mcc=operation["mcc"])
+            BankOperation(operation=loaded_operation, mcc=operation["mcc"])
             for loaded_operation, operation in zip(loaded_operations, total_operations)
         ]

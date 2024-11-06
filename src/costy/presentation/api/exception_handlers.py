@@ -6,7 +6,7 @@ from costy.domain.exceptions.access import AccessDeniedError, AuthenticationErro
 from costy.domain.exceptions.base import BaseError, InvalidRequestError
 
 
-def base_error_handler(request: Request, error: BaseError) -> Response:
+def base_error_handler(_: Request, error: BaseError) -> Response:  # type: ignore[type-arg]
     errors_detail: dict[Type[BaseError], tuple[str, int]] = {
         AuthenticationError: ("Authentication error", 401),
         AccessDeniedError: ("Access denied error", 403),

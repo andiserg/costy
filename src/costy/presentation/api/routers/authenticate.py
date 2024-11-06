@@ -2,7 +2,7 @@ from dishka import FromDishka
 from dishka.integrations.litestar import inject
 from litestar import Controller, Response, post
 
-from costy.application.authenticate import LoginInputDTO, Authenticate
+from costy.application.authenticate import InputData, Authenticate
 
 
 class AuthenticationController(Controller):
@@ -11,7 +11,9 @@ class AuthenticationController(Controller):
 
     @post(status_code=200)
     @inject
-    async def login(self, authenticate: FromDishka[Authenticate], data: LoginInputDTO) -> Response[dict[str, str]]:
+    async def login(
+        self, authenticate: FromDishka[Authenticate], data: InputData,
+    ) -> Response[dict[str, str]]:
         token = await authenticate(data)
         if token:
             return Response({"token": token}, status_code=200)

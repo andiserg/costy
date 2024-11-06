@@ -9,7 +9,7 @@ class CategoryService:
         name: str,
         kind: CategoryType,
         user_id: UserId,
-        view: dict | None,
+        view: dict[str, str] | None,
     ) -> Category:
         return Category(id=None, name=name, kind=kind.value, user_id=user_id, view=view)
 
@@ -17,7 +17,7 @@ class CategoryService:
         self,
         category: Category,
         name: str | None,
-        view: SentinelOptional[dict],
+        view: SentinelOptional[dict[str, str]],
     ) -> None:
         if name:
             category.name = name

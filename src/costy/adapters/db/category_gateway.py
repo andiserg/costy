@@ -2,24 +2,23 @@ from adaptix import Retort
 from sqlalchemy import Table, delete, insert, join, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.category.category_gateway import (
-    CategoriesFinder,
-    CategoriesReader,
-    CategoryDeleter,
-    CategoryFinder,
+from costy.application.common.category_gateway import (
     CategoryReader,
+    CategoryFinder,
     CategorySaver,
+    CategoryDeleter,
+    CategoriesReader,
     CategoryUpdater,
-    SentinelOptional,
+    CategoriesFinder,
 )
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
-from costy.domain.sentinel import Sentinel
+from costy.domain.sentinel import Sentinel, SentinelOptional
 
 retort = Retort()
 
 
-class CategoryGateway(
+class CategoryAdapter(
     CategoryReader,
     CategoryFinder,
     CategorySaver,
@@ -35,7 +34,9 @@ class CategoryGateway(
         self.retort = retort
 
     async def get_category_by_id(self, category_id: CategoryId) -> Category | None:
-        query = select(self.category_table).where(self.category_table.c.id == category_id)
+        query = select(self.category_table).where(
+            self.category_table.c.id == category_id,
+        )
         result = await self.session.execute(query)
         data = next(result.mappings(), None)
         return self.retort.load(data, Category) if data else None
@@ -71,7 +72,9 @@ class CategoryGateway(
         category.id = CategoryId(result.inserted_primary_key[0])
 
     async def delete_category(self, category_id: CategoryId) -> None:
-        query = delete(self.category_table).where(self.category_table.c.id == category_id)
+        query = delete(self.category_table).where(
+            self.category_table.c.id == category_id,
+        )
         await self.session.execute(query)
 
     async def find_categories(self, user_id: UserId) -> list[Category]:
@@ -83,16 +86,24 @@ class CategoryGateway(
         result = await self.session.execute(query)
         return self.retort.load(result.mappings(), list[Category])
 
-    async def update_category(self, category_id: CategoryId, category: Category) -> None:
+    async def update_category(
+        self, category_id: CategoryId, category: Category,
+    ) -> None:
         values = self.retort.dump(category)
 
         if not values:
             return
 
-        query = update(self.category_table).where(self.category_table.c.id == category_id).values(**values)
+        query = (
+            update(self.category_table)
+            .where(self.category_table.c.id == category_id)
+            .values(**values)
+        )
         await self.session.execute(query)
 
-    async def find_categories_by_mcc_codes(self, mcc_codes: tuple[int, ...]) -> dict[int, Category]:
+    async def find_categories_by_mcc_codes(
+        self, mcc_codes: tuple[int, ...],
+    ) -> dict[int, Category]:
         j = join(self.mcc_table, self.category_table)
         stmt = (
             select(self.mcc_table, self.category_table)
