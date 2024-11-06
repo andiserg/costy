@@ -13,7 +13,7 @@ retort = Retort()
 
 
 class UserAdapter(UserSaver, UserReader):
-    def __init__(self, session: AsyncSession, table: Table):
+    def __init__(self, session: AsyncSession, table: Table) -> None:
         self.session = session
         self.table = table
         self.retort = retort

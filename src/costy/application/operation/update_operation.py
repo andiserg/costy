@@ -39,7 +39,7 @@ class UpdateOperation(Interactor[InputData, None]):
         operation_db_gateway: OperationGateway,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.operation_service = operation_service
         self.access_service = access_service
         self.operation_db_gateway = operation_db_gateway

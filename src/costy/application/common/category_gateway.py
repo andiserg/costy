@@ -50,7 +50,9 @@ class CategoryDeleter(Protocol):
 class CategoryUpdater(Protocol):
     @abstractmethod
     async def update_category(
-        self, category_id: CategoryId, category: Category,
+        self,
+        category_id: CategoryId,
+        category: Category,
     ) -> None:
         raise NotImplementedError
 
@@ -59,6 +61,7 @@ class CategoryUpdater(Protocol):
 class CategoriesFinder(Protocol):
     @abstractmethod
     async def find_categories_by_mcc_codes(
-        self, mcc_codes: tuple[int, ...],
+        self,
+        mcc_codes: tuple[int, ...],
     ) -> dict[int, Category]:
         raise NotImplementedError

@@ -5,7 +5,11 @@ from costy.domain.models.bankapi import BankAPI
 
 
 class ReadBankapiList(Interactor[None, list[BankAPI]]):
-    def __init__(self, bankapi_gateway: BanksAPIReader, id_provider: IdProvider):
+    def __init__(
+        self,
+        bankapi_gateway: BanksAPIReader,
+        id_provider: IdProvider,
+    ) -> None:
         self.bankapi_gateway = bankapi_gateway
         self.id_provider = id_provider
 

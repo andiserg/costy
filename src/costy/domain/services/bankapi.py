@@ -1,11 +1,16 @@
-from datetime import datetime
+from datetime import datetime, UTC
 
 from costy.domain.models.bankapi import BankAPI
 from costy.domain.models.user import UserId
 
 
 class BankAPIService:
-    def create(self, bank_name: str, access_data: dict[str, str], user_id: UserId) -> BankAPI:
+    def create(
+        self,
+        bank_name: str,
+        access_data: dict[str, str],
+        user_id: UserId,
+    ) -> BankAPI:
         return BankAPI(
             name=bank_name,
             access_data=access_data,
@@ -14,4 +19,4 @@ class BankAPIService:
         )
 
     def update_time(self, bankapi: BankAPI) -> None:
-        bankapi.updated_at = int(datetime.now().timestamp())
+        bankapi.updated_at = int(datetime.now(tz=UTC).timestamp())

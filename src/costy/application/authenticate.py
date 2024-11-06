@@ -12,7 +12,7 @@ class InputData:
 
 
 class Authenticate(Interactor[InputData, str | None]):
-    def __init__(self, auth_gateway: AuthLoger, uow: Commiter):
+    def __init__(self, auth_gateway: AuthLoger, uow: Commiter) -> None:
         self.auth_gateway = auth_gateway
         self.uow = uow
 

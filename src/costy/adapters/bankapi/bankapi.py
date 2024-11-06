@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any
 
 from adaptix import Retort, name_mapping
@@ -90,12 +90,17 @@ class BankAPIAdapter(
             await self._db_session.execute(stmt)
 
     async def read_bank_operations(
-        self, bankapi: BankAPI,
+        self,
+        bankapi: BankAPI,
     ) -> list[BankOperation] | None:
         bank_gateway = self._bank_gateways[bankapi.name]
         from_time = (
-            datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
+            datetime.fromtimestamp(bankapi.updated_at, tz=UTC)
+            if bankapi.updated_at
+            else None
         )
         return await bank_gateway.fetch_operations(
-            bankapi.access_data, bankapi.user_id, from_time,
+            bankapi.access_data,
+            bankapi.user_id,
+            from_time,
         )

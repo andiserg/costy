@@ -20,7 +20,7 @@ class DeleteCategory(Interactor[CategoryId, None]):
         category_gateway: CategoryGateway,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.access_service = access_service
         self.category_gateway = category_gateway
         self.id_provider = id_provider

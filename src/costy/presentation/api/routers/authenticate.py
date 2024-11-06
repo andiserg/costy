@@ -12,7 +12,9 @@ class AuthenticationController(Controller):
     @post(status_code=200)
     @inject
     async def login(
-        self, authenticate: FromDishka[Authenticate], data: InputData,
+        self,
+        authenticate: FromDishka[Authenticate],
+        data: InputData,
     ) -> Response[dict[str, str]]:
         token = await authenticate(data)
         if token:

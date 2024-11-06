@@ -27,7 +27,12 @@ class CategoryAdapter(
     CategoryUpdater,
     CategoriesFinder,
 ):
-    def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table):
+    def __init__(
+        self,
+        session: AsyncSession,
+        category_table: Table,
+        mcc_table: Table,
+    ) -> None:
         self.session = session
         self.category_table = category_table
         self.mcc_table = mcc_table
@@ -87,7 +92,9 @@ class CategoryAdapter(
         return self.retort.load(result.mappings(), list[Category])
 
     async def update_category(
-        self, category_id: CategoryId, category: Category,
+        self,
+        category_id: CategoryId,
+        category: Category,
     ) -> None:
         values = self.retort.dump(category)
 
@@ -102,7 +109,8 @@ class CategoryAdapter(
         await self.session.execute(query)
 
     async def find_categories_by_mcc_codes(
-        self, mcc_codes: tuple[int, ...],
+        self,
+        mcc_codes: tuple[int, ...],
     ) -> dict[int, Category]:
         j = join(self.mcc_table, self.category_table)
         stmt = (

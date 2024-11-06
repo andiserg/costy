@@ -13,7 +13,7 @@ class ReadAvailableCategories(Interactor[None, list[Category]]):
         category_db_gateway: CategoriesReader,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.category_service = category_service
         self.category_db_gateway = category_db_gateway
         self.id_provider = id_provider

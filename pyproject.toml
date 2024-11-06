@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "costy"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
     'sqlalchemy',
     "litestar",
@@ -57,43 +57,41 @@ fixable = [
 ]
 ignore = [
     # Rules that should be turned on in the near future
-    'D',
-    'N818',
-    'B904',
-    'FIX002',
-    'RUF012',
-    'S311',
-    'DTZ005',
-    'DTZ006',
+    'D', # pydocstyle
+    'B904', # raise without from inside except
+    'FIX002', # line contains todo
+
     # Rules emitting false alerts
-    'N804',
-    'B008',
-    'BLE001',
-    'RUF009',
-    'I001',
+#    'N804', # invalid-first-argument-name-for-class-method
+#    'B008', # function-call-in-default-argument
+#    'BLE001', # blind-except
+#    'RUF009', # function-call-in-dataclass-default-argument
+    'I001', # unsorted-imports
+
     # Rules that are not applicable in the project for now
-    'TID252',
-    'D104',
-    'ANN',
-    'SLF001',
-    'ARG',
-    'D100',
-    'PLR0913',
-    'TCH002',
+    'TID252',  # relative-imports
+    'D104',  # undocumented-public-package
+#    'ANN', # flake8-annotations
+#    'SLF001', # private-member-access
+    'ARG',  # flake8-unused-arguments
+    'D100', # undocumented-public-module
+#    'PLR0913',  # too-many-arguments
+#    'TCH002', # typing-only-third-party-import
+
     # Strange and obscure rules that will never be turned on
-    'ANN101',
-    'FA100',
-    'TRY003',
-    'TRY201',
-    'EM',
-    'PERF203',
-    'TCH001',
-    'TD002',
-    'PTH201',
-    'RSE102',
-    'FA102',
-    'TD003',
-    'PTH123'
+    'ANN101', # missing-type-self
+    'FA100', # future-rewritable-type-annotation
+    'TRY003', # raise-vanilla-args
+    'TRY201', # verbose-raise
+    'EM', # flake8-errmsg
+    'PERF203', # try-except-in-loop
+    'TCH001', # typing-only-first-party-import
+    'TD002', # missing-todo-author
+    'PTH201', # path-constructor-current-directory
+    'RSE102', # path-constructor-current-directory
+    'FA102',  # future-required-type-annotation
+    'TD003', # missing-todo-link
+    'PTH123' # builtin-open
 ]
 
 [tool.ruff.lint.per-file-ignores]

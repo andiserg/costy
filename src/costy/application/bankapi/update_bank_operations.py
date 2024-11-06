@@ -16,7 +16,10 @@ from ..common.commiter import Commiter
 
 
 class BankAPIGateway(
-    BankAPIBulkUpdater, BanksAPIReader, BankAPIOperationsReader, Protocol,
+    BankAPIBulkUpdater,
+    BanksAPIReader,
+    BankAPIOperationsReader,
+    Protocol,
 ):
     pass
 
@@ -35,7 +38,7 @@ class UpdateBankOperations(Interactor[None, None]):
         category_gateway: CategoryGateway,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.bankapi_service = bankapi_service
         self.operation_service = operation_service
         self.bankapi_gateway = bankapi_gateway
@@ -48,7 +51,8 @@ class UpdateBankOperations(Interactor[None, None]):
         user_id = await self.id_provider.get_current_user_id()
         bankapis = await self.bankapi_gateway.get_bankapi_list(user_id)
         default_category = await self.category_gateway.find_category(
-            name="Інше", kind="general",
+            name="Інше",
+            kind="general",
         )
 
         operations: list[Operation] = []
@@ -68,7 +72,8 @@ class UpdateBankOperations(Interactor[None, None]):
                 category = mcc_categories.get(bank_operation.mcc, default_category)
                 if category:
                     self.operation_service.set_category(
-                        bank_operation.operation, category,
+                        bank_operation.operation,
+                        category,
                     )
 
             operations.extend(

@@ -22,7 +22,7 @@ class OperationAdapter(
     OperationsReader,
     OperationsBulkSaver,
 ):
-    def __init__(self, session: AsyncSession, table: Table):
+    def __init__(self, session: AsyncSession, table: Table) -> None:
         self.session = session
         self.table = table
         self.retort = retort
@@ -65,7 +65,9 @@ class OperationAdapter(
         return self.retort.load(result.mappings(), list[Operation])
 
     async def update_operation(
-        self, operation_id: OperationId, operation: Operation,
+        self,
+        operation_id: OperationId,
+        operation: Operation,
     ) -> None:
         values = self.retort.dump(operation)
 

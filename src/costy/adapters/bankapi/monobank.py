@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Any
 
 from adaptix import P, Retort, loader
@@ -25,7 +25,7 @@ class MonobankAdapter(BankAdapter):
         self,
         web_session: AsyncClient,
         bank_conf: dict[str, Any],
-    ):
+    ) -> None:
         self._web_session = web_session
         self._bank_conf = bank_conf["monobank"]
         self._retort = retort.extend(recipe=[loader(P[Operation].id, lambda _: None)])
@@ -36,7 +36,7 @@ class MonobankAdapter(BankAdapter):
         user_id: UserId,
         from_time: datetime | None = None,
     ) -> list[BankOperation] | None:
-        to_timestamp = int(datetime.now().timestamp())
+        to_timestamp = int(datetime.now(tz=UTC).timestamp())
 
         if from_time:
             from_timestamp = int(from_time.timestamp())
@@ -47,7 +47,7 @@ class MonobankAdapter(BankAdapter):
         else:
             from_timestamp = int(
                 (
-                    datetime.now() - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
+                    datetime.now(tz=UTC) - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
                 ).timestamp(),
             )
 

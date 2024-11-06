@@ -23,7 +23,7 @@ class CreateCategory(Interactor[InputData, CategoryId]):
         category_db_gateway: CategorySaver,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.category_service = category_service
         self.category_db_gateway = category_db_gateway
         self.id_provider = id_provider
@@ -36,7 +36,10 @@ class CreateCategory(Interactor[InputData, CategoryId]):
             raise AuthenticationError("User not found")
 
         category = self.category_service.create(
-            data.name, CategoryType.PERSONAL, user_id, data.view,
+            data.name,
+            CategoryType.PERSONAL,
+            user_id,
+            data.view,
         )
         await self.category_db_gateway.save_category(category)
         category_id = category.id

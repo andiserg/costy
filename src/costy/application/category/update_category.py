@@ -36,7 +36,7 @@ class UpdateCategory(Interactor[InputData, None]):
         category_db_gateway: CategoryGateway,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.category_service = category_service
         self.access_service = access_service
         self.category_db_gateway = category_db_gateway

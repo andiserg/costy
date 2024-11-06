@@ -21,7 +21,7 @@ class CreateUser(Interactor[InputData, UserId]):
         user_db_gateway: UserSaver,
         auth_gateway: AuthRegister,
         uow: Commiter,
-    ):
+    ) -> None:
         self.user_service = user_service
         self.user_db_gateway = user_db_gateway
         self.auth_gateway = auth_gateway

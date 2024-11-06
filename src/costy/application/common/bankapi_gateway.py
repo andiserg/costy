@@ -24,7 +24,8 @@ class BankAPISaver(Protocol):
 class BankAPIOperationsReader(Protocol):
     @abstractmethod
     async def read_bank_operations(
-        self, bankapi: BankAPI,
+        self,
+        bankapi: BankAPI,
     ) -> list[BankOperation] | None:
         raise NotImplementedError
 

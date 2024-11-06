@@ -21,7 +21,7 @@ class DeleteBankAPI(Interactor[BankApiId, None]):
         bankapi_gateway: BankAPIGateway,
         id_provider: IdProvider,
         commiter: Commiter,
-    ):
+    ) -> None:
         self.access_service = access_service
         self.bankapi_gateway = bankapi_gateway
         self.id_provider = id_provider

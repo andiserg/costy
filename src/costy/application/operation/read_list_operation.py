@@ -22,7 +22,7 @@ class ReadListOperation(Interactor[InputData, List[Operation]]):
         operation_db_gateway: OperationsReader,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.operation_service = operation_service
         self.operation_db_gateway = operation_db_gateway
         self.id_provider = id_provider

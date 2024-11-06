@@ -49,6 +49,8 @@ class OperationDeleter(Protocol):
 class OperationUpdater(Protocol):
     @abstractmethod
     async def update_operation(
-        self, operation_id: OperationId, operation: Operation,
+        self,
+        operation_id: OperationId,
+        operation: Operation,
     ) -> None:
         raise NotImplementedError

@@ -60,7 +60,9 @@ class IdDIProvider(Provider):
     ) -> IDP:
         token_processor = JwtTokenProcessor("RS256", settings.audience, settings.issuer)
         jwsk_provider = KeySetProvider(
-            settings.jwks_uri, web_session, timedelta(days=1),
+            settings.jwks_uri,
+            web_session,
+            timedelta(days=1),
         )
 
         id_provider = TokenIdProvider(token_processor, jwsk_provider)
@@ -88,7 +90,8 @@ class DIProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     async def get_session(
-        self, session_maker: async_sessionmaker[AS],
+        self,
+        session_maker: async_sessionmaker[AS],
     ) -> AsyncIterable[AS]:
         session = session_maker()
         yield session
@@ -106,7 +109,9 @@ class DIProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     async def get_user_gateway(
-        self, session: AS, tables: dict[str, Table],
+        self,
+        session: AS,
+        tables: dict[str, Table],
     ) -> UserAdapter:
         return UG(session, tables["users"])
 
@@ -141,13 +146,17 @@ class DIProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     async def get_operation_dependencies(
-        self, gateway: OG, session: AS,
+        self,
+        gateway: OG,
+        session: AS,
     ) -> tuple[OG, AS]:
         return gateway, session
 
     @provide(scope=Scope.REQUEST)
     async def get_category_dependencies(
-        self, gateway: CG, session: AS,
+        self,
+        gateway: CG,
+        session: AS,
     ) -> tuple[CG, AS]:
         return gateway, session
 
@@ -163,77 +172,110 @@ class DIProvider(Provider):
 
     @provide
     async def get_create_user(
-        self, user_gateway: UG, auth_gateway: AG, session: AS,
+        self,
+        user_gateway: UG,
+        auth_gateway: AG,
+        session: AS,
     ) -> CreateUser:
         return CreateUser(UserService(), user_gateway, auth_gateway, session)
 
     @provide
     async def get_create_operation(
-        self, depends: tuple[OG, AS], idp: IDP,
+        self,
+        depends: tuple[OG, AS],
+        idp: IDP,
     ) -> CreateOperation:
         return CreateOperation(OperationService(), depends[0], idp, depends[1])
 
     @provide
     async def get_read_list_operation(
-        self, depends: tuple[OG, AS], idp: IDP,
+        self,
+        depends: tuple[OG, AS],
+        idp: IDP,
     ) -> ReadListOperation:
         return ReadListOperation(OperationService(), depends[0], idp, depends[1])
 
     @provide
     async def get_delete_operation(
-        self, depends: tuple[OG, AS], idp: IDP,
+        self,
+        depends: tuple[OG, AS],
+        idp: IDP,
     ) -> DeleteOperation:
         return DeleteOperation(AccessService(), depends[0], idp, depends[1])
 
     @provide
     async def get_update_operation(
-        self, depends: tuple[OG, AS], idp: IDP,
+        self,
+        depends: tuple[OG, AS],
+        idp: IDP,
     ) -> UpdateOperation:
         return UpdateOperation(
-            OperationService(), AccessService(), depends[0], idp, depends[1],
+            OperationService(),
+            AccessService(),
+            depends[0],
+            idp,
+            depends[1],
         )
 
     @provide
     async def get_create_category(
-        self, depends: tuple[CG, AS], idp: IDP,
+        self,
+        depends: tuple[CG, AS],
+        idp: IDP,
     ) -> CreateCategory:
         return CreateCategory(CategoryService(), depends[0], idp, depends[1])
 
     @provide
     async def get_delete_category(
-        self, depends: tuple[CG, AS], idp: IDP,
+        self,
+        depends: tuple[CG, AS],
+        idp: IDP,
     ) -> DeleteCategory:
         return DeleteCategory(AccessService(), depends[0], idp, depends[1])
 
     @provide
     async def get_update_category(
-        self, depends: tuple[CG, AS], idp: IDP,
+        self,
+        depends: tuple[CG, AS],
+        idp: IDP,
     ) -> UpdateCategory:
         return UpdateCategory(
-            CategoryService(), AccessService(), depends[0], idp, depends[1],
+            CategoryService(),
+            AccessService(),
+            depends[0],
+            idp,
+            depends[1],
         )
 
     @provide
     async def get_read_available_categories(
-        self, depends: tuple[CG, AS], idp: IDP,
+        self,
+        depends: tuple[CG, AS],
+        idp: IDP,
     ) -> ReadAvailableCategories:
         return ReadAvailableCategories(CategoryService(), depends[0], idp, depends[1])
 
     @provide
     async def get_create_bankapi(
-        self, depends: tuple[BG, AS], idp: IDP,
+        self,
+        depends: tuple[BG, AS],
+        idp: IDP,
     ) -> CreateBankAPI:
         return CreateBankAPI(BankAPIService(), depends[0], idp, depends[1])
 
     @provide
     async def get_delete_bankapi(
-        self, depends: tuple[BG, AS], idp: IDP,
+        self,
+        depends: tuple[BG, AS],
+        idp: IDP,
     ) -> DeleteBankAPI:
         return DeleteBankAPI(AccessService(), depends[0], idp, depends[1])
 
     @provide
     async def get_read_bankapi_list(
-        self, gateway: BankAPIAdapter, idp: IdProvider,
+        self,
+        gateway: BankAPIAdapter,
+        idp: IdProvider,
     ) -> ReadBankapiList:
         return ReadBankapiList(gateway, idp)
 

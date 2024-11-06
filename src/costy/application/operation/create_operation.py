@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, UTC
 
 from ..common.operation_gateway import OperationSaver
 from ...domain.models.category import CategoryId
@@ -15,7 +15,7 @@ from ..common.commiter import Commiter
 class InputData:
     amount: int
     description: str | None = None
-    time: int = int(datetime.now().timestamp())
+    time: int = int(datetime.now(tz=UTC).timestamp())
     category_id: CategoryId
 
 
@@ -26,7 +26,7 @@ class CreateOperation(Interactor[InputData, OperationId]):
         operation_db_gateway: OperationSaver,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.operation_service = operation_service
         self.operation_db_gateway = operation_db_gateway
         self.id_provider = id_provider

@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import Any, Literal
 
 from httpx import AsyncClient
@@ -28,13 +28,15 @@ class JwtTokenProcessor:
         algorithm: Algorithm,
         audience: str,
         issuer: str,
-    ):
+    ) -> None:
         self.algorithm = algorithm
         self.audience = audience
         self.issuer = issuer
 
     def _fetch_rsa_key(
-        self, jwks: dict[Any, Any], unverified_header: dict[str, str],
+        self,
+        jwks: dict[Any, Any],
+        unverified_header: dict[str, str],
     ) -> dict[str, str]:
         rsa_key = {}
         for key in jwks["keys"]:
@@ -80,7 +82,7 @@ class JwtTokenProcessor:
             raise AuthenticationError(
                 {"detail": "incorrect claims (check audience and issuer)"},
             )
-        except Exception as e:
+        except jwt_exc.JOSEError as e:
             logger.warning("Auth token resolving unknown error. Message: %s", e.args)
             raise AuthenticationError(
                 {"detail": "Unable to parse authentication token."},
@@ -88,7 +90,7 @@ class JwtTokenProcessor:
 
 
 class KeySetProvider:
-    def __init__(self, uri: str, session: AsyncClient, expired: timedelta):
+    def __init__(self, uri: str, session: AsyncClient, expired: timedelta) -> None:
         self.session = session
         self.jwks: dict[str, str] = {}
         self.expired = expired
@@ -98,7 +100,9 @@ class KeySetProvider:
     async def get_key_set(self) -> dict[Any, Any]:
         if not self.jwks:
             await self._request_new_key_set()
-        if self.last_updated and datetime.now() - self.last_updated > self.expired:
+
+        now = datetime.now(tz=UTC)
+        if self.last_updated and now - self.last_updated > self.expired:
             # TODO: add use Cache-Control
             await self._request_new_key_set()
         return self.jwks
@@ -106,7 +110,7 @@ class KeySetProvider:
     async def _request_new_key_set(self) -> None:
         response = await self.session.get(self.uri)
         self.jwks = response.json()
-        self.last_updated = datetime.now()
+        self.last_updated = datetime.now(tz=UTC)
 
 
 class TokenIdProvider(IdProvider):
@@ -115,7 +119,7 @@ class TokenIdProvider(IdProvider):
         token_processor: JwtTokenProcessor,
         key_set_provider: KeySetProvider,
         token: str | None = None,
-    ):
+    ) -> None:
         self.token_processor = token_processor
         self.key_set_provider = key_set_provider
         self.token = token

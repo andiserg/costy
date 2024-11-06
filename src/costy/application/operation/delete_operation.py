@@ -20,7 +20,7 @@ class DeleteOperation(Interactor[OperationId, None]):
         operation_gateway: OperationGateway,
         id_provider: IdProvider,
         uow: Commiter,
-    ):
+    ) -> None:
         self.access_service = access_service
         self.operation_gateway = operation_gateway
         self.id_provider = id_provider
