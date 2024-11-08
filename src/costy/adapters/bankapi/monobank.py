@@ -5,8 +5,7 @@ from typing import Any
 from adaptix import P, Retort, loader
 from httpx import AsyncClient
 
-from costy.adapters.bankapi.bank_gateway import BankAdapter
-from costy.application.common.bankapi_gateway import BankOperation
+from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
@@ -35,21 +34,17 @@ class MonobankAdapter(BankAdapter):
         access_data: dict[str, str],
         user_id: UserId,
         from_time: datetime | None = None,
-    ) -> list[BankOperation] | None:
-        to_timestamp = int(datetime.now(tz=UTC).timestamp())
+    ) -> list[MCCBankOperation] | None:
+        now = datetime.now(tz=UTC)
+        to_timestamp = int(now.timestamp())
 
         if from_time:
+            if from_time > now:
+                raise InvalidRequestError("Parameter to_time must be greater than from_time")
             from_timestamp = int(from_time.timestamp())
-            if from_timestamp > to_timestamp:
-                raise InvalidRequestError(
-                    "Parameter to_time must be greater than from_time",
-                )
         else:
-            from_timestamp = int(
-                (
-                    datetime.now(tz=UTC) - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
-                ).timestamp(),
-            )
+            from_datetime = datetime.now(tz=UTC) - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
+            from_timestamp = int(from_datetime.timestamp())
 
         total_operations = []
         while to_timestamp:
@@ -88,6 +83,6 @@ class MonobankAdapter(BankAdapter):
 
         loaded_operations = self._retort.load(total_operations, list[Operation])
         return [
-            BankOperation(operation=loaded_operation, mcc=operation["mcc"])
+            MCCBankOperation(operation=loaded_operation, mcc=operation["mcc"])
             for loaded_operation, operation in zip(loaded_operations, total_operations)
         ]

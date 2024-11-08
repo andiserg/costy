@@ -50,35 +50,10 @@ class UpdateBankOperations(Interactor[None, None]):
     async def __call__(self, data: None) -> None:
         user_id = await self.id_provider.get_current_user_id()
         bankapis = await self.bankapi_gateway.get_bankapi_list(user_id)
-        default_category = await self.category_gateway.find_category(
-            name="Інше",
-            kind="general",
-        )
 
         operations: list[Operation] = []
         for bankapi in bankapis:
-            bank_operations = await self.bankapi_gateway.read_bank_operations(bankapi)
-
-            if bank_operations is None:
-                # if bank_operations is None, it means the BankAPI communication error
-                continue
-
-            mcc_codes = tuple(operation.mcc for operation in bank_operations)
-            mcc_categories = await self.category_gateway.find_categories_by_mcc_codes(
-                mcc_codes,
-            )
-
-            for bank_operation in bank_operations:
-                category = mcc_categories.get(bank_operation.mcc, default_category)
-                if category:
-                    self.operation_service.set_category(
-                        bank_operation.operation,
-                        category,
-                    )
-
-            operations.extend(
-                bank_operation.operation for bank_operation in bank_operations
-            )
+            operations.extend(await self.bankapi_gateway.read_bank_operations(bankapi))
             self.bankapi_service.update_time(bankapi)
 
         if operations:

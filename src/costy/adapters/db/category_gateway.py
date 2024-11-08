@@ -66,8 +66,8 @@ class CategoryAdapter(
             if param_value is not Sentinel:
                 stmt = stmt.where(self.category_table.c[param_name] == param_value)
 
-        result = (await self.session.execute(stmt)).fetchone()
-        return self.retort.load(result._mapping, Category)  # type: ignore[union-attr]
+        result = (await self.session.execute(stmt)).mappings().fetchone()
+        return self.retort.load(result, Category) if result is not None else None
 
     async def save_category(self, category: Category) -> None:
         values = self.retort.dump(category)

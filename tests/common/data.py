@@ -6,7 +6,7 @@ from pytest_asyncio import fixture
 
 from costy.application.authenticate import InputData
 from costy.application.category import create_category
-from costy.application.common.bankapi_gateway import BankOperation
+from costy.application.common.bankapi_gateway import Operation
 from costy.application.operation import create_operation
 from costy.application.user import create_user
 from costy.domain.models.bankapi import BankApiId
@@ -146,7 +146,7 @@ async def bank_operations(user_id):
     mcc_list = [1, 2, 3]
 
     return [
-        BankOperation(
+        Operation(
             operation=Operation(
                 id=None,
                 amount=100,

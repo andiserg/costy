@@ -43,6 +43,3 @@ class OperationService:
         }
         for name, value in params.items():
             setattr(operation, name, value)
-
-    def set_category(self, operation: Operation, category: Category) -> None:
-        operation.category_id = category.id

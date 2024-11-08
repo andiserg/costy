@@ -5,14 +5,14 @@ from unittest.mock import Mock
 from pytest_asyncio import fixture
 
 from costy.adapters.auth.auth_gateway import AuthGateway
-from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.adapters.bankapi.bankapi import BankAPIAdapter
 from costy.adapters.bankapi.monobank import MonobankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
 from costy.adapters.db.user_gateway import UserAdapter
 from costy.application.common.auth_gateway import AuthLoger
-from costy.application.common.bankapi_gateway import BankOperation
+from costy.application.common.bankapi_gateway import Operation
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
@@ -60,10 +60,10 @@ async def monobank_adapter(web_session) -> MonobankAdapter:
 
 
 @fixture
-async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
+async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id, category_gateway):
     bank_adapter = Mock(spec=BankAdapter)
     bank_adapter.fetch_operations.return_value = [
-        BankOperation(
+        MCCBankOperation(
             operation=Operation(
                 id=OperationId(i),
                 amount=100*i,
@@ -80,7 +80,7 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id):
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks_info = json.load(f)
 
-    return BankAPIAdapter(db_session, web_session, db_tables["bankapis"], gateway_map, banks_info)
+    return BankAPIAdapter(db_session, web_session, db_tables["bankapis"], gateway_map, banks_info, category_gateway)
 
 
 @fixture(scope="session")

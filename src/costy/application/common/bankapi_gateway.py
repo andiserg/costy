@@ -1,16 +1,9 @@
 from abc import abstractmethod
-from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
-
-
-@dataclass(slots=True, kw_only=True)
-class BankOperation:
-    operation: Operation
-    mcc: int
 
 
 @runtime_checkable
@@ -26,7 +19,7 @@ class BankAPIOperationsReader(Protocol):
     async def read_bank_operations(
         self,
         bankapi: BankAPI,
-    ) -> list[BankOperation] | None:
+    ) -> tuple[Operation, ...] | None:
         raise NotImplementedError
 
 

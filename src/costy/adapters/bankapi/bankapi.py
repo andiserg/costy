@@ -7,8 +7,9 @@ from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.application.common.bankapi_gateway import (
-    BankOperation,
+    Operation,
     BankAPISaver,
     BankAPIDeleter,
     BankAPIBanksReader,
@@ -41,6 +42,7 @@ class BankAPIAdapter(
         table: Table,
         bank_gateways: dict[str, BankAdapter],
         banks_info: dict[str, dict[str, Any]],
+        category_adapter: CategoryAdapter
     ) -> None:
         self._db_session = db_session
         self._web_session = web_session
@@ -48,6 +50,8 @@ class BankAPIAdapter(
         self._retort = retort
         self._bank_gateways = bank_gateways
         self._banks_info = banks_info
+        self._category_adapter = category_adapter
+
 
     async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
         stmt = select(self._table).where(self._table.c.id == bankapi_id)
@@ -92,15 +96,31 @@ class BankAPIAdapter(
     async def read_bank_operations(
         self,
         bankapi: BankAPI,
-    ) -> list[BankOperation] | None:
+    ) -> tuple[Operation, ...] | None:
         bank_gateway = self._bank_gateways[bankapi.name]
         from_time = (
             datetime.fromtimestamp(bankapi.updated_at, tz=UTC)
             if bankapi.updated_at
             else None
         )
-        return await bank_gateway.fetch_operations(
+        bank_operations = await bank_gateway.fetch_operations(
             bankapi.access_data,
             bankapi.user_id,
             from_time,
         )
+        mcc_codes = tuple(operation.mcc for operation in bank_operations)
+        mcc_categories = await self._category_adapter.find_categories_by_mcc_codes(
+            mcc_codes,
+        )
+
+        default_category = await self._category_adapter.find_category(
+            name="Інше",
+            kind="general",
+        )
+
+        for bank_operation in bank_operations:
+            category = mcc_categories.get(bank_operation.mcc, default_category)
+            if category:
+                bank_operation.operation.category_id = category.id
+
+        return tuple(bank_operation.operation for bank_operation in bank_operations)
