@@ -4,9 +4,9 @@ from random import choice, randint
 import pytest
 from pytest_asyncio import fixture
 
+from costy.adapters.bankapi.bank_gateway import MCCBankOperation
 from costy.application.authenticate import InputData
 from costy.application.category import create_category
-from costy.application.common.bankapi_gateway import Operation
 from costy.application.operation import create_operation
 from costy.application.user import create_user
 from costy.domain.models.bankapi import BankApiId
@@ -146,7 +146,7 @@ async def bank_operations(user_id):
     mcc_list = [1, 2, 3]
 
     return [
-        Operation(
+        MCCBankOperation(
             operation=Operation(
                 id=None,
                 amount=100,
@@ -157,5 +157,5 @@ async def bank_operations(user_id):
             ),
             mcc=choice(mcc_list),
         )
-        for i in range(randint(5, 10))
+        for _ in range(randint(5, 10))
     ]

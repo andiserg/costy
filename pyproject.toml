@@ -15,7 +15,7 @@ dependencies = [
     'aiohttp',
     'python-jose',
     'prometheus-client',
-    "dishka>=1.3.0",
+    "dishka",
 ]
 
 [project.optional-dependencies]

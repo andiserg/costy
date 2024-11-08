@@ -141,8 +141,9 @@ class DIProvider(Provider):
         tables: dict[str, Table],
         bank_gateways: dict[str, BankAdapter],
         banks_conf: dict[str, Any],
+        cg: CategoryAdapter,
     ) -> BG:
-        return BG(session, web_session, tables["bankapis"], bank_gateways, banks_conf)
+        return BG(session, web_session, tables["bankapis"], bank_gateways, banks_conf, cg)
 
     @provide(scope=Scope.REQUEST)
     async def get_operation_dependencies(
