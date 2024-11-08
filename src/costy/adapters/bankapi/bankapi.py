@@ -24,6 +24,7 @@ from costy.domain.models.user import UserId
 
 
 retort = Retort()
+modified_retort = retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
 
 
 class BankAPIAdapter(
@@ -47,7 +48,6 @@ class BankAPIAdapter(
         self._db_session = db_session
         self._web_session = web_session
         self._table = table
-        self._retort = retort
         self._bank_gateways = bank_gateways
         self._banks_info = banks_info
         self._category_adapter = category_adapter
@@ -56,11 +56,10 @@ class BankAPIAdapter(
     async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
         stmt = select(self._table).where(self._table.c.id == bankapi_id)
         result = next((await self._db_session.execute(stmt)).mappings(), None)
-        return self._retort.load(result, BankAPI) if result else None
+        return retort.load(result, BankAPI) if result else None
 
     async def save_bankapi(self, bankapi: BankAPI) -> None:
-        retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
-        values = retort.dump(bankapi)
+        values = modified_retort.dump(bankapi)
         query = insert(self._table).values(**values)
         result = await self._db_session.execute(query)
         bankapi.id = result.inserted_primary_key[0]
@@ -81,7 +80,7 @@ class BankAPIAdapter(
     async def get_bankapi_list(self, user_id: UserId) -> list[BankAPI]:
         stmt = select(self._table).where(self._table.c.user_id == user_id)
         result = (await self._db_session.execute(stmt)).mappings()
-        return self._retort.load(result, list[BankAPI])
+        return retort.load(result, list[BankAPI])
 
     async def update_bankapis(self, bankapis: list[BankAPI]) -> None:
         stmts = (

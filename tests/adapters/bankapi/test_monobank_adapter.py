@@ -3,6 +3,7 @@ import os
 import pytest
 from pytest_asyncio import fixture
 
+from costy.adapters.bankapi.bank_gateway import MCCBankOperation
 from costy.application.common.bankapi_gateway import Operation
 
 
@@ -23,4 +24,4 @@ async def test_fetch_operations(monobank_adapter, monobank_access_data, user_id)
     assert isinstance(result, list)
 
     if len(result) > 0:
-        assert all(isinstance(dto, Operation) for dto in result)
+        assert all(isinstance(dto, MCCBankOperation) for dto in result)
