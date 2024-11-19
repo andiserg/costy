@@ -1,0 +1,50 @@
+replicaCount: 3
+
+image:
+  repository: sergienkoandrew/costy
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+postgresql:
+  host: "postgres-service"
+  user: "user"
+  password: "password"
+  database: "dbname"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+secrets:
+  AUTH0_CLIENT_ID:
+  AUTH0_CLIENT_SECRET:
+  AUTH0_AUDIENCE:
+  AUTH0_AUTHORIZE_URL:
+  AUTH0_CONNECTION:
+  AUTH0_ISSUER:
+  AUTH0_JWKS_URI:
+  AUTH0_REGISTER_URL:
+  DB_USER:
+  DB_PASSWORD:
+  DB_NAME:
+  DB_PORT:
+  DB_HOST:
+  TEST_DB_URL:
+  TEST_AUTH_PASSWORD:
+  TEST_AUTH_USER:
+  TEST_AUTH_USER_SUB:
+  TEST_MONOBANK_TOKEN:

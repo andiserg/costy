@@ -1,4 +1,9 @@
 tests
 .github
 .venv
+deploy
+.coverage
+.gitignore
+Dockerfile
+justfile
 costy.egg-info

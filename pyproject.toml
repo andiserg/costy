@@ -36,6 +36,9 @@ dev = [
     'pytest-env',
 ]
 
+[tool.setuptools.package-data]
+costy = ["adapters/bankapi/_banks.json", "adapters/bankapi/_mcc.json"]
+
 [tool.mypy]
 python_version = "3.12"
 exclude = [
