@@ -3,13 +3,13 @@ from sqlalchemy import Table, delete, insert, join, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.category_gateway import (
-    CategoryReader,
-    CategoryFinder,
-    CategorySaver,
-    CategoryDeleter,
-    CategoriesReader,
-    CategoryUpdater,
     CategoriesFinder,
+    CategoriesReader,
+    CategoryDeleter,
+    CategoryFinder,
+    CategoryReader,
+    CategorySaver,
+    CategoryUpdater,
 )
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId

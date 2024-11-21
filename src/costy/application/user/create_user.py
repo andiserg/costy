@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from ..common.user_gateway import UserSaver
 from ...domain.models.user import UserId
 from ...domain.services.user import UserService
 from ..common.auth_gateway import AuthRegister
-from ..common.interactor import Interactor
 from ..common.commiter import Commiter
+from ..common.interactor import Interactor
+from ..common.user_gateway import UserSaver
 
 
 @dataclass(slots=True)

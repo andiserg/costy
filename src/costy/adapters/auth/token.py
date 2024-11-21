@@ -1,9 +1,10 @@
 import logging
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from httpx import AsyncClient
-from jose import exceptions as jwt_exc, jwt
+from jose import exceptions as jwt_exc
+from jose import jwt
 
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.user_gateway import UserReader

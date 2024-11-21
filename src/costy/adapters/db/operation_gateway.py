@@ -3,11 +3,11 @@ from sqlalchemy import Table, delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.operation_gateway import (
+    OperationDeleter,
     OperationReader,
     OperationSaver,
-    OperationDeleter,
-    OperationsReader,
     OperationsBulkSaver,
+    OperationsReader,
 )
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId

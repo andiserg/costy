@@ -1,9 +1,9 @@
-from ..common.category_gateway import CategoriesReader
 from ...domain.models.category import Category
 from ...domain.services.category import CategoryService
+from ..common.category_gateway import CategoriesReader
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
 
 
 class ReadAvailableCategories(Interactor[None, list[Category]]):

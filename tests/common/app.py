@@ -3,19 +3,24 @@ from typing import Any
 
 import pytest
 from adaptix import Retort
-from dishka import make_async_container, Scope, Provider, from_context
+from dishka import Provider, Scope, from_context, make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
 from sqlalchemy import Table
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
 from costy.adapters.db.user_gateway import UserAdapter
 from costy.application.common.id_provider import IdProvider
 from costy.domain.exceptions.base import BaseError
 from costy.domain.models.user import UserId
-from costy.infrastructure.config import get_auth_settings, get_banks_conf, get_db_connection_url, AuthSettings
+from costy.infrastructure.config import (
+    AuthSettings,
+    get_auth_settings,
+    get_banks_conf,
+    get_db_connection_url,
+)
 from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
 from costy.infrastructure.db.tables import create_tables
 from costy.main.di import DIProvider

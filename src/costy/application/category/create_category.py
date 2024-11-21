@@ -2,12 +2,12 @@ from dataclasses import dataclass
 
 from costy.domain.models.category import CategoryId, CategoryType
 from costy.domain.services.category import CategoryService
-from ..common.category_gateway import CategorySaver
 
 from ...domain.exceptions.access import AuthenticationError
+from ..common.category_gateway import CategorySaver
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
 
 
 @dataclass(slots=True, kw_only=True)

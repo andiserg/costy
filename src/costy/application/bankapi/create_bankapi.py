@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from ..common.bankapi_gateway import BankAPIBanksReader, BankAPISaver
 from ...domain.exceptions.base import InvalidRequestError
 from ...domain.services.bankapi import BankAPIService
+from ..common.bankapi_gateway import BankAPIBanksReader, BankAPISaver
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
 
 
 class BankAPIGateway(BankAPIBanksReader, BankAPISaver, Protocol):

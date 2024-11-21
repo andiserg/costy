@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Any, AsyncIterable
 
-from dishka import Provider, provide, Scope, from_context
+from dishka import Provider, Scope, from_context, provide
 from httpx import AsyncClient
 from litestar import Request
 from litestar.exceptions import HTTPException
@@ -37,7 +37,6 @@ from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
 from costy.domain.services.user import UserService
 from costy.infrastructure.config import AuthSettings
-
 
 AG = AuthGateway
 UG = UserAdapter

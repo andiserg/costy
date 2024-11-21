@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 from costy.domain.models.bankapi import BankAPI
 from costy.domain.models.user import UserId

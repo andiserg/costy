@@ -1,18 +1,18 @@
 from typing import Protocol
 
-from ..common.bankapi_gateway import (
-    BankAPIBulkUpdater,
-    BanksAPIReader,
-    BankAPIOperationsReader,
-)
-from ..common.category_gateway import CategoriesFinder, CategoryFinder
-from ..common.operation_gateway import OperationsBulkSaver
 from ...domain.models.operation import Operation
 from ...domain.services.bankapi import BankAPIService
 from ...domain.services.operation import OperationService
+from ..common.bankapi_gateway import (
+    BankAPIBulkUpdater,
+    BankAPIOperationsReader,
+    BanksAPIReader,
+)
+from ..common.category_gateway import CategoriesFinder, CategoryFinder
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
+from ..common.operation_gateway import OperationsBulkSaver
 
 
 class BankAPIGateway(

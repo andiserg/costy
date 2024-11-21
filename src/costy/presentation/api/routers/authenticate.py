@@ -2,7 +2,7 @@ from dishka import FromDishka
 from dishka.integrations.litestar import inject
 from litestar import Controller, Response, post
 
-from costy.application.authenticate import InputData, Authenticate
+from costy.application.authenticate import Authenticate, InputData
 
 
 class AuthenticationController(Controller):

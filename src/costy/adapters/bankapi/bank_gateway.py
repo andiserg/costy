@@ -6,6 +6,7 @@ from typing import Protocol
 from costy.application.common.bankapi_gateway import Operation
 from costy.domain.models.user import UserId
 
+
 @dataclass
 class MCCBankOperation:
     operation: Operation

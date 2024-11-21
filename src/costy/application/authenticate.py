@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from .common.auth_gateway import AuthLoger
-from .common.interactor import Interactor
 from .common.commiter import Commiter
+from .common.interactor import Interactor
 
 
 @dataclass

@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from ..common.category_gateway import CategoryReader, CategoryUpdater
 from ...domain.exceptions.access import AccessDeniedError
 from ...domain.exceptions.base import InvalidRequestError
 from ...domain.models.category import CategoryId
-from ...domain.sentinel import SentinelOptional, Sentinel
+from ...domain.sentinel import Sentinel, SentinelOptional
 from ...domain.services.access import AccessService
 from ...domain.services.category import CategoryService
+from ..common.category_gateway import CategoryReader, CategoryUpdater
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
 
 
 class CategoryGateway(CategoryReader, CategoryUpdater, Protocol): ...

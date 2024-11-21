@@ -9,7 +9,12 @@ from litestar import Litestar
 from pytest_asyncio import fixture
 from sqlalchemy import Table
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from costy.infrastructure.db.main import get_metadata
 from costy.infrastructure.db.tables import create_tables

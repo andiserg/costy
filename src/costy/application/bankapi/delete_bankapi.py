@@ -1,9 +1,9 @@
 from typing import Protocol
 
-from costy.application.common.bankapi_gateway import BankAPIReader, BankAPIDeleter
+from costy.application.common.bankapi_gateway import BankAPIDeleter, BankAPIReader
+from costy.application.common.commiter import Commiter
 from costy.application.common.id_provider import IdProvider
 from costy.application.common.interactor import Interactor
-from costy.application.common.commiter import Commiter
 from costy.domain.exceptions.access import AccessDeniedError
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankApiId

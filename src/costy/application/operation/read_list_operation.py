@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import List
 
-from ..common.operation_gateway import OperationsReader
 from ...domain.models.operation import Operation
 from ...domain.services.operation import OperationService
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
+from ..common.operation_gateway import OperationsReader
 
 
 @dataclass(slots=True)

@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
-from ..common.operation_gateway import OperationSaver
 from ...domain.models.category import CategoryId
-
 from ...domain.models.operation import OperationId
 from ...domain.services.operation import OperationService
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
+from ..common.operation_gateway import OperationSaver
 
 
 @dataclass(slots=True, kw_only=True)

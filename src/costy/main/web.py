@@ -1,5 +1,6 @@
 import asyncio
 from typing import Any
+
 from dishka import make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
@@ -7,16 +8,16 @@ from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.di import Provide
 from sqlalchemy import Table
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
+    AuthSettings,
     get_auth_settings,
     get_banks_conf,
     get_db_connection_url,
     setup_logger,
-    AuthSettings,
 )
 from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
 from costy.infrastructure.db.tables import create_tables

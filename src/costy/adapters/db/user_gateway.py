@@ -4,7 +4,7 @@ from adaptix import Retort
 from sqlalchemy import Table, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.user_gateway import UserSaver, UserReader
+from costy.application.common.user_gateway import UserReader, UserSaver
 from costy.domain.exceptions.access import AuthenticationError
 from costy.domain.models.user import User, UserId
 

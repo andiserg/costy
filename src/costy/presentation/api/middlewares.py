@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-
+from typing import TYPE_CHECKING
 
 from litestar.middleware import MiddlewareProtocol
+
 from costy.infrastructure.metrics import Metrics
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from litestar.types import ASGIApp, Receive, Scope, Send
 

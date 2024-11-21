@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Protocol
 
-from ..common.operation_gateway import OperationReader, OperationUpdater
 from ...domain.exceptions.access import AccessDeniedError
 from ...domain.exceptions.base import InvalidRequestError
 from ...domain.models.category import CategoryId
@@ -9,9 +8,10 @@ from ...domain.models.operation import OperationId
 from ...domain.sentinel import Sentinel
 from ...domain.services.access import AccessService
 from ...domain.services.operation import OperationService
+from ..common.commiter import Commiter
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from ..common.commiter import Commiter
+from ..common.operation_gateway import OperationReader, OperationUpdater
 
 
 class OperationGateway(OperationReader, OperationUpdater, Protocol): ...

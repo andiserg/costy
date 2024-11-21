@@ -1,7 +1,8 @@
+from costy.domain.models.bankapi import BankAPI
+
 from ..common.bankapi_gateway import BanksAPIReader
 from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
-from costy.domain.models.bankapi import BankAPI
 
 
 class ReadBankapiList(Interactor[None, list[BankAPI]]):

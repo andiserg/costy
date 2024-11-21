@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from adaptix import Retort, name_mapping
@@ -9,19 +9,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from costy.adapters.bankapi.bank_gateway import BankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.application.common.bankapi_gateway import (
-    Operation,
-    BankAPISaver,
-    BankAPIDeleter,
     BankAPIBanksReader,
-    BankAPIReader,
-    BanksAPIReader,
     BankAPIBulkUpdater,
+    BankAPIDeleter,
     BankAPIOperationsReader,
+    BankAPIReader,
+    BankAPISaver,
+    BanksAPIReader,
+    Operation,
 )
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.user import UserId
-
 
 retort = Retort()
 modified_retort = retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
