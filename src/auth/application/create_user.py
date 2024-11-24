@@ -1,0 +1,30 @@
+from dataclasses import dataclass
+
+from ..models import User, UserId
+from ._common import AuthRegister, Commiter, Interactor, UserSaver
+
+
+@dataclass(slots=True)
+class InputData:
+    email: str
+    password: str
+
+
+class CreateUser(Interactor[InputData, UserId]):
+    def __init__(
+        self,
+        user_db_gateway: UserSaver,
+        auth_gateway: AuthRegister,
+        uow: Commiter,
+    ) -> None:
+        self.user_db_gateway = user_db_gateway
+        self.auth_gateway = auth_gateway
+        self.uow = uow
+
+    async def __call__(self, data: InputData) -> UserId:
+        auth_id = await self.auth_gateway.register(data.email, data.password)
+        user = User(id=None, auth_id=auth_id)
+        await self.user_db_gateway.save_user(user)
+        user_id = user.id
+        await self.uow.commit()
+        return user_id  # type: ignore[return-value]
