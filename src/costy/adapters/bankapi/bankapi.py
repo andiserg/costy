@@ -1,12 +1,14 @@
-from datetime import datetime
+from datetime import UTC, datetime
+from typing import Any
 
 from adaptix import Retort, name_mapping
 from httpx import AsyncClient
-from sqlalchemy import Table, delete, insert, select, update
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.adapters.bankapi.bank_gateway import BankGateway
-from costy.application.common.bankapi.bankapi_gateway import (
+from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.adapters.db.category_gateway import CategoryAdapter
+from costy.application.common.bankapi_gateway import (
     BankAPIBanksReader,
     BankAPIBulkUpdater,
     BankAPIDeleter,
@@ -15,45 +17,47 @@ from costy.application.common.bankapi.bankapi_gateway import (
     BankAPISaver,
     BanksAPIReader,
 )
-from costy.application.common.bankapi.dto import BankOperationDTO
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankAPI, BankApiId
+from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
+from costy.infrastructure.db import tables
+
+retort = Retort()
+modified_retort = retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
 
 
-class BankAPIGateway(
+class BankAPIAdapter(
     BankAPISaver,
     BankAPIDeleter,
     BankAPIBanksReader,
     BankAPIReader,
     BanksAPIReader,
     BankAPIBulkUpdater,
-    BankAPIOperationsReader
+    BankAPIOperationsReader,
 ):
     def __init__(
         self,
         db_session: AsyncSession,
         web_session: AsyncClient,
-        table: Table,
-        retort: Retort,
-        bank_gateways: dict[str, BankGateway],
-        banks_info: dict[str, dict]
+        bank_gateways: dict[str, BankAdapter],
+        banks_info: dict[str, dict[str, Any]],
+        category_adapter: CategoryAdapter,
     ) -> None:
         self._db_session = db_session
         self._web_session = web_session
-        self._table = table
-        self._retort = retort
+        self._table = tables.bankapis
         self._bank_gateways = bank_gateways
         self._banks_info = banks_info
+        self._category_adapter = category_adapter
 
     async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
         stmt = select(self._table).where(self._table.c.id == bankapi_id)
         result = next((await self._db_session.execute(stmt)).mappings(), None)
-        return self._retort.load(result, BankAPI) if result else None
+        return retort.load(result, BankAPI) if result else None
 
     async def save_bankapi(self, bankapi: BankAPI) -> None:
-        retort = self._retort.extend(recipe=[name_mapping(BankAPI, skip=['id'])])
-        values = retort.dump(bankapi)
+        values = modified_retort.dump(bankapi)
         query = insert(self._table).values(**values)
         result = await self._db_session.execute(query)
         bankapi.id = result.inserted_primary_key[0]
@@ -74,18 +78,50 @@ class BankAPIGateway(
     async def get_bankapi_list(self, user_id: UserId) -> list[BankAPI]:
         stmt = select(self._table).where(self._table.c.user_id == user_id)
         result = (await self._db_session.execute(stmt)).mappings()
-        return self._retort.load(result, list[BankAPI])
+        return retort.load(result, list[BankAPI])
 
     async def update_bankapis(self, bankapis: list[BankAPI]) -> None:
         stmts = (
             update(self._table)
             .where(self._table.c.id == bankapi.id)
-            .values(updated_at=bankapi.updated_at) for bankapi in bankapis
+            .values(updated_at=bankapi.updated_at)
+            for bankapi in bankapis
         )
         for stmt in stmts:
             await self._db_session.execute(stmt)
 
-    async def read_bank_operations(self, bankapi: BankAPI) -> list[BankOperationDTO]:
+    async def read_bank_operations(
+        self,
+        bankapi: BankAPI,
+    ) -> tuple[Operation, ...]:
         bank_gateway = self._bank_gateways[bankapi.name]
-        from_time = datetime.fromtimestamp(bankapi.updated_at) if bankapi.updated_at else None
-        return await bank_gateway.fetch_operations(bankapi.access_data, bankapi.user_id, from_time)
+        from_time = (
+            datetime.fromtimestamp(bankapi.updated_at, tz=UTC)
+            if bankapi.updated_at
+            else None
+        )
+        bank_operations = await bank_gateway.fetch_operations(
+            bankapi.access_data,
+            bankapi.user_id,
+            from_time,
+        )
+
+        if bank_operations is None:
+            return ()
+
+        mcc_codes = tuple(operation.mcc for operation in bank_operations)
+        mcc_categories = await self._category_adapter.find_categories_by_mcc_codes(
+            mcc_codes,
+        )
+
+        default_category = await self._category_adapter.find_category(
+            name="Інше",
+            kind="general",
+        )
+
+        for bank_operation in bank_operations:
+            category = mcc_categories.get(bank_operation.mcc, default_category)
+            if category:
+                bank_operation.operation.category_id = category.id
+
+        return tuple(bank_operation.operation for bank_operation in bank_operations)

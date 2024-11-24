@@ -3,17 +3,19 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name="costy"
-version="0.0.1"
+name = "costy"
+version = "0.1.0"
 dependencies = [
     'sqlalchemy',
-    'litestar',
+    "litestar",
     'uvicorn',
     'psycopg[binary]',
     'alembic',
     'adaptix',
     'aiohttp',
-    'python-jose'
+    'python-jose',
+    'prometheus-client',
+    "dishka",
 ]
 
 [project.optional-dependencies]
@@ -34,12 +36,79 @@ dev = [
     'pytest-env',
 ]
 
+[tool.setuptools.package-data]
+costy = [
+    "adapters/bankapi/_banks.json",
+    "adapters/bankapi/_mcc.json",
+    "infrastructure/db/_default_categories.json"
+]
+
+[tool.mypy]
+python_version = "3.12"
+exclude = [
+    'migrations'
+]
+
 [tool.isort]
-profile = "black"
-line_length = 79
+profile='black'
 
-[tool.black]
-line-length = 79
-target-version = ['py310']
+[tool.ruff]
+exclude = ['migrations', 'tests']
 
-[tool.pytest_env]
+[tool.ruff.lint]
+select = ['ALL']
+fixable = [
+    'Q000',
+    'Q001',
+    'COM812',
+    'D400',
+    'PT001',
+]
+ignore = [
+    # Rules that should be turned on in the near future
+    'D', # pydocstyle
+    'B904', # raise without from inside except
+    'FIX002', # line contains todo
+    'PLR0913', # too many arguments in init
+
+    # Rules emitting false alerts
+#    'N804', # invalid-first-argument-name-for-class-method
+#    'B008', # function-call-in-default-argument
+#    'BLE001', # blind-except
+#    'RUF009', # function-call-in-dataclass-default-argument
+    'I001', # unsorted-imports
+
+    # Rules that are not applicable in the project for now
+    'TID252',  # relative-imports
+    'D104',  # undocumented-public-package
+#    'ANN', # flake8-annotations
+#    'SLF001', # private-member-access
+    'ARG',  # flake8-unused-arguments
+    'D100', # undocumented-public-module
+#    'PLR0913',  # too-many-arguments
+#    'TCH002', # typing-only-third-party-import
+
+    # Strange and obscure rules that will never be turned on
+    'ANN101', # missing-type-self
+    'FA100', # future-rewritable-type-annotation
+    'TRY003', # raise-vanilla-args
+    'TRY201', # verbose-raise
+    'EM', # flake8-errmsg
+    'PERF203', # try-except-in-loop
+    'TCH001', # typing-only-first-party-import
+    'TD002', # missing-todo-author
+    'PTH201', # path-constructor-current-directory
+    'RSE102', # path-constructor-current-directory
+    'FA102',  # future-required-type-annotation
+    'TD003', # missing-todo-link
+    'PTH123' # builtin-open
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ['F401']
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.lint.flake8-pytest-style]
+parametrize-names-type = "list"

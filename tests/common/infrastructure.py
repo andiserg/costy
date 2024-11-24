@@ -16,30 +16,29 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db.tables import metadata
 from tests.common.app import init_test_app
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 async def db_url() -> str:  # type: ignore
     try:
-        return os.environ['TEST_DB_URL']
+        return os.environ["TEST_DB_URL"]
     except KeyError:
         pytest.fail("TEST_DB_URL env variable not set")
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 async def db_engine(db_url: str) -> AsyncEngine:
     return create_async_engine(db_url, future=True)
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 async def db_sessionmaker(db_engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(db_engine)
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 async def db_session(db_sessionmaker: async_sessionmaker[AsyncSession]) -> AsyncIterator[AsyncSession]:
     session = db_sessionmaker()
     yield session
@@ -51,11 +50,8 @@ async def rollback_session(db_session):
     await db_session.rollback()
 
 
-@fixture(scope='session')
-async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Table]] | None:
-    metadata = get_metadata()
-    tables = create_tables(metadata)
-
+@fixture(scope="session")
+async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, None] | None:
     try:
         async with db_engine.begin() as conn:
             await conn.run_sync(metadata.drop_all)
@@ -63,19 +59,19 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
     except OperationalError:
         pytest.fail("Connection to database is faield.")
 
-    yield tables
+    yield None
 
     async with db_engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)
 
 
 @fixture
-async def web_session() -> AsyncIterator[ClientSession]:
+async def web_session() -> AsyncIterator[AsyncClient]:
     async with AsyncClient() as client:
         yield client
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 async def app(db_url, mock_monobank_gateway) -> Litestar:
     return await init_test_app(db_url, mock_auth=True, mock_bank_gateways=mock_monobank_gateway)
 

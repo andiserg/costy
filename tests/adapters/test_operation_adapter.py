@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import Table
+from markdown_it.rules_block import table
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.domain.models.category import CategoryId
@@ -10,9 +10,8 @@ from tests.common.database import create_category, create_user
 
 async def create_operation_depends(
         session: AsyncSession,
-        tables: dict[str, Table]
 ) -> tuple[UserId, CategoryId]:
-    return await create_user(session, tables["users"]), await create_category(session, tables["categories"])
+    return await create_user(session), await create_category(session)
 
 
 def create_operation(user_id, category_id) -> Operation:
@@ -22,13 +21,13 @@ def create_operation(user_id, category_id) -> Operation:
         description="desc",
         category_id=category_id,
         user_id=user_id,
-        time=11111
+        time=11111,
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_save_operation(operation_gateway, db_session, db_tables):
-    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    user_id, category_id = await create_operation_depends(db_session)
     operation = create_operation(user_id, category_id)
 
     await operation_gateway.save_operation(operation)
@@ -36,9 +35,9 @@ async def test_save_operation(operation_gateway, db_session, db_tables):
     assert operation.id is not None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_operation(operation_gateway, db_session, db_tables):
-    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    user_id, category_id = await create_operation_depends(db_session)
     operation = create_operation(user_id, category_id)
     await operation_gateway.save_operation(operation)
     created_operation_id = operation.id
@@ -48,9 +47,9 @@ async def test_get_operation(operation_gateway, db_session, db_tables):
     assert result_operation == operation
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_operation(operation_gateway, db_session, db_tables):
-    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    user_id, category_id = await create_operation_depends(db_session)
     operation = create_operation(user_id, category_id)
     await operation_gateway.save_operation(operation)
     created_operation_id = operation.id
@@ -60,9 +59,9 @@ async def test_delete_operation(operation_gateway, db_session, db_tables):
     assert await operation_gateway.get_operation(created_operation_id) is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_find_operations_by_user(operation_gateway, db_session, db_tables):
-    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    user_id, category_id = await create_operation_depends(db_session)
     created_operations = []
     for i in range(5):
         operation = Operation(
@@ -71,7 +70,7 @@ async def test_find_operations_by_user(operation_gateway, db_session, db_tables)
             description=f"desc #{i}",
             category_id=category_id,
             user_id=user_id,
-            time=1111
+            time=1111,
         )
         await operation_gateway.save_operation(operation)
         created_operations.append(operation)
@@ -81,9 +80,9 @@ async def test_find_operations_by_user(operation_gateway, db_session, db_tables)
     assert operations == created_operations
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_operation(operation_gateway, db_session, db_tables):
-    user_id, category_id = await create_operation_depends(db_session, db_tables)
+    user_id, category_id = await create_operation_depends(db_session)
     operation = create_operation(user_id, category_id)
     await operation_gateway.save_operation(operation)
 
@@ -93,7 +92,7 @@ async def test_update_operation(operation_gateway, db_session, db_tables):
         description="test data",
         category_id=category_id,
         time=2222,
-        user_id=user_id
+        user_id=user_id,
     )
 
     await operation_gateway.update_operation(operation.id, updated_operation)

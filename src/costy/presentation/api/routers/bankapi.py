@@ -1,9 +1,14 @@
+from dishka import FromDishka
+from dishka.integrations.litestar import inject
 from litestar import Controller, delete, get, post
 
-from costy.application.common.bankapi.dto import CreateBankApiDTO
-from costy.application.common.id_provider import IdProvider
+from costy.application.bankapi import (
+    create_bankapi,
+    delete_bankapi,
+    read_bankapi_list,
+    update_bank_operations,
+)
 from costy.domain.models.bankapi import BankAPI, BankApiId
-from costy.presentation.interactor_factory import InteractorFactory
 
 
 class BankAPIController(Controller):
@@ -11,39 +16,35 @@ class BankAPIController(Controller):
     tags = ("Banks integration",)
 
     @get()
+    @inject
     async def get_bankapi_list(
         self,
-        ioc: InteractorFactory,
-        id_provider: IdProvider
+        service: FromDishka[read_bankapi_list.ReadBankapiList],
     ) -> list[BankAPI]:
-        async with ioc.read_bankapi_list(id_provider) as read_bankapi_list:
-            return await read_bankapi_list()
+        return await service()
 
     @post()
+    @inject
     async def create_bankapi(
         self,
-        ioc: InteractorFactory,
-        id_provider: IdProvider,
-        data: CreateBankApiDTO,
+        service: FromDishka[create_bankapi.CreateBankAPI],
+        data: create_bankapi.InputData,
     ) -> None:
-        async with ioc.create_bankapi(id_provider) as create_bankapi:
-            return await create_bankapi(data)
+        return await service(data)
 
     @delete("{bankapi_id:int}")
+    @inject
     async def delete_bankapi(
         self,
-        ioc: InteractorFactory,
-        id_provider: IdProvider,
+        service: FromDishka[delete_bankapi.DeleteBankAPI],
         bankapi_id: int,
     ) -> None:
-        async with ioc.delete_bankapi(id_provider) as delete_bankapi:
-            return await delete_bankapi(BankApiId(bankapi_id))
+        return await service(BankApiId(bankapi_id))
 
     @post("/operations")
+    @inject
     async def update_bank_operations(
         self,
-        ioc: InteractorFactory,
-        id_provider: IdProvider
+        service: FromDishka[update_bank_operations.UpdateBankOperations],
     ) -> None:
-        async with ioc.update_bank_operations(id_provider) as update_bank_operations:
-            return await update_bank_operations()
+        return await service(None)

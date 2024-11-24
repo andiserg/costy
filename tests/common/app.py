@@ -1,34 +1,29 @@
 import os
+from typing import Any
 
 import pytest
 from adaptix import Retort
+from dishka import Provider, Scope, from_context, make_async_container
+from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
-from litestar.di import Provide
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from costy.adapters.db.user_gateway import UserGateway
+from costy.adapters.bankapi.bank_gateway import BankAdapter
+from costy.adapters.db.user_gateway import UserAdapter
 from costy.application.common.id_provider import IdProvider
 from costy.domain.exceptions.base import BaseError
 from costy.domain.models.user import UserId
-from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
+    AuthSettings,
     get_auth_settings,
     get_banks_conf,
     get_db_connection_url,
 )
-from costy.infrastructure.db.main import (
-    get_engine,
-    get_metadata,
-    get_sessionmaker,
-)
-from costy.infrastructure.db.tables import create_tables
-from costy.main.ioc import IoC
-from costy.main.web import singleton
-from costy.presentation.api.dependencies.id_provider import get_id_provider
+from costy.infrastructure.db.main import get_engine, get_sessionmaker
+from costy.main.di import DIProvider
 from costy.presentation.api.exception_handlers import base_error_handler
-from costy.presentation.api.routers.authenticate import (
-    AuthenticationController,
-)
+from costy.presentation.api.routers.authenticate import AuthenticationController
 from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
@@ -40,24 +35,33 @@ class MockIdProvider(IdProvider):
         pass
 
 
-async def init_test_app(db_url: str | None = None, mock_auth: bool = True, mock_bank_gateways=None):
+class TestIdDIProvider(Provider):
+    id_provider = from_context(IdProvider, scope=Scope.APP)
+    bank_gateways = from_context(dict[str, BankAdapter], scope=Scope.APP)
+
+
+async def init_test_app(
+    db_url: str | None = None,
+    mock_auth: bool = True,
+    mock_bank_gateways: dict[str, BankAdapter] | None = None
+):
     if not db_url:
         db_url = get_db_connection_url()
-
-    base_metadata = get_metadata()
-    tables = create_tables(base_metadata)
 
     session_factory = get_sessionmaker(get_engine(db_url))
     web_session = AsyncClient()
 
-    banks_conf = get_banks_conf()
-
-    retort = Retort()
     auth_settings = get_auth_settings()
-    ioc = IoC(session_factory, web_session, tables, retort, auth_settings, banks_conf)
+
+    context = {
+        AsyncClient: web_session,
+        async_sessionmaker[AsyncSession]: session_factory,
+        AuthSettings: auth_settings,
+        dict[str, dict[str, Any]]: get_banks_conf(),
+    }
 
     if not mock_bank_gateways:
-        ioc._bank_gateways = mock_bank_gateways
+        context[dict[str, BankAdapter]] = mock_bank_gateways
 
     if mock_auth:
         sub = os.environ.get("TEST_AUTH_USER_SUB")
@@ -68,36 +72,27 @@ async def init_test_app(db_url: str | None = None, mock_auth: bool = True, mock_
 
         async def get_user_id():
             async with session_factory() as session:
-                user_gateway = UserGateway(session, tables["users"], retort)
+                user_gateway = UserAdapter(session)
                 return await user_gateway.get_user_id_by_auth_id(sub)
 
         id_provider: IdProvider = MockIdProvider()
         id_provider.get_current_user_id = get_user_id  # type: ignore
-        id_provider_factory = singleton(id_provider)
-    else:
-        id_provider_factory = create_id_provider_factory(
-            auth_settings.audience,
-            "RS256",
-            auth_settings.issuer,
-            auth_settings.jwks_uri,
-            web_session
-        )
+        context[IdProvider] = id_provider
 
-    return Litestar(
+    container = make_async_container(DIProvider(), TestIdDIProvider(), context=context)
+
+    app = Litestar(
         route_handlers=(
             AuthenticationController,
             UserController,
             OperationController,
             CategoryController,
-            BankAPIController
+            BankAPIController,
         ),
-        dependencies={
-            "ioc": Provide(singleton(ioc)),
-            "id_provider": Provide(get_id_provider),
-            "id_provider_pure": Provide(id_provider_factory)
-        },
         debug=True,
         exception_handlers={
-            BaseError: base_error_handler
+            BaseError: base_error_handler,
         },
     )
+    setup_dishka(container, app)
+    return app

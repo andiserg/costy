@@ -1,8 +1,8 @@
 from adaptix import Retort
-from sqlalchemy import Table, delete, insert, join, or_, select, update
+from sqlalchemy import delete, insert, join, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.category.category_gateway import (
+from costy.application.common.category_gateway import (
     CategoriesFinder,
     CategoriesReader,
     CategoryDeleter,
@@ -10,30 +10,37 @@ from costy.application.common.category.category_gateway import (
     CategoryReader,
     CategorySaver,
     CategoryUpdater,
-    SentinelOptional,
 )
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
-from costy.domain.sentinel import Sentinel
+from costy.domain.sentinel import Sentinel, SentinelOptional
+from costy.infrastructure.db import tables
+
+retort = Retort()
 
 
-class CategoryGateway(
+class CategoryAdapter(
     CategoryReader,
     CategoryFinder,
     CategorySaver,
     CategoryDeleter,
     CategoriesReader,
     CategoryUpdater,
-    CategoriesFinder
+    CategoriesFinder,
 ):
-    def __init__(self, session: AsyncSession, category_table: Table, mcc_table: Table, retort: Retort):
+    def __init__(
+        self,
+        session: AsyncSession,
+    ) -> None:
         self.session = session
-        self.category_table = category_table
-        self.mcc_table = mcc_table
+        self.category_table = tables.categories
+        self.mcc_table = tables.category_mcc
         self.retort = retort
 
     async def get_category_by_id(self, category_id: CategoryId) -> Category | None:
-        query = select(self.category_table).where(self.category_table.c.id == category_id)
+        query = select(self.category_table).where(
+            self.category_table.c.id == category_id,
+        )
         result = await self.session.execute(query)
         data = next(result.mappings(), None)
         return self.retort.load(data, Category) if data else None
@@ -42,7 +49,7 @@ class CategoryGateway(
         self,
         name: SentinelOptional[str] = Sentinel,
         kind: SentinelOptional[str] = Sentinel,
-        user_id: SentinelOptional[UserId] = Sentinel
+        user_id: SentinelOptional[UserId] = Sentinel,
     ) -> Category | None:
         if not any(param is not Sentinel for param in (name, kind, user_id)):
             return None
@@ -50,7 +57,7 @@ class CategoryGateway(
         params = {
             "name": name,
             "kind": kind,
-            "user_id": user_id
+            "user_id": user_id,
         }
 
         stmt = select(self.category_table)
@@ -58,8 +65,8 @@ class CategoryGateway(
             if param_value is not Sentinel:
                 stmt = stmt.where(self.category_table.c[param_name] == param_value)
 
-        result = (await self.session.execute(stmt)).fetchone()
-        return self.retort.load(result._mapping, Category)
+        result = (await self.session.execute(stmt)).mappings().fetchone()
+        return self.retort.load(result, Category) if result is not None else None
 
     async def save_category(self, category: Category) -> None:
         values = self.retort.dump(category)
@@ -69,28 +76,41 @@ class CategoryGateway(
         category.id = CategoryId(result.inserted_primary_key[0])
 
     async def delete_category(self, category_id: CategoryId) -> None:
-        query = delete(self.category_table).where(self.category_table.c.id == category_id)
+        query = delete(self.category_table).where(
+            self.category_table.c.id == category_id,
+        )
         await self.session.execute(query)
 
     async def find_categories(self, user_id: UserId) -> list[Category]:
         filter_expr = or_(
             self.category_table.c.user_id == user_id,
-            self.category_table.c.user_id == None  # noqa: E711
+            self.category_table.c.user_id == None,  # noqa: E711
         )
         query = select(self.category_table).where(filter_expr)
         result = await self.session.execute(query)
         return self.retort.load(result.mappings(), list[Category])
 
-    async def update_category(self, category_id: CategoryId, category: Category) -> None:
+    async def update_category(
+        self,
+        category_id: CategoryId,
+        category: Category,
+    ) -> None:
         values = self.retort.dump(category)
 
         if not values:
             return
 
-        query = update(self.category_table).where(self.category_table.c.id == category_id).values(**values)
+        query = (
+            update(self.category_table)
+            .where(self.category_table.c.id == category_id)
+            .values(**values)
+        )
         await self.session.execute(query)
 
-    async def find_categories_by_mcc_codes(self, mcc_codes: tuple[int, ...]) -> dict[int, Category]:
+    async def find_categories_by_mcc_codes(
+        self,
+        mcc_codes: tuple[int, ...],
+    ) -> dict[int, Category]:
         j = join(self.mcc_table, self.category_table)
         stmt = (
             select(self.mcc_table, self.category_table)

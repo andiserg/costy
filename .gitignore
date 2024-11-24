@@ -3,9 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 build/
@@ -54,4 +51,5 @@ dmypy.json
 /pytest.ini
 /docker-compose.yml
 /keycloak/
-/kubeconf/secrets.yml
+.env
+uv.lock

@@ -3,6 +3,7 @@ from sqlalchemy import insert
 
 from costy.domain.models.category import Category, CategoryType
 from costy.domain.models.user import UserId
+from costy.infrastructure.db import tables
 from tests.common.database import create_user
 
 
@@ -13,14 +14,14 @@ def create_categories(user_id: UserId) -> tuple[Category, Category]:
             id=None,
             name="user category",
             user_id=user_id,
-            kind=CategoryType.PERSONAL.value
-        )
+            kind=CategoryType.PERSONAL.value,
+        ),
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_save_category(category_gateway, db_session, db_tables):
-    user_id = await create_user(db_session, db_tables["users"])
+    user_id = await create_user(db_session)
     general_category, personal_category = create_categories(user_id)
 
     await category_gateway.save_category(general_category)
@@ -30,9 +31,9 @@ async def test_save_category(category_gateway, db_session, db_tables):
     assert personal_category.id is not None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_get_category(category_gateway, db_session, db_tables):
-    user_id = await create_user(db_session, db_tables["users"])
+    user_id = await create_user(db_session)
     general_category, personal_category = create_categories(user_id)
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
@@ -44,9 +45,9 @@ async def test_get_category(category_gateway, db_session, db_tables):
     assert personal_category == created_personal_category
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delete_category(category_gateway, db_session, db_tables):
-    user_id = await create_user(db_session, db_tables["users"])
+    user_id = await create_user(db_session)
     general_category, personal_category = create_categories(user_id)
     await category_gateway.save_category(general_category)
     await category_gateway.save_category(personal_category)
@@ -58,9 +59,9 @@ async def test_delete_category(category_gateway, db_session, db_tables):
     assert await category_gateway.get_category_by_id(personal_category.id) is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_find_categories(category_gateway, db_session, db_tables):
-    user_id = await create_user(db_session, db_tables["users"])
+    user_id = await create_user(db_session)
     created_categories = []
     for i in range(5):
         category = Category(
@@ -76,9 +77,9 @@ async def test_find_categories(category_gateway, db_session, db_tables):
     assert categories == created_categories
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_update_category(category_gateway, db_session, db_tables):
-    user_id = await create_user(db_session, db_tables["users"])
+    user_id = await create_user(db_session)
     category = Category(id=None, name="test", user_id=user_id, kind=CategoryType.PERSONAL.value)
     await category_gateway.save_category(category)
 
@@ -86,7 +87,7 @@ async def test_update_category(category_gateway, db_session, db_tables):
         id=category.id,
         name="upd_test",
         user_id=user_id,
-        kind=CategoryType.PERSONAL.value
+        kind=CategoryType.PERSONAL.value,
     )
 
     await category_gateway.update_category(category.id, updated_category)
@@ -94,7 +95,7 @@ async def test_update_category(category_gateway, db_session, db_tables):
     assert await category_gateway.get_category_by_id(category.id) == updated_category
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
     mcc_codes = [1, 2]
     categories = [
@@ -106,7 +107,7 @@ async def test_find_categories_by_mcc(category_gateway, db_session, db_tables):
     for category in categories:
         await category_gateway.save_category(category)
     await db_session.execute(
-        insert(db_tables["category_mcc"]),
+        insert(tables.category_mcc),
         [
             {"category_id": c.id, "mcc": mcc}
             for c, mcc in zip(categories, mcc_codes)

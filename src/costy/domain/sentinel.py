@@ -5,5 +5,5 @@ class Sentinel:
     pass
 
 
-ParamT = TypeVar("ParamT", contravariant=True)
-SentinelOptional: TypeAlias = ParamT | None | type[Sentinel]
+ParamT_contra = TypeVar("ParamT_contra", contravariant=True)
+SentinelOptional: TypeAlias = ParamT_contra | None | type[Sentinel]

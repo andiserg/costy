@@ -1,87 +1,88 @@
-from typing import Any, Callable, Coroutine, TypeVar
+import asyncio
+from typing import Any
 
-from adaptix import Retort
+from dishka import make_async_container
+from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.di import Provide
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
+    AuthSettings,
     get_auth_settings,
     get_banks_conf,
     get_db_connection_url,
+    setup_logger,
 )
-from costy.infrastructure.db.main import (
-    get_engine,
-    get_metadata,
-    get_sessionmaker,
-)
-from costy.infrastructure.db.tables import create_tables
-from costy.main.ioc import IoC
+from costy.infrastructure.db.main import get_engine, get_sessionmaker
+from costy.infrastructure.metrics import create_metrics, start_metrics_server
+from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.exception_handlers import base_error_handler
-from costy.presentation.api.routers.authenticate import (
-    AuthenticationController,
-)
+from costy.presentation.api.middlewares import create_metrics_middleware
+from costy.presentation.api.routers.authenticate import AuthenticationController
 from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
 from costy.presentation.api.routers.user import UserController
 
-T = TypeVar('T')
-
-
-def singleton(instance: T) -> Callable[[], Coroutine[Any, Any, T]]:
-    async def func() -> T:
-        return instance
-
-    return func
-
 
 def init_app() -> Litestar:
-    base_metadata = get_metadata()
-    tables = create_tables(base_metadata)
+    setup_logger()
 
-    session_factory = get_sessionmaker(get_engine(get_db_connection_url()))
     web_session = AsyncClient()
-
-    banks_conf = get_banks_conf()
-
     auth_settings = get_auth_settings()
-    ioc = IoC(session_factory, web_session, tables, Retort(), auth_settings, banks_conf)
+    metrics = create_metrics()
+
+    container = make_async_container(
+        DIProvider(),
+        IdDIProvider(),
+        context={
+            AsyncClient: web_session,
+            async_sessionmaker[AsyncSession]: get_sessionmaker(
+                get_engine(get_db_connection_url()),
+            ),
+            AuthSettings: auth_settings,
+            dict[str, dict[str, Any]]: get_banks_conf(),
+        },
+    )
 
     id_provider_factory = create_id_provider_factory(
         auth_settings.audience,
         "RS256",
         auth_settings.issuer,
         auth_settings.jwks_uri,
-        web_session
+        web_session,
     )
 
-    cors_config = CORSConfig(allow_origins=["*"])
+    async def startup() -> None:
+        await asyncio.create_task(asyncio.to_thread(start_metrics_server))
 
-    async def finalization():
+    async def finalization() -> None:
         await web_session.aclose()
 
-    return Litestar(
+    app = Litestar(
         route_handlers=(
             AuthenticationController,
             UserController,
             OperationController,
             CategoryController,
-            BankAPIController
+            BankAPIController,
         ),
         dependencies={
-            "ioc": Provide(singleton(ioc)),
             "id_provider": Provide(get_id_provider),
-            "id_provider_pure": Provide(id_provider_factory)
+            "id_provider_blank": Provide(id_provider_factory),
         },
         on_shutdown=[finalization],
-        exception_handlers={
-            BaseError: base_error_handler
-        },
+        on_startup=[startup],
+        exception_handlers={BaseError: base_error_handler},
+        middleware=[create_metrics_middleware(metrics)],
         debug=True,
-        cors_config=cors_config
+        cors_config=CORSConfig(allow_origins=["*"]),
     )
+    setup_dishka(container, app)
+    return app
