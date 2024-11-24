@@ -26,22 +26,22 @@ async def auth_settings() -> AuthSettings:
 
 @fixture
 async def auth_adapter(db_session, web_session, db_tables, auth_settings: AuthSettings) -> AuthLoger:
-    return AuthGateway(db_session, web_session, db_tables["users"], auth_settings)
+    return AuthGateway(db_session, web_session, auth_settings)
 
 
 @fixture
 async def user_gateway(db_session, db_tables) -> UserAdapter:
-    return UserAdapter(db_session, db_tables["users"])
+    return UserAdapter(db_session)
 
 
 @fixture
 async def category_gateway(db_session, db_tables) -> CategoryAdapter:
-    return CategoryAdapter(db_session, db_tables["categories"], db_tables["category_mcc"])
+    return CategoryAdapter(db_session)
 
 
 @fixture
 async def operation_gateway(db_session, db_tables) -> OperationAdapter:
-    return OperationAdapter(db_session, db_tables["operations"])
+    return OperationAdapter(db_session)
 
 
 @fixture
@@ -80,7 +80,7 @@ async def bankapi_gateway(db_session, web_session, db_tables, retort, user_id, c
     with open(str(resources.files("costy.adapters.bankapi") / "_banks.json"), "r") as f:
         banks_info = json.load(f)
 
-    return BankAPIAdapter(db_session, web_session, db_tables["bankapis"], gateway_map, banks_info, category_gateway)
+    return BankAPIAdapter(db_session, web_session, gateway_map, banks_info, category_gateway)
 
 
 @fixture(scope="session")

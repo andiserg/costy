@@ -7,7 +7,6 @@ from dishka import Provider, Scope, from_context, make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
-from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
@@ -21,8 +20,7 @@ from costy.infrastructure.config import (
     get_banks_conf,
     get_db_connection_url,
 )
-from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db.main import get_engine, get_sessionmaker
 from costy.main.di import DIProvider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.routers.authenticate import AuthenticationController
@@ -50,22 +48,16 @@ async def init_test_app(
     if not db_url:
         db_url = get_db_connection_url()
 
-    base_metadata = get_metadata()
-    tables = create_tables(base_metadata)
-
     session_factory = get_sessionmaker(get_engine(db_url))
     web_session = AsyncClient()
 
-    retort = Retort()
     auth_settings = get_auth_settings()
 
     context = {
         AsyncClient: web_session,
         async_sessionmaker[AsyncSession]: session_factory,
-        dict[str, Table]: tables,
         AuthSettings: auth_settings,
-        dict[str, Any]: get_banks_conf(),
-        Retort: retort
+        dict[str, dict[str, Any]]: get_banks_conf(),
     }
 
     if not mock_bank_gateways:
@@ -80,7 +72,7 @@ async def init_test_app(
 
         async def get_user_id():
             async with session_factory() as session:
-                user_gateway = UserAdapter(session, tables["users"])
+                user_gateway = UserAdapter(session)
                 return await user_gateway.get_user_id_by_auth_id(sub)
 
         id_provider: IdProvider = MockIdProvider()

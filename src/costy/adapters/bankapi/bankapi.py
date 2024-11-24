@@ -3,7 +3,7 @@ from typing import Any
 
 from adaptix import Retort, name_mapping
 from httpx import AsyncClient
-from sqlalchemy import Table, delete, insert, select, update
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
@@ -16,11 +16,12 @@ from costy.application.common.bankapi_gateway import (
     BankAPIReader,
     BankAPISaver,
     BanksAPIReader,
-    Operation,
 )
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankAPI, BankApiId
+from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
+from costy.infrastructure.db import tables
 
 retort = Retort()
 modified_retort = retort.extend(recipe=[name_mapping(BankAPI, skip=["id"])])
@@ -39,18 +40,16 @@ class BankAPIAdapter(
         self,
         db_session: AsyncSession,
         web_session: AsyncClient,
-        table: Table,
         bank_gateways: dict[str, BankAdapter],
         banks_info: dict[str, dict[str, Any]],
-        category_adapter: CategoryAdapter
+        category_adapter: CategoryAdapter,
     ) -> None:
         self._db_session = db_session
         self._web_session = web_session
-        self._table = table
+        self._table = tables.bankapis
         self._bank_gateways = bank_gateways
         self._banks_info = banks_info
         self._category_adapter = category_adapter
-
 
     async def get_bankapi(self, bankapi_id: BankApiId) -> BankAPI | None:
         stmt = select(self._table).where(self._table.c.id == bankapi_id)
@@ -94,7 +93,7 @@ class BankAPIAdapter(
     async def read_bank_operations(
         self,
         bankapi: BankAPI,
-    ) -> tuple[Operation, ...] | None:
+    ) -> tuple[Operation, ...]:
         bank_gateway = self._bank_gateways[bankapi.name]
         from_time = (
             datetime.fromtimestamp(bankapi.updated_at, tz=UTC)
@@ -106,6 +105,10 @@ class BankAPIAdapter(
             bankapi.user_id,
             from_time,
         )
+
+        if bank_operations is None:
+            return ()
+
         mcc_codes = tuple(operation.mcc for operation in bank_operations)
         mcc_categories = await self._category_adapter.find_categories_by_mcc_codes(
             mcc_codes,

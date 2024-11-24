@@ -19,7 +19,7 @@ class BankAPIOperationsReader(Protocol):
     async def read_bank_operations(
         self,
         bankapi: BankAPI,
-    ) -> tuple[Operation, ...] | None:
+    ) -> tuple[Operation, ...]:
         raise NotImplementedError
 
 

@@ -37,7 +37,11 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-costy = ["adapters/bankapi/_banks.json", "adapters/bankapi/_mcc.json"]
+costy = [
+    "adapters/bankapi/_banks.json",
+    "adapters/bankapi/_mcc.json",
+    "infrastructure/db/_default_categories.json"
+]
 
 [tool.mypy]
 python_version = "3.12"
@@ -45,6 +49,8 @@ exclude = [
     'migrations'
 ]
 
+[tool.isort]
+profile='black'
 
 [tool.ruff]
 exclude = ['migrations', 'tests']
@@ -63,6 +69,7 @@ ignore = [
     'D', # pydocstyle
     'B904', # raise without from inside except
     'FIX002', # line contains todo
+    'PLR0913', # too many arguments in init
 
     # Rules emitting false alerts
 #    'N804', # invalid-first-argument-name-for-class-method

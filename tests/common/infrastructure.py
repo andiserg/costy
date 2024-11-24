@@ -16,8 +16,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db.tables import metadata
 from tests.common.app import init_test_app
 
 
@@ -52,10 +51,7 @@ async def rollback_session(db_session):
 
 
 @fixture(scope="session")
-async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Table]] | None:
-    metadata = get_metadata()
-    tables = create_tables(metadata)
-
+async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, None] | None:
     try:
         async with db_engine.begin() as conn:
             await conn.run_sync(metadata.drop_all)
@@ -63,7 +59,7 @@ async def db_tables(db_engine: AsyncEngine) -> AsyncGenerator[None, dict[str, Ta
     except OperationalError:
         pytest.fail("Connection to database is faield.")
 
-    yield tables
+    yield None
 
     async with db_engine.begin() as conn:
         await conn.run_sync(metadata.drop_all)

@@ -5,7 +5,7 @@
 <p align="center">
      <img src="https://codecov.io/gh/AndrewSergienko/costy/graph/badge.svg?token=YQLTZLXL56"/>
      <img src="https://github.com/AndrewSergienko/costy/actions/workflows/tests.yaml/badge.svg?branch=2.x%2Fmain"/>
-   <img src="https://img.shields.io/badge/python-3.10-blue" alt="Python Version">
+   <img src="https://img.shields.io/badge/python-3.12-blue" alt="Python Version">
 </p>
 
 

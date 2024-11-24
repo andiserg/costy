@@ -10,7 +10,8 @@ from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 
 
-class CategoryGateway(CategoryReader, CategoryDeleter, Protocol): ...
+class CategoryGateway(CategoryReader, CategoryDeleter, Protocol):
+    ...
 
 
 class DeleteCategory(Interactor[CategoryId, None]):

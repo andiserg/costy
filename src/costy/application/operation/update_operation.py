@@ -14,7 +14,8 @@ from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationReader, OperationUpdater
 
 
-class OperationGateway(OperationReader, OperationUpdater, Protocol): ...
+class OperationGateway(OperationReader, OperationUpdater, Protocol):
+    ...
 
 
 @dataclass(slots=True, kw_only=True)

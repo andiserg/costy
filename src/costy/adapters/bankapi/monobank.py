@@ -40,10 +40,13 @@ class MonobankAdapter(BankAdapter):
 
         if from_time:
             if from_time > now:
-                raise InvalidRequestError("Parameter to_time must be greater than from_time")
+                raise InvalidRequestError(
+                    "Parameter to_time must be greater than from_time",
+                )
             from_timestamp = int(from_time.timestamp())
         else:
-            from_datetime = datetime.now(tz=UTC) - timedelta(days=self.OPERATIONS_DAYS_LIMIT)
+            time_limit = timedelta(days=self.OPERATIONS_DAYS_LIMIT)
+            from_datetime = datetime.now(tz=UTC) - time_limit
             from_timestamp = int(from_datetime.timestamp())
 
         total_operations = []
@@ -72,7 +75,7 @@ class MonobankAdapter(BankAdapter):
 
             # The maximum operations limit in response is 500 items
             to_timestamp = (
-                operations[-1]["time"]
+                operations[-1]["time"]  # type: ignore[assignment]
                 if len(operations) == self.OPERATIONS_LIMIT
                 else None
             )

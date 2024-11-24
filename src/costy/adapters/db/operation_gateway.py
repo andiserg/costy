@@ -1,5 +1,5 @@
 from adaptix import Retort, name_mapping
-from sqlalchemy import Table, delete, insert, select, update
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.operation_gateway import (
@@ -11,6 +11,7 @@ from costy.application.common.operation_gateway import (
 )
 from costy.domain.models.operation import Operation, OperationId
 from costy.domain.models.user import UserId
+from costy.infrastructure.db import tables
 
 retort = Retort()
 
@@ -22,9 +23,9 @@ class OperationAdapter(
     OperationsReader,
     OperationsBulkSaver,
 ):
-    def __init__(self, session: AsyncSession, table: Table) -> None:
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
-        self.table = table
+        self.table = tables.operations
         self.retort = retort
 
     async def get_operation(self, operation_id: OperationId) -> Operation | None:

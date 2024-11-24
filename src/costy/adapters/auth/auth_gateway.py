@@ -1,12 +1,12 @@
 import logging
 
 from httpx import AsyncClient
-from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.auth_gateway import AuthLoger, AuthRegister
 from costy.domain.exceptions.access import AuthenticationError, RegisterError
 from costy.infrastructure.config import AuthSettings
+from costy.infrastructure.db import tables
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +19,11 @@ class AuthGateway(AuthLoger, AuthRegister):
         self,
         db_session: AsyncSession,
         web_session: AsyncClient,
-        table: Table,
         settings: AuthSettings,
     ) -> None:
         self.db_session = db_session
         self.web_session = web_session
-        self.table = table
+        self.table = tables.users
         self.settings = settings
 
     async def authenticate(self, email: str, password: str) -> str:

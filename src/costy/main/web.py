@@ -7,7 +7,6 @@ from httpx import AsyncClient
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
 from litestar.di import Provide
-from sqlalchemy import Table
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.domain.exceptions.base import BaseError
@@ -19,8 +18,7 @@ from costy.infrastructure.config import (
     get_db_connection_url,
     setup_logger,
 )
-from costy.infrastructure.db.main import get_engine, get_metadata, get_sessionmaker
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db.main import get_engine, get_sessionmaker
 from costy.infrastructure.metrics import create_metrics, start_metrics_server
 from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.dependencies.id_provider import get_id_provider
@@ -36,7 +34,6 @@ from costy.presentation.api.routers.user import UserController
 def init_app() -> Litestar:
     setup_logger()
 
-    base_metadata = get_metadata()
     web_session = AsyncClient()
     auth_settings = get_auth_settings()
     metrics = create_metrics()
@@ -49,9 +46,8 @@ def init_app() -> Litestar:
             async_sessionmaker[AsyncSession]: get_sessionmaker(
                 get_engine(get_db_connection_url()),
             ),
-            dict[str, Table]: create_tables(base_metadata),
             AuthSettings: auth_settings,
-            dict[str, Any]: get_banks_conf(),
+            dict[str, dict[str, Any]]: get_banks_conf(),
         },
     )
 

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 
-from costy.application.common.bankapi_gateway import Operation
+from costy.domain.models.operation import Operation
 from costy.domain.models.user import UserId
 
 

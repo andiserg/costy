@@ -1,5 +1,5 @@
 from adaptix import Retort
-from sqlalchemy import Table, delete, insert, join, or_, select, update
+from sqlalchemy import delete, insert, join, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.application.common.category_gateway import (
@@ -14,6 +14,7 @@ from costy.application.common.category_gateway import (
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel, SentinelOptional
+from costy.infrastructure.db import tables
 
 retort = Retort()
 
@@ -30,12 +31,10 @@ class CategoryAdapter(
     def __init__(
         self,
         session: AsyncSession,
-        category_table: Table,
-        mcc_table: Table,
     ) -> None:
         self.session = session
-        self.category_table = category_table
-        self.mcc_table = mcc_table
+        self.category_table = tables.categories
+        self.mcc_table = tables.category_mcc
         self.retort = retort
 
     async def get_category_by_id(self, category_id: CategoryId) -> Category | None:

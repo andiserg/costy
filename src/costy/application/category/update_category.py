@@ -13,7 +13,8 @@ from ..common.id_provider import IdProvider
 from ..common.interactor import Interactor
 
 
-class CategoryGateway(CategoryReader, CategoryUpdater, Protocol): ...
+class CategoryGateway(CategoryReader, CategoryUpdater, Protocol):
+    ...
 
 
 @dataclass(slots=True, kw_only=True)

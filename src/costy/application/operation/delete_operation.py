@@ -10,7 +10,8 @@ from ..common.interactor import Interactor
 from ..common.operation_gateway import OperationDeleter, OperationReader
 
 
-class OperationGateway(OperationReader, OperationDeleter, Protocol): ...
+class OperationGateway(OperationReader, OperationDeleter, Protocol):
+    ...
 
 
 class DeleteOperation(Interactor[OperationId, None]):

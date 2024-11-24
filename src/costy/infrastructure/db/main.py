@@ -1,4 +1,3 @@
-from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -13,7 +12,3 @@ def get_engine(url: str) -> AsyncEngine:
 
 def get_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     return async_sessionmaker(engine)
-
-
-def get_metadata() -> MetaData:
-    return MetaData()
