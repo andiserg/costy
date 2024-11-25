@@ -1,0 +1,47 @@
+[project]
+name = "costy"
+version = "0.1.0"
+dependencies = [
+    'sqlalchemy',
+    "litestar",
+    'uvicorn',
+    'psycopg[binary]',
+    'alembic',
+    'adaptix',
+    'aiohttp',
+    'python-jose',
+    'prometheus-client',
+    "dishka",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/costy"]
+
+[project.optional-dependencies]
+ci-tests = [
+    'pytest',
+    'pytest-asyncio',
+    'pytest-cov',
+    'pre-commit',
+    'ruff',
+    'isort',
+    'mypy',
+    'flake8',
+    'bandit'
+]
+
+dev = [
+    'costy[ci-tests]',
+    'pytest-env',
+]
+
+[tool.setuptools.package-data]
+costy = [
+    "adapters/bankapi/_banks.json",
+    "adapters/bankapi/_mcc.json",
+    "infrastructure/db/_default_categories.json"
+]

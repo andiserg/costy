@@ -1,0 +1,6 @@
+src/costy
+.venv
+.github
+deploy
+docs
+tests

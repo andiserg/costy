@@ -29,8 +29,12 @@ def get_db_connection_url() -> str:
     host = _get_env_var("DB_HOST")
     port = _get_env_var("DB_PORT")
     db_name = _get_env_var("DB_NAME")
+    schema = _get_env_var("DB_SCHEMA")
 
-    return f"postgresql+psycopg://{user}:{password}@{host}:{port}/{db_name}"
+    return (
+        f"postgresql+psycopg://{user}:{password}@{host}:{port}/{db_name}"
+        f"?options=-c search_path={schema}"
+    )
 
 
 def get_auth_settings() -> AuthSettings:
