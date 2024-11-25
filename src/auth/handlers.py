@@ -1,8 +1,9 @@
 from dishka import FromDishka
 from dishka.integrations.litestar import inject
-from litestar import Controller, Response, post
+from litestar import Controller, Request, Response, get, post
 
 from auth.application import authenticate, create_user, get_user
+from auth.exceptions import AuthenticationError, BaseError, RegisterError
 from auth.models import UserId
 
 
@@ -37,12 +38,32 @@ class UserController(Controller):
         user_id = await service(data)
         return {"user_id": user_id}
 
-
-    @post()
+    @get()
     @inject
-    async def get_user(self, headers: dict, service: FromDishka[get_user.GetUser]):
-        token = headers.get("Authorization")
+    async def get_user(
+        self,
+        headers: dict[str, str],
+        service: FromDishka[get_user.GetUser],
+    ) -> dict[str, int | None] | Response:  # type: ignore[type-arg]
+        token = headers.get("authorization")
         if token:
             user = await service(get_user.InputData(token))
-            return {"user_id": user.id}
+            return {"user_id": int(user.id) if user.id is not None else None}
         return Response(content={"error": "Token is missing"}, status_code=401)
+
+
+def base_error_handler(_: Request, error: BaseError) -> Response:  # type: ignore[type-arg]
+    errors_detail: dict[type[BaseError], tuple[str, int]] = {
+        AuthenticationError: ("Authentication error", 401),
+        RegisterError: ("Register error", 400),
+    }
+    detail = errors_detail.get(error.__class__)
+    if detail:
+        return Response(
+            content={
+                "error": detail[0],
+                "args": error.args,
+            },
+            status_code=detail[1],
+        )
+    raise error

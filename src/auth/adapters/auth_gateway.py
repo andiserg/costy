@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth import tables
 from auth.application._common import AuthLoger, AuthRegister
+from auth.config import AuthSettings
 from auth.exceptions import AuthenticationError, RegisterError
-from costy.infrastructure.config import AuthSettings
 
 logger = logging.getLogger(__name__)
 

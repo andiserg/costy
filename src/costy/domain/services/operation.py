@@ -1,6 +1,5 @@
 from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel
 
 
@@ -10,7 +9,7 @@ class OperationService:
         amount: int,
         description: str | None,
         time: int,
-        user_id: UserId,
+        user_id: int,
         category_id: CategoryId,
     ) -> Operation:
         return Operation(

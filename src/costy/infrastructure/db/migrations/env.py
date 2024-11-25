@@ -4,8 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from costy.infrastructure.config import get_db_connection_url
-from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db.tables import metadata
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -22,8 +21,7 @@ config.set_main_option("sqlalchemy.url", get_db_connection_url())
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-metadata = get_metadata()
-create_tables(metadata)
+metadata = metadata
 target_metadata = metadata
 
 # other values from the config, defined by the needs of env.py,

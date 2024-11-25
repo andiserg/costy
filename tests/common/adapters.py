@@ -4,18 +4,13 @@ from unittest.mock import Mock
 
 from pytest_asyncio import fixture
 
-from costy.adapters.auth.auth_gateway import AuthGateway
 from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.adapters.bankapi.bankapi import BankAPIAdapter
 from costy.adapters.bankapi.monobank import MonobankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
-from costy.adapters.db.user_gateway import UserAdapter
-from costy.application.common.auth_gateway import AuthLoger
-from costy.application.common.bankapi_gateway import Operation
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.operation import Operation, OperationId
-from costy.domain.models.user import UserId
 from costy.infrastructure.config import AuthSettings, get_auth_settings
 
 
@@ -24,14 +19,9 @@ async def auth_settings() -> AuthSettings:
     return get_auth_settings()
 
 
-@fixture
-async def auth_adapter(db_session, web_session, db_tables, auth_settings: AuthSettings) -> AuthLoger:
-    return AuthGateway(db_session, web_session, auth_settings)
-
-
-@fixture
-async def user_gateway(db_session, db_tables) -> UserAdapter:
-    return UserAdapter(db_session)
+# @fixture
+# async def user_gateway(db_session, db_tables) -> UserAdapter:
+#    return UserAdapter(db_session)
 
 
 @fixture
@@ -45,7 +35,7 @@ async def operation_gateway(db_session, db_tables) -> OperationAdapter:
 
 
 @fixture
-async def id_provider(user_id: UserId) -> IdProvider:
+async def id_provider(user_id: int) -> IdProvider:
     provider = Mock(spec=IdProvider)
     provider.get_current_user_id.return_value = user_id
     return provider

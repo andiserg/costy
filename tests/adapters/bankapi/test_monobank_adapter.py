@@ -4,7 +4,6 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.adapters.bankapi.bank_gateway import MCCBankOperation
-from costy.application.common.bankapi_gateway import Operation
 
 
 @fixture

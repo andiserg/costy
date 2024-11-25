@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from auth.adapters.token import TokenUserProvider
-from auth.application._common import Interactor
+from auth.application._common import Interactor, UserProvider
 from auth.exceptions import AuthenticationError
 from auth.models import User
 
@@ -12,7 +11,7 @@ class InputData:
 
 
 class GetUser(Interactor[InputData, User]):
-    def __init__(self, user_provider: TokenUserProvider) -> None:
+    def __init__(self, user_provider: UserProvider) -> None:
         self.user_provider = user_provider
 
     async def __call__(self, data: InputData) -> User:

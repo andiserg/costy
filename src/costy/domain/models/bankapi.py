@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import NewType
 
-from costy.domain.models.user import UserId
-
 BankApiId = NewType("BankApiId", int)
 
 
@@ -12,4 +10,4 @@ class BankAPI:
     name: str
     access_data: dict[str, str]
     updated_at: int | None = None
-    user_id: UserId
+    user_id: int

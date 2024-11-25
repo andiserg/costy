@@ -1,28 +1,14 @@
-from datetime import timedelta
-from typing import Any, Callable, Coroutine
-
-from httpx import AsyncClient
-
-from auth.adapters.token import (
-    Algorithm,
-    JwtTokenProcessor,
-    KeySetProvider,
-    TokenUserProvider,
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 
-def create_id_provider_factory(
-    audience: str,
-    algorithm: Algorithm,
-    issuer: str,
-    jwsk_uri: str,
-    web_session: AsyncClient,
-    jwsk_expired: timedelta = timedelta(days=1),
-) -> Callable[[], Coroutine[Any, Any, TokenUserProvider]]:
-    token_processor = JwtTokenProcessor(algorithm, audience, issuer)
-    jwsk_provider = KeySetProvider(jwsk_uri, web_session, jwsk_expired)
+def get_engine(url: str) -> AsyncEngine:
+    return create_async_engine(url, future=True)
 
-    async def factory() -> TokenUserProvider:
-        return TokenUserProvider(token_processor, jwsk_provider)
 
-    return factory
+def get_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+    return async_sessionmaker(engine)

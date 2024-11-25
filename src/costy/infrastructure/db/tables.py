@@ -3,13 +3,6 @@ from sqlalchemy import JSON, Column, ForeignKey, Integer, MetaData, String, Tabl
 metadata = MetaData()
 
 
-users = Table(
-    "users",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("auth_id", String, unique=True, index=True, nullable=False),
-)
-
 operations = Table(
     "operations",
     metadata,
@@ -17,7 +10,7 @@ operations = Table(
     Column("amount", Integer, nullable=False),
     Column("description", String),
     Column("time", Integer, nullable=False),
-    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("user_id", Integer),
     Column(
         "category_id",
         Integer,
@@ -32,7 +25,7 @@ categories = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
-    Column("user_id", Integer, ForeignKey("users.id"), nullable=True),
+    Column("user_id", Integer, nullable=True),
     Column("kind", String, default="general"),
     Column("view", JSON, nullable=True),
 )
@@ -44,7 +37,7 @@ bankapis = Table(
     Column("name", String),
     Column("access_data", JSON),
     Column("updated_at", Integer, nullable=True),
-    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("user_id", Integer),
 )
 
 category_mcc = Table(

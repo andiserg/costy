@@ -14,8 +14,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import select
 
-from costy.infrastructure.db.main import get_metadata
-from costy.infrastructure.db.tables import create_tables
+from costy.infrastructure.db import tables
 
 # revision identifiers, used by Alembic.
 revision: str = "a1d7fb181137"
@@ -38,8 +37,6 @@ def upgrade() -> None:
         data = json.load(f)
 
     conn = op.get_bind()
-    metadata = get_metadata()
-    tables = create_tables(metadata)
 
     bank_category_names = {item["name"] for item in data}
 
@@ -47,15 +44,15 @@ def upgrade() -> None:
         map(
             itemgetter(0),
             conn.execute(
-                select(tables["categories"].c.name)
-                .where(tables["categories"].c.kind == "general")
-                .where(tables["categories"].c.name.in_(bank_category_names)),
+                select(tables.categories.c.name)
+                .where(tables.categories.c.kind == "general")
+                .where(tables.categories.c.name.in_(bank_category_names)),
             ),
         ),
     )
 
     op.bulk_insert(
-        tables["categories"],
+        tables.categories,
         [{
             "name": category_name,
             "kind": "general",
@@ -64,14 +61,14 @@ def upgrade() -> None:
     )
 
     categories = conn.execute(
-        select(tables["categories"].c.name, tables["categories"].c.id)
-        .where(tables["categories"].c.kind == "general"),
+        select(tables.categories.c.name, tables.categories.c.id)
+        .where(tables.categories.c.kind == "general"),
     )
 
     data = {item["name"]: item for item in data}
 
     op.bulk_insert(
-        tables["category_mcc"],
+        tables.category_mcc,
         [
             {
                 "category_id": category_id,

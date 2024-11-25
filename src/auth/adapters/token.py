@@ -118,15 +118,13 @@ class TokenUserProvider(UserProvider):
         self,
         token_processor: JwtTokenProcessor,
         key_set_provider: KeySetProvider,
+        user_gateway: UserReader,
     ) -> None:
         self.token_processor = token_processor
         self.key_set_provider = key_set_provider
-        self.user_gateway: UserReader | None = None
+        self.user_gateway = user_gateway
 
     async def get_user_by_token(self, token: str) -> User:
-        if self.user_gateway:
-            jwks = await self.key_set_provider.get_key_set()
-            sub = self.token_processor.validate_token(token, jwks)
-            user = await self.user_gateway.get_user_by_auth_id(sub)
-            return user
-        raise AuthenticationError()
+        jwks = await self.key_set_provider.get_key_set()
+        sub = self.token_processor.validate_token(token, jwks)
+        return await self.user_gateway.get_user_by_auth_id(sub)

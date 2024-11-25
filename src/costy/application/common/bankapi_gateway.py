@@ -3,7 +3,6 @@ from typing import Protocol, runtime_checkable
 
 from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 
 
 @runtime_checkable
@@ -40,7 +39,7 @@ class BankAPIReader(Protocol):
 @runtime_checkable
 class BanksAPIReader(Protocol):
     @abstractmethod
-    async def get_bankapi_list(self, user_id: UserId) -> list[BankAPI]:
+    async def get_bankapi_list(self, user_id: int) -> list[BankAPI]:
         raise NotImplementedError
 
 

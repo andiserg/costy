@@ -1,8 +1,5 @@
-import os
 from typing import Any
 
-import pytest
-from adaptix import Retort
 from dishka import Provider, Scope, from_context, make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
@@ -10,10 +7,7 @@ from litestar import Litestar
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
-from costy.adapters.db.user_gateway import UserAdapter
-from costy.application.common.id_provider import IdProvider
 from costy.domain.exceptions.base import BaseError
-from costy.domain.models.user import UserId
 from costy.infrastructure.config import (
     AuthSettings,
     get_auth_settings,
@@ -21,28 +15,20 @@ from costy.infrastructure.config import (
     get_db_connection_url,
 )
 from costy.infrastructure.db.main import get_engine, get_sessionmaker
-from costy.main.di import DIProvider
+from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.routers.authenticate import AuthenticationController
 from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
-from costy.presentation.api.routers.user import UserController
 
 
-class MockIdProvider(IdProvider):
-    async def get_current_user_id(self) -> UserId:  # type: ignore
-        pass
-
-
-class TestIdDIProvider(Provider):
-    id_provider = from_context(IdProvider, scope=Scope.APP)
+class TestDIProvider(Provider):
     bank_gateways = from_context(dict[str, BankAdapter], scope=Scope.APP)
 
 
 async def init_test_app(
     db_url: str | None = None,
-    mock_auth: bool = True,
     mock_bank_gateways: dict[str, BankAdapter] | None = None
 ):
     if not db_url:
@@ -63,28 +49,27 @@ async def init_test_app(
     if not mock_bank_gateways:
         context[dict[str, BankAdapter]] = mock_bank_gateways
 
-    if mock_auth:
-        sub = os.environ.get("TEST_AUTH_USER_SUB")
-        if not sub:
-            pytest.fail("TEST_AUTH_USER_SUB environment not exists")
-        else:
-            sub = sub.replace("auth0|", "")
+    # if mock_auth:
+        # sub = os.environ.get("TEST_AUTH_USER_SUB")
+        # if not sub:
+        #     pytest.fail("TEST_AUTH_USER_SUB environment not exists")
+        # else:
+        #     sub = sub.replace("auth0|", "")
+        #
+        # async def get_user_id():
+        #     async with session_factory() as session:
+        #         user_gateway = UserAdapter(session)
+        #         return await user_gateway.get_user_id_by_auth_id(sub)
+        #
+        # id_provider: IdProvider = MockIdProvider()
+        # id_provider.get_current_user_id = get_user_id  # type: ignore
+        # context[IdProvider] = id_provider
 
-        async def get_user_id():
-            async with session_factory() as session:
-                user_gateway = UserAdapter(session)
-                return await user_gateway.get_user_id_by_auth_id(sub)
-
-        id_provider: IdProvider = MockIdProvider()
-        id_provider.get_current_user_id = get_user_id  # type: ignore
-        context[IdProvider] = id_provider
-
-    container = make_async_container(DIProvider(), TestIdDIProvider(), context=context)
+    container = make_async_container(DIProvider(), TestDIProvider(), IdDIProvider(), context=context)
 
     app = Litestar(
         route_handlers=(
             AuthenticationController,
-            UserController,
             OperationController,
             CategoryController,
             BankAPIController,

@@ -6,27 +6,24 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 from costy.infrastructure.db import tables
-from tests.common.database import create_category, create_user
+from tests.common.database import create_category
 
 
 async def create_depends(
     session: AsyncSession,
     auth_sub,
-) -> tuple[UserId, CategoryId]:
-    return (
-        await create_user(session, auth_sub),
-        await create_category(session),
-    )
+) -> CategoryId:
+    return await create_category(session)
 
 
 @pytest.mark.asyncio()
 async def test_create_operation(app, db_session, db_tables, auth_sub, clean_up_db):
-    _, category_id = await create_depends(db_session, auth_sub)
+    category_id = await create_depends(db_session, auth_sub)
 
     async with AsyncTestClient(app=app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
+
         data = {
             "amount": 100,
             "category_id": category_id,
@@ -46,7 +43,7 @@ async def test_get_list_operations(
     retort,
     clean_up_db,
 ):
-    user_id, category_id = await create_depends(db_session, auth_sub)
+    category_id = await create_depends(db_session, auth_sub)
 
     loader_retort = retort.extend(recipe=[loader(P[Operation].id, lambda _: None)])
     retort = retort.extend(recipe=[name_mapping(Operation, skip=["id"])])
@@ -58,7 +55,7 @@ async def test_get_list_operations(
             description="test",
             category_id=category_id,
             time=1111,
-            user_id=user_id,
+            user_id=1,
         )
         for _ in range(10)
     ]
@@ -67,7 +64,7 @@ async def test_get_list_operations(
     await db_session.commit()
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.get("/operations", headers=headers)
 
@@ -106,11 +103,11 @@ async def test_delete_operation_own(
     retort,
     clean_up_db,
 ):
-    user_id, category_id = await create_depends(db_session, auth_sub)
-    created_operation_id = await create_operation(user_id, category_id, db_session, retort)
+    category_id = await create_depends(db_session, auth_sub)
+    created_operation_id = await create_operation(1, category_id, db_session, retort)
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.delete(f"/operations/{created_operation_id}", headers=headers)
 
@@ -132,12 +129,11 @@ async def test_delete_operation_someone(
     retort,
     clean_up_db,
 ):
-    _, category_id = await create_depends(db_session, db_tables)
-    another_user_id = await create_user(db_session)
-    operation_id = await create_operation(another_user_id, category_id, db_session, retort)
+    category_id = await create_depends(db_session, db_tables)
+    operation_id = await create_operation(2, category_id, db_session, retort)
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.delete(f"/operations/{operation_id}", headers=headers)
 
@@ -159,11 +155,11 @@ async def test_delete_operation_not_exists(
     retort,
     clean_up_db,
 ):
-    user_id, category_id = await create_depends(db_session, auth_sub)
-    operation_id = await create_operation(user_id, category_id, db_session, retort)
+    category_id = await create_depends(db_session, auth_sub)
+    operation_id = await create_operation(1, category_id, db_session, retort)
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.delete("/operations/9999", headers=headers)
 

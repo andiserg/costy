@@ -12,7 +12,6 @@ from costy.application.common.category_gateway import (
     CategoryUpdater,
 )
 from costy.domain.models.category import Category, CategoryId
-from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel, SentinelOptional
 from costy.infrastructure.db import tables
 
@@ -49,7 +48,7 @@ class CategoryAdapter(
         self,
         name: SentinelOptional[str] = Sentinel,
         kind: SentinelOptional[str] = Sentinel,
-        user_id: SentinelOptional[UserId] = Sentinel,
+        user_id: SentinelOptional[int] = Sentinel,
     ) -> Category | None:
         if not any(param is not Sentinel for param in (name, kind, user_id)):
             return None
@@ -81,7 +80,7 @@ class CategoryAdapter(
         )
         await self.session.execute(query)
 
-    async def find_categories(self, user_id: UserId) -> list[Category]:
+    async def find_categories(self, user_id: int) -> list[Category]:
         filter_expr = or_(
             self.category_table.c.user_id == user_id,
             self.category_table.c.user_id == None,  # noqa: E711

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 from ...domain.models.operation import Operation
 from ...domain.services.operation import OperationService
@@ -15,7 +14,7 @@ class InputData:
     to_time: int | None = None
 
 
-class ReadListOperation(Interactor[InputData, List[Operation]]):
+class ReadListOperation(Interactor[InputData, list[Operation]]):
     def __init__(
         self,
         operation_service: OperationService,
@@ -28,7 +27,7 @@ class ReadListOperation(Interactor[InputData, List[Operation]]):
         self.id_provider = id_provider
         self.uow = uow
 
-    async def __call__(self, data: InputData) -> List[Operation]:
+    async def __call__(self, data: InputData) -> list[Operation]:
         user_id = await self.id_provider.get_current_user_id()
 
         return await self.operation_db_gateway.find_operations_by_user(

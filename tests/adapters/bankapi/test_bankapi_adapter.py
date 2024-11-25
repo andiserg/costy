@@ -6,13 +6,11 @@ from sqlalchemy import select
 
 from costy.domain.services.bankapi import BankAPIService
 from costy.infrastructure.db import tables
-from tests.common.database import create_user
 
 
 @pytest.mark.asyncio()
 async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
-    user_id = await create_user(db_session)
-    bankapi = BankAPIService().create("test", {}, user_id)
+    bankapi = BankAPIService().create("test", {}, 1)
 
     await bankapi_gateway.save_bankapi(bankapi)
 
@@ -21,8 +19,7 @@ async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
 
 @pytest.mark.asyncio()
 async def test_delete_bankapi(bankapi_gateway, db_session, db_tables):
-    user_id = await create_user(db_session)
-    bankapi = BankAPIService().create("test", {}, user_id)
+    bankapi = BankAPIService().create("test", {}, 1)
     await bankapi_gateway.save_bankapi(bankapi)
 
     await bankapi_gateway.delete_bankapi(bankapi.id)
@@ -44,16 +41,15 @@ async def test_get_supported_banks(bankapi_gateway):
 
 @pytest.mark.asyncio()
 async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
-    user_id = await create_user(db_session)
     created_bankapis = [
-        BankAPIService().create(f"test #{i}", {}, user_id)
+        BankAPIService().create(f"test #{i}", {}, 1)
         for i in range(5)
     ]
 
     for bankapi in created_bankapis:
         await bankapi_gateway.save_bankapi(bankapi)
 
-    bankapis = await bankapi_gateway.get_bankapi_list(user_id)
+    bankapis = await bankapi_gateway.get_bankapi_list(1)
 
     assert bankapis == created_bankapis
 
@@ -62,9 +58,8 @@ async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
 async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
     service = BankAPIService()
 
-    user_id = await create_user(db_session)
     created_bankapis = [
-        service.create(f"test #{i}", {}, user_id)
+        service.create(f"test #{i}", {}, 1)
         for i in range(5)
     ]
 
@@ -75,7 +70,7 @@ async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
         service.update_time(bankapi)
     await bankapi_gateway.update_bankapis(created_bankapis)
 
-    bankapis = await bankapi_gateway.get_bankapi_list(user_id)
+    bankapis = await bankapi_gateway.get_bankapi_list(1)
 
     assert bankapis == created_bankapis
 
