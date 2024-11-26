@@ -5,10 +5,10 @@ from litestar import Litestar
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from auth.config import AuthSettings, get_auth_settings, get_db_connection_url
+from auth.exceptions import BaseError
 from auth.handlers import AuthenticationController, UserController, base_error_handler
 from auth.infra import get_engine, get_sessionmaker
 from auth.main.di import DIProvider
-from costy.domain.exceptions.base import BaseError
 
 
 def init_app() -> Litestar:

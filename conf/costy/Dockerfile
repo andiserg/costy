@@ -3,14 +3,16 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /app
 
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-editable
-
 ADD . /app
 
+RUN --mount=type=bind,source=conf/costy/pyproject.toml,target=pyproject.toml \
+    uv lock
+
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=conf/costy/pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-editable
+
+RUN --mount=type=bind,source=conf/costy/pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-editable
 
 
