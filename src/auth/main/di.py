@@ -56,7 +56,7 @@ class DIProvider(Provider):
         user_gateway: UserReader,
     ) -> UserProvider:
         jwt_processor = JwtTokenProcessor(
-            algorithm="HS256",
+            algorithm="RS256",
             audience=settings.audience,
             issuer=settings.issuer,
         )

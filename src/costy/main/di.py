@@ -61,7 +61,6 @@ from costy.domain.services.access import AccessService
 from costy.domain.services.bankapi import BankAPIService
 from costy.domain.services.category import CategoryService
 from costy.domain.services.operation import OperationService
-from costy.infrastructure.config import AuthSettings
 
 
 class IdDIProvider(Provider):
@@ -80,7 +79,6 @@ class DIProvider(Provider):
     session_maker = from_context(
         provides=async_sessionmaker[AsyncSession], scope=Scope.APP,
     )
-    auth_settings = from_context(provides=AuthSettings, scope=Scope.APP)
     banks_conf = from_context(provides=dict[str, dict[str, Any]], scope=Scope.APP)
 
     r = from_context(provides=Request, scope=Scope.REQUEST)

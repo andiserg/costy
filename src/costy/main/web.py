@@ -10,8 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.config import (
-    AuthSettings,
-    get_auth_settings,
     get_banks_conf,
     get_db_connection_url,
     setup_logger,
@@ -31,7 +29,6 @@ def init_app() -> Litestar:
     setup_logger()
 
     web_session = AsyncClient()
-    auth_settings = get_auth_settings()
     metrics = create_metrics()
 
     container = make_async_container(
@@ -42,7 +39,6 @@ def init_app() -> Litestar:
             async_sessionmaker[AsyncSession]: get_sessionmaker(
                 get_engine(get_db_connection_url()),
             ),
-            AuthSettings: auth_settings,
             dict[str, dict[str, Any]]: get_banks_conf(),
         },
     )
@@ -60,6 +56,7 @@ def init_app() -> Litestar:
             CategoryController,
             BankAPIController,
         ),
+        path="/api",
         on_shutdown=[finalization],
         on_startup=[startup],
         exception_handlers={BaseError: base_error_handler},

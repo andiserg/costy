@@ -1,0 +1,25 @@
+:80 {
+    handle /auth/ {
+        reverse_proxy auth:8000
+    }
+
+    handle /users/ {
+        reverse_proxy auth:8000
+    }
+
+    handle /api/* {
+        header -user_id
+
+        forward_auth auth:8000 {
+            uri /users
+            copy_headers user_id
+
+            @noauth status 4xx
+            handle_response @noauth {
+                respond 401
+            }
+        }
+
+        reverse_proxy costy:8000
+    }
+}

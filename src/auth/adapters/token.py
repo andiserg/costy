@@ -60,8 +60,7 @@ class JwtTokenProcessor:
             raise invalid_header_error
         if unverified_header["alg"] == "HS256":
             logger.info(
-                "Token decode error. Invalid encode algorithm: %s",
-                unverified_header["alg"],
+                f"Token decode error. Invalid encode algorithm: {unverified_header['alg']}"
             )
             raise invalid_header_error
         rsa_key = self._fetch_rsa_key(jwks, unverified_header)
@@ -86,7 +85,7 @@ class JwtTokenProcessor:
             logger.warning("Auth token resolving unknown error. Message: %s", e.args)
             raise AuthenticationError(
                 {"detail": "Unable to parse authentication token."},
-            )
+            ) from e
 
 
 class KeySetProvider:

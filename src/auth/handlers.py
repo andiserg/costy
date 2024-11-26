@@ -4,7 +4,6 @@ from litestar import Controller, Request, Response, get, post
 
 from auth.application import authenticate, create_user, get_user
 from auth.exceptions import AuthenticationError, BaseError, RegisterError
-from auth.models import UserId
 
 
 class AuthenticationController(Controller):
@@ -28,17 +27,17 @@ class UserController(Controller):
     path = "/users"
     tags = ("Users",)
 
-    @post()
+    @post(status_code=201)
     @inject
     async def register(
         self,
         service: FromDishka[create_user.CreateUser],
         data: create_user.InputData,
-    ) -> dict[str, UserId]:
-        user_id = await service(data)
-        return {"user_id": user_id}
+    ) -> None:
+        await service(data)
+        return None
 
-    @get()
+    @get(status_code=200)
     @inject
     async def get_user(
         self,
@@ -48,7 +47,7 @@ class UserController(Controller):
         token = headers.get("authorization")
         if token:
             user = await service(get_user.InputData(token))
-            return {"user_id": int(user.id) if user.id is not None else None}
+            return Response("authenticated", headers={"user_id": str(user.id)})
         return Response(content={"error": "Token is missing"}, status_code=401)
 
 
