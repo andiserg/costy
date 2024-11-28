@@ -8,12 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.adapters.bankapi.bank_gateway import BankAdapter
 from costy.domain.exceptions.base import BaseError
-from costy.infrastructure.config import (
-    AuthSettings,
-    get_auth_settings,
-    get_banks_conf,
-    get_db_connection_url,
-)
+from costy.infrastructure.config import get_banks_conf, get_db_connection_url
 from costy.infrastructure.db.main import get_engine, get_sessionmaker
 from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.exception_handlers import base_error_handler
@@ -37,12 +32,9 @@ async def init_test_app(
     session_factory = get_sessionmaker(get_engine(db_url))
     web_session = AsyncClient()
 
-    auth_settings = get_auth_settings()
-
     context = {
         AsyncClient: web_session,
         async_sessionmaker[AsyncSession]: session_factory,
-        AuthSettings: auth_settings,
         dict[str, dict[str, Any]]: get_banks_conf(),
     }
 

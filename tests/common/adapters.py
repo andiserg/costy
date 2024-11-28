@@ -11,12 +11,10 @@ from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.operation import Operation, OperationId
-from costy.infrastructure.config import AuthSettings, get_auth_settings
 
-
-@fixture(scope="session")
-async def auth_settings() -> AuthSettings:
-    return get_auth_settings()
+# @fixture(scope="session")
+# async def auth_settings() -> AuthSettings:
+#     return get_auth_settings()
 
 
 # @fixture
