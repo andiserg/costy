@@ -43,7 +43,7 @@ jobs:
       run: just install-ci costy
 
     - name: Test with pytest
-      run: pytest --cov src/costy
+      run: uv run coverage run --source=src/costy -m pytest
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
@@ -95,7 +95,7 @@ jobs:
         run: just install-ci auth
 
       - name: Test with pytest
-        run: pytest --cov src/auth
+        run: uv run coverage run --source=src/auth -m pytest
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
