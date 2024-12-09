@@ -22,21 +22,21 @@ build-backend = "hatchling.build"
 packages = ["src/costy"]
 
 [project.optional-dependencies]
-ci-tests = [
+ci = [
     'pytest',
     'pytest-asyncio',
     'pytest-cov',
     'pre-commit',
-    'ruff',
-    'isort',
-    'mypy',
-    'flake8',
-    'bandit'
 ]
 
 dev = [
     'costy[ci-tests]',
     'pytest-env',
+    'ruff',
+    'isort',
+    'mypy',
+    'flake8',
+    'bandit'
 ]
 
 [tool.setuptools.package-data]

@@ -22,19 +22,19 @@ build-backend = "hatchling.build"
 package-dir = {"" = "src"}
 
 [project.optional-dependencies]
-ci-tests = [
+ci = [
     'pytest',
     'pytest-asyncio',
     'pytest-cov',
+]
+
+dev = [
+    'auth[ci-tests]',
+    'pytest-env',
     'pre-commit',
     'ruff',
     'isort',
     'mypy',
     'flake8',
     'bandit'
-]
-
-dev = [
-    'auth[ci-tests]',
-    'pytest-env',
 ]
