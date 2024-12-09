@@ -30,7 +30,7 @@ ci = [
 ]
 
 dev = [
-    'costy[ci-tests]',
+    'costy[ci]',
     'pytest-env',
     'ruff',
     'isort',

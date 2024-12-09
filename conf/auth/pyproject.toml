@@ -29,7 +29,7 @@ ci = [
 ]
 
 dev = [
-    'auth[ci-tests]',
+    'auth[ci]',
     'pytest-env',
     'pre-commit',
     'ruff',
