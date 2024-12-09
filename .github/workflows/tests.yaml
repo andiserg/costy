@@ -42,6 +42,9 @@ jobs:
     - name: Install dependencies
       run: just install-ci costy
 
+    - name: Prepend custom path
+      run: echo "/.venv/bin" >> $GITHUB_PATH
+
     - name: Test with pytest
       run: cd conf/costy && uv run coverage run --source=src/costy -m pytest
 
@@ -93,6 +96,9 @@ jobs:
 
       - name: Install dependencies
         run: just install-ci auth
+
+      - name: Prepend custom path
+        run: echo "/.venv/bin" >> $GITHUB_PATH
 
       - name: Test with pytest
         run: cd conf/auth && uv run coverage run --source=src/auth -m pytest
