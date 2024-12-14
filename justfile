@@ -32,3 +32,10 @@ install-ci service:
     uv sync --extra ci
     rm -f pyproject.toml
     mv pyproject_tools.toml pyproject.toml
+
+ci-tests service:
+    mv pyproject.toml pyproject_tools.toml
+    cp conf/{{service}}/pyproject.toml pyproject.toml
+    coverage run --source=src/{{service}} -m pytest
+    rm -f pyproject.toml
+    mv pyproject_tools.toml pyproject.toml
