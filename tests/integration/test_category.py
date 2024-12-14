@@ -8,7 +8,7 @@ from costy.infrastructure.db import tables
 
 
 @pytest.mark.asyncio()
-async def test_create_category(app, db_session, db_tables, auth_sub, clean_up_db):
+async def test_create_category(app, db_session, db_tables, clean_up_db):
     async with AsyncTestClient(app) as client:
         headers = {"user_id": "1"}
         data = {
@@ -25,7 +25,6 @@ async def test_get_list_categories(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
@@ -63,7 +62,6 @@ async def test_delete_category(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
@@ -97,7 +95,6 @@ async def test_update_category(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
