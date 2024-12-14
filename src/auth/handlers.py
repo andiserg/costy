@@ -35,7 +35,6 @@ class UserController(Controller):
         data: create_user.InputData,
     ) -> None:
         await service(data)
-        return None
 
     @get(status_code=200)
     @inject

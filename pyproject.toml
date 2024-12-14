@@ -56,7 +56,8 @@ ignore = [
     'RSE102', # path-constructor-current-directory
     'FA102',  # future-required-type-annotation
     'TD003', # missing-todo-link
-    'PTH123' # builtin-open
+    'PTH123', # builtin-open
+    'G004' # f-strings in logging
 ]
 
 [tool.ruff.lint.per-file-ignores]

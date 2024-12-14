@@ -60,7 +60,8 @@ class JwtTokenProcessor:
             raise invalid_header_error
         if unverified_header["alg"] == "HS256":
             logger.info(
-                f"Token decode error. Invalid encode algorithm: {unverified_header['alg']}"
+                "Token decode error. "
+                f"Invalid encode algorithm: {unverified_header['alg']}",
             )
             raise invalid_header_error
         rsa_key = self._fetch_rsa_key(jwks, unverified_header)
