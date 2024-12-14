@@ -10,7 +10,6 @@ from costy.application.common.operation_gateway import (
     OperationsReader,
 )
 from costy.domain.models.operation import Operation, OperationId
-from costy.domain.models.user import UserId
 from costy.infrastructure.db import tables
 
 retort = Retort()
@@ -53,7 +52,7 @@ class OperationAdapter(
 
     async def find_operations_by_user(
         self,
-        user_id: UserId,
+        user_id: int,
         from_time: int | None = None,
         to_time: int | None = None,
     ) -> list[Operation]:

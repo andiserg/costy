@@ -1,48 +1,3 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "costy"
-version = "0.1.0"
-dependencies = [
-    'sqlalchemy',
-    "litestar",
-    'uvicorn',
-    'psycopg[binary]',
-    'alembic',
-    'adaptix',
-    'aiohttp',
-    'python-jose',
-    'prometheus-client',
-    "dishka",
-]
-
-[project.optional-dependencies]
-ci-tests = [
-    'pytest',
-    'pytest-asyncio',
-    'pytest-cov',
-    'pre-commit',
-    'ruff',
-    'isort',
-    'mypy',
-    'flake8',
-    'bandit'
-]
-
-dev = [
-    'costy[ci-tests]',
-    'pytest-env',
-]
-
-[tool.setuptools.package-data]
-costy = [
-    "adapters/bankapi/_banks.json",
-    "adapters/bankapi/_mcc.json",
-    "infrastructure/db/_default_categories.json"
-]
-
 [tool.mypy]
 python_version = "3.12"
 exclude = [
@@ -101,7 +56,8 @@ ignore = [
     'RSE102', # path-constructor-current-directory
     'FA102',  # future-required-type-annotation
     'TD003', # missing-todo-link
-    'PTH123' # builtin-open
+    'PTH123', # builtin-open
+    'G004' # f-strings in logging
 ]
 
 [tool.ruff.lint.per-file-ignores]

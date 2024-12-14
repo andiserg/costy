@@ -3,11 +3,9 @@ from typing import AsyncGenerator, AsyncIterator
 
 import pytest
 from adaptix import Retort
-from aiohttp import ClientSession
 from httpx import AsyncClient
 from litestar import Litestar
 from pytest_asyncio import fixture
-from sqlalchemy import Table
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -73,7 +71,7 @@ async def web_session() -> AsyncIterator[AsyncClient]:
 
 @fixture(scope="session")
 async def app(db_url, mock_monobank_gateway) -> Litestar:
-    return await init_test_app(db_url, mock_auth=True, mock_bank_gateways=mock_monobank_gateway)
+    return await init_test_app(db_url, mock_bank_gateways=mock_monobank_gateway)
 
 
 @fixture

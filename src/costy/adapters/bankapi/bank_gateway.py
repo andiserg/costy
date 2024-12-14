@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Protocol
 
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 
 
 @dataclass
@@ -18,7 +17,7 @@ class BankAdapter(Protocol):
     async def fetch_operations(
         self,
         access_data: dict[str, str],
-        user_id: UserId,
+        user_id: int,
         from_time: datetime | None = None,
     ) -> list[MCCBankOperation] | None:
         raise NotImplementedError

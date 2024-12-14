@@ -1,7 +1,6 @@
 from datetime import UTC, datetime
 
 from costy.domain.models.bankapi import BankAPI
-from costy.domain.models.user import UserId
 
 
 class BankAPIService:
@@ -9,7 +8,7 @@ class BankAPIService:
         self,
         bank_name: str,
         access_data: dict[str, str],
-        user_id: UserId,
+        user_id: int,
     ) -> BankAPI:
         return BankAPI(
             name=bank_name,

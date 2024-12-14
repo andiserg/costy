@@ -8,7 +8,6 @@ from httpx import AsyncClient
 from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 
 logger = logging.getLogger("bankAPI: " + __name__)
 retort = Retort()
@@ -32,7 +31,7 @@ class MonobankAdapter(BankAdapter):
     async def fetch_operations(
         self,
         access_data: dict[str, str],
-        user_id: UserId,
+        user_id: int,
         from_time: datetime | None = None,
     ) -> list[MCCBankOperation] | None:
         now = datetime.now(tz=UTC)

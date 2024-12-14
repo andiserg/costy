@@ -4,15 +4,12 @@ from sqlalchemy import select
 
 from costy.domain.models.bankapi import BankAPI
 from costy.infrastructure.db import tables
-from tests.common.database import create_user
 
 
 @pytest.mark.asyncio()
-async def test_create_bankapi(app, db_session, db_tables, auth_sub, clean_up_db):
-    await create_user(db_session, auth_sub)
-
+async def test_create_bankapi(app, db_session, db_tables, clean_up_db):
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
         data = {
             "name": "monobank",
             "access_data": {"X-Token": "aboba"},
@@ -23,11 +20,9 @@ async def test_create_bankapi(app, db_session, db_tables, auth_sub, clean_up_db)
 
 
 @pytest.mark.asyncio()
-async def test_delete_bankapi(app, db_session, db_tables, auth_sub, clean_up_db, bankapi_gateway):
-    user_id = await create_user(db_session, auth_sub)
-
+async def test_delete_bankapi(app, db_session, db_tables, clean_up_db, bankapi_gateway):
     bankapi = BankAPI(
-        user_id=user_id,
+        user_id=1,
         name="monobank",
         access_data={"X-Token": "aboba"},
     )
@@ -36,7 +31,7 @@ async def test_delete_bankapi(app, db_session, db_tables, auth_sub, clean_up_db,
     await db_session.commit()
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.delete(f"/bankapi/{bankapi.id}", headers=headers)
 

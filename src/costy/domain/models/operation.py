@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import NewType
 
 from costy.domain.models.category import CategoryId
-from costy.domain.models.user import UserId
 
 OperationId = NewType("OperationId", int)
 
@@ -13,6 +12,6 @@ class Operation:
     amount: int
     description: str | None = None
     time: int
-    user_id: UserId
+    user_id: int
     category_id: CategoryId | None = None
     bank_name: str | None = None

@@ -12,7 +12,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "8f0d001e35c6"
-down_revision: Union[str, None] = "14d9cdbdf029"
+down_revision: Union[str, None] = "f1c4a04700d3"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -25,7 +25,6 @@ def upgrade() -> None:
     sa.Column("access_data", sa.JSON(), nullable=True),
     sa.Column("updated_at", sa.Integer(), nullable=True),
     sa.Column("user_id", sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(["user_id"], ["users.id"], ),
     sa.PrimaryKeyConstraint("id"),
     )
     op.add_column("categories", sa.Column("mcc", sa.Integer(), nullable=True))

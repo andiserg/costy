@@ -1,0 +1,40 @@
+[project]
+name = "auth"
+version = "0.1.0"
+dependencies = [
+    'sqlalchemy',
+    "litestar",
+    'uvicorn',
+    'psycopg[binary]',
+    'alembic',
+    'adaptix',
+    'httpx',
+    'python-jose',
+    'prometheus-client',
+    "dishka",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.optional-dependencies]
+ci = [
+    'pytest',
+    'pytest-asyncio',
+    'pytest-cov',
+]
+
+dev = [
+    'auth[ci]',
+    'pytest-env',
+    'pre-commit',
+    'ruff',
+    'isort',
+    'mypy',
+    'flake8',
+    'bandit'
+]

@@ -8,16 +8,14 @@ from costy.adapters.bankapi.bank_gateway import MCCBankOperation
 from costy.application.authenticate import InputData
 from costy.application.category import create_category
 from costy.application.operation import create_operation
-from costy.application.user import create_user
 from costy.domain.models.bankapi import BankApiId
 from costy.domain.models.category import Category, CategoryId
 from costy.domain.models.operation import Operation, OperationId
-from costy.domain.models.user import User, UserId
 
 
 @fixture(scope="session")
-async def user_id() -> UserId:
-    return UserId(999)
+async def user_id() -> int:
+    return 999
 
 
 @fixture
@@ -36,11 +34,6 @@ async def bankapi_id() -> BankApiId:
 
 
 @fixture
-async def user_entity() -> User:
-    return User(id=None, auth_id="auth_id")
-
-
-@fixture
 async def category_info() -> create_category.InputData:
     return create_category.InputData(name="test", view=None)
 
@@ -55,9 +48,9 @@ async def operation_info() -> create_operation.InputData:
     )
 
 
-@fixture
-async def user_info() -> create_user.InputData:
-    return create_user.InputData(email="test@email.com", password="password")
+# @fixture
+# async def user_info() -> create_user.InputData:
+#     return create_user.InputData(email="test@email.com", password="password")
 
 
 @fixture

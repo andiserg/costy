@@ -1,20 +1,16 @@
 import pytest
 from adaptix import P, loader, name_mapping
 from litestar.testing import AsyncTestClient
-from markdown_it.rules_block import table
 from sqlalchemy import insert, select
 
 from costy.domain.models.category import Category, CategoryType
 from costy.infrastructure.db import tables
-from tests.common.database import create_user
 
 
 @pytest.mark.asyncio()
-async def test_create_category(app, db_session, db_tables, auth_sub, clean_up_db):
-    await create_user(db_session, auth_sub)
-
+async def test_create_category(app, db_session, db_tables, clean_up_db):
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
         data = {
             "name": "test",
         }
@@ -29,12 +25,9 @@ async def test_get_list_categories(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
-    user_id = await create_user(db_session, auth_sub)
-
     loader_retort = retort.extend(recipe=[loader(P[Category].id, lambda _: None)])
     retort = retort.extend(recipe=[name_mapping(Category, skip=["id"])])
 
@@ -43,7 +36,7 @@ async def test_get_list_categories(
             id=None,
             name=f"test_category {i}",
             kind=CategoryType.PERSONAL.value,
-            user_id=user_id,
+            user_id=1,
         ) for i in range(5)
     ] + [
         Category(
@@ -57,7 +50,7 @@ async def test_get_list_categories(
     await db_session.commit()
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.get("/categories", headers=headers)
 
@@ -69,16 +62,13 @@ async def test_delete_category(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
-    user_id = await create_user(db_session, auth_sub)
-
     category = Category(
         id=None,
         name="test_category",
-        user_id=user_id,
+        user_id=1,
         kind=CategoryType.PERSONAL.value,
     )
     retort = retort.extend(recipe=[name_mapping(Category, skip=["id"])])
@@ -88,7 +78,7 @@ async def test_delete_category(
     await db_session.commit()
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.delete(f"/categories/{created_category_id}", headers=headers)
 
@@ -105,16 +95,13 @@ async def test_update_category(
     app,
     db_session,
     db_tables,
-    auth_sub,
     retort,
     clean_up_db,
 ):
-    user_id = await create_user(db_session, auth_sub)
-
     category = Category(
         id=None,
         name="test_category",
-        user_id=user_id,
+        user_id=1,
         kind=CategoryType.PERSONAL.value,
     )
     retort = retort.extend(recipe=[name_mapping(Category, skip=["id"])])
@@ -127,7 +114,7 @@ async def test_update_category(
     update_data = {"name": "upd_test_category"}
 
     async with AsyncTestClient(app) as client:
-        headers = {"Authorization": "Bearer aboba"}
+        headers = {"user_id": "1"}
 
         result = await client.put(f"/categories/{created_category_id}", headers=headers, json=update_data)
 

@@ -3,10 +3,10 @@ import logging
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from costy.application.common.auth_gateway import AuthLoger, AuthRegister
-from costy.domain.exceptions.access import AuthenticationError, RegisterError
-from costy.infrastructure.config import AuthSettings
-from costy.infrastructure.db import tables
+from auth import tables
+from auth.application._common import AuthLoger, AuthRegister
+from auth.config import AuthSettings
+from auth.exceptions import AuthenticationError, RegisterError
 
 logger = logging.getLogger(__name__)
 

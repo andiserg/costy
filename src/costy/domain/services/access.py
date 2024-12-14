@@ -1,20 +1,18 @@
 from typing import Protocol
 
-from costy.domain.models.user import UserId
-
 
 class HasUserId(Protocol):
-    user_id: UserId
+    user_id: int
 
 
 class HasOptionalUserId(Protocol):
-    user_id: UserId | None
+    user_id: int | None
 
 
 class AccessService:
     def ensure_can_edit(
         self,
         entity: HasUserId | HasOptionalUserId,
-        user_id: UserId,
+        user_id: int,
     ) -> bool:
         return entity.user_id == user_id

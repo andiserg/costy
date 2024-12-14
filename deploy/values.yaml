@@ -17,12 +17,6 @@ resources:
     cpu: 200m
     memory: 256Mi
 
-postgresql:
-  host: "postgres-service"
-  user: "user"
-  password: "password"
-  database: "dbname"
-
 autoscaling:
   enabled: true
   minReplicas: 3

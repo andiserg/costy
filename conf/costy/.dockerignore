@@ -1,0 +1,5 @@
+.venv
+.github
+deploy
+docs
+tests

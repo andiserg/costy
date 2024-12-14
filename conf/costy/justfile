@@ -1,0 +1,10 @@
+set shell := ["sh", "-c"]
+
+set dotenv-required
+set dotenv-load := true
+
+makemigrations:
+    alembic revision --autogenerate
+
+migrate:
+    alembic upgrade head

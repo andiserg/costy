@@ -20,7 +20,6 @@ from costy.application.common.bankapi_gateway import (
 from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.bankapi import BankAPI, BankApiId
 from costy.domain.models.operation import Operation
-from costy.domain.models.user import UserId
 from costy.infrastructure.db import tables
 
 retort = Retort()
@@ -75,7 +74,7 @@ class BankAPIAdapter(
         except KeyError:
             raise InvalidRequestError("Invalid data template bank name")
 
-    async def get_bankapi_list(self, user_id: UserId) -> list[BankAPI]:
+    async def get_bankapi_list(self, user_id: int) -> list[BankAPI]:
         stmt = select(self._table).where(self._table.c.user_id == user_id)
         result = (await self._db_session.execute(stmt)).mappings()
         return retort.load(result, list[BankAPI])

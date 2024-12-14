@@ -6,14 +6,10 @@ from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
-from litestar.di import Provide
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from costy.domain.exceptions.base import BaseError
-from costy.infrastructure.auth import create_id_provider_factory
 from costy.infrastructure.config import (
-    AuthSettings,
-    get_auth_settings,
     get_banks_conf,
     get_db_connection_url,
     setup_logger,
@@ -21,21 +17,18 @@ from costy.infrastructure.config import (
 from costy.infrastructure.db.main import get_engine, get_sessionmaker
 from costy.infrastructure.metrics import create_metrics, start_metrics_server
 from costy.main.di import DIProvider, IdDIProvider
-from costy.presentation.api.dependencies.id_provider import get_id_provider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.middlewares import create_metrics_middleware
 from costy.presentation.api.routers.authenticate import AuthenticationController
 from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
-from costy.presentation.api.routers.user import UserController
 
 
 def init_app() -> Litestar:
     setup_logger()
 
     web_session = AsyncClient()
-    auth_settings = get_auth_settings()
     metrics = create_metrics()
 
     container = make_async_container(
@@ -46,17 +39,8 @@ def init_app() -> Litestar:
             async_sessionmaker[AsyncSession]: get_sessionmaker(
                 get_engine(get_db_connection_url()),
             ),
-            AuthSettings: auth_settings,
             dict[str, dict[str, Any]]: get_banks_conf(),
         },
-    )
-
-    id_provider_factory = create_id_provider_factory(
-        auth_settings.audience,
-        "RS256",
-        auth_settings.issuer,
-        auth_settings.jwks_uri,
-        web_session,
     )
 
     async def startup() -> None:
@@ -68,15 +52,11 @@ def init_app() -> Litestar:
     app = Litestar(
         route_handlers=(
             AuthenticationController,
-            UserController,
             OperationController,
             CategoryController,
             BankAPIController,
         ),
-        dependencies={
-            "id_provider": Provide(get_id_provider),
-            "id_provider_blank": Provide(id_provider_factory),
-        },
+        path="/api",
         on_shutdown=[finalization],
         on_startup=[startup],
         exception_handlers={BaseError: base_error_handler},

@@ -2,7 +2,6 @@ from abc import abstractmethod
 from typing import Protocol, runtime_checkable
 
 from costy.domain.models.operation import Operation, OperationId
-from costy.domain.models.user import UserId
 
 
 @runtime_checkable
@@ -31,7 +30,7 @@ class OperationsReader(Protocol):
     @abstractmethod
     async def find_operations_by_user(
         self,
-        user_id: UserId,
+        user_id: int,
         from_time: int | None,
         to_time: int | None,
     ) -> list[Operation]:

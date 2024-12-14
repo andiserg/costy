@@ -1,5 +1,4 @@
 from costy.domain.models.category import Category, CategoryType
-from costy.domain.models.user import UserId
 from costy.domain.sentinel import Sentinel, SentinelOptional
 
 
@@ -8,7 +7,7 @@ class CategoryService:
         self,
         name: str,
         kind: CategoryType,
-        user_id: UserId,
+        user_id: int,
         view: dict[str, str] | None,
     ) -> Category:
         return Category(id=None, name=name, kind=kind.value, user_id=user_id, view=view)

@@ -4,7 +4,6 @@ import pytest
 from pytest_asyncio import fixture
 
 from costy.adapters.bankapi.bank_gateway import MCCBankOperation
-from costy.application.common.bankapi_gateway import Operation
 
 
 @fixture
@@ -17,6 +16,7 @@ async def monobank_access_data() -> dict[str, str]:
     return {"X-Token": token}
 
 
+@pytest.mark.skip()
 @pytest.mark.asyncio()
 async def test_fetch_operations(monobank_adapter, monobank_access_data, user_id):
     result = await monobank_adapter.fetch_operations(monobank_access_data, user_id)

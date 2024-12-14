@@ -1,0 +1,56 @@
+services:
+  caddy:
+    image: caddy:2.7-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2019:2019"
+    volumes:
+      - ./conf/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - costy
+      - auth
+
+  costy:
+    image: costy-costy
+    command: sh -c "uvicorn costy.main.web:init_app --host 0.0.0.0 --port 8000 --factory"
+    env_file:
+      - conf/costy/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - costy-migrate
+  costy-migrate:
+    image: costy-costy
+    command: sh -c "alembic -c ./conf/costy/alembic.ini upgrade head"
+    env_file:
+      - conf/costy/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./conf/costy:/conf/costy
+
+  auth:
+    image: costy-auth
+    command: sh -c "uvicorn auth.main.web:init_app --host 0.0.0.0 --port 8000 --factory"
+    env_file:
+      - ./conf/auth/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - auth-migrate
+  auth-migrate:
+    image: costy-auth
+    command: sh -c "alembic -c ./conf/auth/alembic.ini upgrade head"
+    env_file:
+      - conf/auth/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./conf/auth:/conf/auth
+
+volumes:
+  caddy_data:
+  caddy_config:

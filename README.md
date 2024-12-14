@@ -32,5 +32,8 @@
 - **High type matching and good code style** (verified by mypy --strict and ruff)
 - **Implemented Kubernetes configuration** by Helm chart
 
- Architecture of project:
+Architecture of project:
 <img src="docs/architecture.png">
+
+Sequence of interaction with services
+<img src="docs/services.png">
