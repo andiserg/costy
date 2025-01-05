@@ -19,7 +19,6 @@ from costy.infrastructure.metrics import create_metrics, start_metrics_server
 from costy.main.di import DIProvider, IdDIProvider
 from costy.presentation.api.exception_handlers import base_error_handler
 from costy.presentation.api.middlewares import create_metrics_middleware
-from costy.presentation.api.routers.authenticate import AuthenticationController
 from costy.presentation.api.routers.bankapi import BankAPIController
 from costy.presentation.api.routers.category import CategoryController
 from costy.presentation.api.routers.operation import OperationController
@@ -51,7 +50,6 @@ def init_app() -> Litestar:
 
     app = Litestar(
         route_handlers=(
-            AuthenticationController,
             OperationController,
             CategoryController,
             BankAPIController,

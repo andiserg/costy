@@ -11,7 +11,7 @@ from auth.exceptions import AuthenticationError, RegisterError
 logger = logging.getLogger(__name__)
 
 
-class AuthGateway(AuthLoger, AuthRegister):
+class AuthAdapter(AuthLoger, AuthRegister):
     AUTH_SUCCESS_CODE = 200
     REGISTER_SUCCESS_CODE = 200
 

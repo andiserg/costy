@@ -4,6 +4,9 @@ from unittest.mock import Mock
 
 from pytest_asyncio import fixture
 
+from auth.adapters.auth_gateway import AuthAdapter
+from auth.adapters.user_gateway import UserAdapter
+from auth.config import AuthSettings, get_auth_settings
 from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.adapters.bankapi.bankapi import BankAPIAdapter
 from costy.adapters.bankapi.monobank import MonobankAdapter
@@ -12,14 +15,15 @@ from costy.adapters.db.operation_gateway import OperationAdapter
 from costy.application.common.id_provider import IdProvider
 from costy.domain.models.operation import Operation, OperationId
 
-# @fixture(scope="session")
-# async def auth_settings() -> AuthSettings:
-#     return get_auth_settings()
+
+@fixture(scope="session")
+async def auth_settings() -> AuthSettings:
+    return get_auth_settings()
 
 
-# @fixture
-# async def user_gateway(db_session, db_tables) -> UserAdapter:
-#    return UserAdapter(db_session)
+@fixture
+async def user_gateway(db_session, db_tables) -> UserAdapter:
+   return UserAdapter(db_session)
 
 
 @fixture
@@ -30,6 +34,10 @@ async def category_gateway(db_session, db_tables) -> CategoryAdapter:
 @fixture
 async def operation_gateway(db_session, db_tables) -> OperationAdapter:
     return OperationAdapter(db_session)
+
+@fixture
+async def auth_adapter(db_session, web_session, auth_settings) -> AuthAdapter:
+    return AuthAdapter(db_session, web_session, auth_settings)
 
 
 @fixture

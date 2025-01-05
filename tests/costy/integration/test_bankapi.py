@@ -7,8 +7,8 @@ from costy.infrastructure.db import tables
 
 
 @pytest.mark.asyncio()
-async def test_create_bankapi(app, db_session, db_tables, clean_up_db):
-    async with AsyncTestClient(app) as client:
+async def test_create_bankapi(costy_app, db_session, db_tables, clean_up_db):
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
         data = {
             "name": "monobank",
@@ -20,7 +20,7 @@ async def test_create_bankapi(app, db_session, db_tables, clean_up_db):
 
 
 @pytest.mark.asyncio()
-async def test_delete_bankapi(app, db_session, db_tables, clean_up_db, bankapi_gateway):
+async def test_delete_bankapi(costy_app, db_session, db_tables, clean_up_db, bankapi_gateway):
     bankapi = BankAPI(
         user_id=1,
         name="monobank",
@@ -30,7 +30,7 @@ async def test_delete_bankapi(app, db_session, db_tables, clean_up_db, bankapi_g
     await bankapi_gateway.save_bankapi(bankapi)
     await db_session.commit()
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.delete(f"/bankapi/{bankapi.id}", headers=headers)

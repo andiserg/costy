@@ -8,3 +8,6 @@ makemigrations:
 
 migrate:
     alembic upgrade head
+
+test:
+    pytest --cov src ../../tests/auth

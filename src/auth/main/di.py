@@ -5,7 +5,7 @@ from dishka import AnyOf, Provider, Scope, from_context, provide
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from auth.adapters.auth_gateway import AuthGateway
+from auth.adapters.auth_gateway import AuthAdapter
 from auth.adapters.token import JwtTokenProcessor, KeySetProvider, TokenUserProvider
 from auth.adapters.user_gateway import UserAdapter
 from auth.application._common import (
@@ -32,7 +32,7 @@ class DIProvider(Provider):
     auth_settings = from_context(provides=AuthSettings, scope=Scope.APP)
 
     auth_gateway = provide(
-        source=AuthGateway,
+        source=AuthAdapter,
         provides=AnyOf[AuthLoger, AuthRegister],
     )
     user_gateway = provide(

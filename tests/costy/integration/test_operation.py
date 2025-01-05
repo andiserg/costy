@@ -17,10 +17,10 @@ async def create_depends(
 
 
 @pytest.mark.asyncio()
-async def test_create_operation(app, db_session, db_tables, clean_up_db):
+async def test_create_operation(costy_app, db_session, db_tables, clean_up_db):
     category_id = await create_depends(db_session)
 
-    async with AsyncTestClient(app=app) as client:
+    async with AsyncTestClient(app=costy_app) as client:
         headers = {"user_id": "1"}
 
         data = {
@@ -35,7 +35,7 @@ async def test_create_operation(app, db_session, db_tables, clean_up_db):
 
 @pytest.mark.asyncio()
 async def test_get_list_operations(
-    app,
+        costy_app,
     db_session,
     db_tables,
     retort,
@@ -61,7 +61,7 @@ async def test_get_list_operations(
     await db_session.execute(stmt)
     await db_session.commit()
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.get("/operations", headers=headers)
@@ -94,7 +94,7 @@ async def create_operation(user_id, category_id, session: AsyncSession, retort):
 
 @pytest.mark.asyncio()
 async def test_delete_operation_own(
-    app,
+        costy_app,
     db_session,
     db_tables,
     retort,
@@ -103,7 +103,7 @@ async def test_delete_operation_own(
     category_id = await create_depends(db_session)
     created_operation_id = await create_operation(1, category_id, db_session, retort)
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.delete(f"/operations/{created_operation_id}", headers=headers)
@@ -119,7 +119,7 @@ async def test_delete_operation_own(
 @pytest.mark.asyncio()
 @pytest.mark.skip()
 async def test_delete_operation_someone(
-    app,
+        costy_app,
     db_session,
     auth_sub,
     retort,
@@ -128,7 +128,7 @@ async def test_delete_operation_someone(
     category_id = await create_depends(db_session)
     operation_id = await create_operation(2, category_id, db_session, retort)
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.delete(f"/operations/{operation_id}", headers=headers)
@@ -144,7 +144,7 @@ async def test_delete_operation_someone(
 @pytest.mark.skip()
 @pytest.mark.asyncio()
 async def test_delete_operation_not_exists(
-    app,
+        costy_app,
     db_session,
     retort,
     clean_up_db,
@@ -152,7 +152,7 @@ async def test_delete_operation_not_exists(
     category_id = await create_depends(db_session)
     operation_id = await create_operation(1, category_id, db_session, retort)
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.delete("/operations/9999", headers=headers)
