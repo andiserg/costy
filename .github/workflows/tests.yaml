@@ -46,14 +46,14 @@ jobs:
       run: echo "/.venv/bin" >> $GITHUB_PATH
 
     - name: Test with pytest
-      run: just -f conf/costy/ tests
+      run: just -f ./conf/costy/justfile tests
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: AndrewSergienko/costy
-        files: ./conf/costy/justfile
+        files: conf/costy/.coverage
         flags: costy
 
   auth-tests:
