@@ -9,5 +9,5 @@ makemigrations:
 migrate:
     alembic upgrade head
 
-test:
-    pytest --cov src ../../tests/costy
+tests:
+    pytest --cov src ../../tests/costy -F costy
