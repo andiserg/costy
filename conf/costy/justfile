@@ -10,3 +10,6 @@ migrate:
 
 tests:
     pytest --cov src ../../tests/costy
+
+ci-tests:
+    uv run pytest --cov src ../../tests/costy

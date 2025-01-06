@@ -10,3 +10,6 @@ migrate:
 
 tests:
     pytest --cov src ../../tests/auth
+
+ci-tests:
+    uv run pytest --cov src ../../tests/auth
