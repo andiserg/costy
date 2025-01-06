@@ -6,7 +6,7 @@ from httpx import AsyncClient
 from litestar import Controller, Litestar
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from auth.config import AuthSettings, get_auth_settings
+from auth.config import AuthSettings, SettingError, get_auth_settings
 from costy.adapters.bankapi.bank_gateway import BankAdapter
 from costy.domain.exceptions.base import BaseError
 from costy.infrastructure.config import get_banks_conf, get_db_connection_url
@@ -23,6 +23,7 @@ async def init_test_app(
     mock_bank_gateways: dict[str, BankAdapter] | None = None,
     di_providers: list[Any] | None = None,
     controllers: list[Controller] | None = None,
+
 ):
     if not db_url:
         db_url = get_db_connection_url()
@@ -30,8 +31,14 @@ async def init_test_app(
     session_factory = get_sessionmaker(get_engine(db_url))
     web_session = AsyncClient()
 
+    try:
+        a_settings = get_auth_settings()
+    except SettingError:
+        a_settings = None
+
+
     context = {
-        AuthSettings: get_auth_settings(),
+        AuthSettings: a_settings,
         AsyncClient: web_session,
         async_sessionmaker[AsyncSession]: session_factory,
         dict[str, dict[str, Any]]: get_banks_conf(),
