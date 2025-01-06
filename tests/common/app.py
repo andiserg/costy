@@ -1,6 +1,6 @@
 from typing import Any
 
-from dishka import AsyncContainer, Provider, Scope, from_context, make_async_container
+from dishka import Provider, Scope, from_context, make_async_container
 from dishka.integrations.litestar import setup_dishka
 from httpx import AsyncClient
 from litestar import Controller, Litestar
