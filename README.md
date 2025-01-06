@@ -3,11 +3,10 @@
 </p>
 
 <p align="center">
-     <img src="https://codecov.io/gh/AndrewSergienko/costy/graph/badge.svg?token=YQLTZLXL56"/>
-     <img src="https://github.com/AndrewSergienko/costy/actions/workflows/tests.yaml/badge.svg?branch=2.x%2Fmain"/>
-   <img src="https://img.shields.io/badge/python-3.12-blue" alt="Python Version">
+  <a href="https://codecov.io/gh/andiserg/costy"><img src="https://codecov.io/gh/andiserg/costy/graph/badge.svg?token=YQLTZLXL56" alt="codecov"></a>
+  <a href="https://github.com/andiserg/costy/actions/workflows/tests.yaml"><img src="https://github.com/andiserg/costy/actions/workflows/tests.yaml/badge.svg" alt="tests"></a>
+  <img src="https://img.shields.io/badge/python-3.12-blue" alt="Python Version">
 </p>
-
 
 
   **Costy** is a Python-based application designed for analyzing and managing users' financial expenditures. Built with a focus on technical excellence and maintainability, the project employs **Clean Architecture**, providing a solid foundation for scalability, testability, and ease of maintenance.
