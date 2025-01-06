@@ -1,6 +1,5 @@
 set shell := ["sh", "-c"]
 
-set dotenv-required
 set dotenv-load := true
 
 makemigrations:
@@ -10,4 +9,4 @@ migrate:
     alembic upgrade head
 
 tests:
-    pytest --cov src ../../tests/auth -F auth
+    pytest --cov src ../../tests/auth
