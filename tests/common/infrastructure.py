@@ -14,7 +14,13 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from auth.handlers import AuthenticationController, UserController
+from auth.main import di as auth_di
 from costy.infrastructure.db.tables import metadata
+from costy.main.di import DIProvider, IdDIProvider
+from costy.presentation.api.routers.bankapi import BankAPIController
+from costy.presentation.api.routers.category import CategoryController
+from costy.presentation.api.routers.operation import OperationController
 from tests.common.app import init_test_app
 
 
@@ -70,9 +76,29 @@ async def web_session() -> AsyncIterator[AsyncClient]:
 
 
 @fixture(scope="session")
-async def app(db_url, mock_monobank_gateway) -> Litestar:
-    return await init_test_app(db_url, mock_bank_gateways=mock_monobank_gateway)
+async def costy_app(db_url, mock_monobank_gateway) -> Litestar:
+    return await init_test_app(
+        db_url,
+        mock_bank_gateways=mock_monobank_gateway,
+        di_providers=[DIProvider(), IdDIProvider()],
+        controllers=[
+            BankAPIController,
+            CategoryController,
+            OperationController
+        ],
+    )
 
+@fixture(scope="session")
+async def auth_app(db_url, mock_monobank_gateway) -> Litestar:
+    return await init_test_app(
+        db_url,
+        mock_bank_gateways=mock_monobank_gateway,
+        di_providers=[auth_di.DIProvider()],
+        controllers=[
+            AuthenticationController,
+            UserController
+        ]
+    )
 
 @fixture
 async def retort() -> Retort:

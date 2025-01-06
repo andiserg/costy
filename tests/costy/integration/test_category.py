@@ -8,8 +8,8 @@ from costy.infrastructure.db import tables
 
 
 @pytest.mark.asyncio()
-async def test_create_category(app, db_session, db_tables, clean_up_db):
-    async with AsyncTestClient(app) as client:
+async def test_create_category(costy_app, db_session, db_tables, clean_up_db):
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
         data = {
             "name": "test",
@@ -22,7 +22,7 @@ async def test_create_category(app, db_session, db_tables, clean_up_db):
 
 @pytest.mark.asyncio()
 async def test_get_list_categories(
-    app,
+        costy_app,
     db_session,
     db_tables,
     retort,
@@ -49,7 +49,7 @@ async def test_get_list_categories(
     await db_session.execute(stmt)
     await db_session.commit()
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.get("/categories", headers=headers)
@@ -59,7 +59,7 @@ async def test_get_list_categories(
 
 @pytest.mark.asyncio()
 async def test_delete_category(
-    app,
+        costy_app,
     db_session,
     db_tables,
     retort,
@@ -77,7 +77,7 @@ async def test_delete_category(
     created_category_id = (await db_session.execute(stmt)).inserted_primary_key[0]
     await db_session.commit()
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.delete(f"/categories/{created_category_id}", headers=headers)
@@ -92,7 +92,7 @@ async def test_delete_category(
 
 @pytest.mark.asyncio()
 async def test_update_category(
-    app,
+        costy_app,
     db_session,
     db_tables,
     retort,
@@ -113,7 +113,7 @@ async def test_update_category(
 
     update_data = {"name": "upd_test_category"}
 
-    async with AsyncTestClient(app) as client:
+    async with AsyncTestClient(costy_app) as client:
         headers = {"user_id": "1"}
 
         result = await client.put(f"/categories/{created_category_id}", headers=headers, json=update_data)
