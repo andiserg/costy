@@ -1,5 +1,6 @@
 set shell := ["sh", "-c"]
 
+set dotenv-required
 set dotenv-load := true
 
 makemigrations:
@@ -10,6 +11,3 @@ migrate:
 
 tests:
     pytest --cov src ../../tests/auth
-
-ci-tests:
-    uv run pytest --cov src ../../tests/auth
