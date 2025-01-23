@@ -22,7 +22,7 @@ async def test_create_category(costy_app, db_session, db_tables, clean_up_db):
 
 @pytest.mark.asyncio()
 async def test_get_list_categories(
-        costy_app,
+    costy_app,
     db_session,
     db_tables,
     retort,
@@ -59,7 +59,7 @@ async def test_get_list_categories(
 
 @pytest.mark.asyncio()
 async def test_delete_category(
-        costy_app,
+    costy_app,
     db_session,
     db_tables,
     retort,
@@ -92,7 +92,7 @@ async def test_delete_category(
 
 @pytest.mark.asyncio()
 async def test_update_category(
-        costy_app,
+    costy_app,
     db_session,
     db_tables,
     retort,

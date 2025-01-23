@@ -12,7 +12,6 @@ from costy.adapters.bankapi.bankapi import BankAPIAdapter
 from costy.adapters.bankapi.monobank import MonobankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
-from costy.application.common.id_provider import IdProvider
 from costy.domain.models.operation import Operation, OperationId
 
 
@@ -38,13 +37,6 @@ async def operation_gateway(db_session, db_tables) -> OperationAdapter:
 @fixture
 async def auth_adapter(db_session, web_session, auth_settings) -> AuthAdapter:
     return AuthAdapter(db_session, web_session, auth_settings)
-
-
-@fixture
-async def id_provider(user_id: int) -> IdProvider:
-    provider = Mock(spec=IdProvider)
-    provider.get_current_user_id.return_value = user_id
-    return provider
 
 
 @fixture
@@ -88,4 +80,4 @@ async def mock_monobank_gateway(bank_operations):
         async def fetch_operations(self, *args, **kwargs):
             return bank_operations
 
-    return {"monobank", MockMonobankGateway()}
+    return {"monobank": MockMonobankGateway()}

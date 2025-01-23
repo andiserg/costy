@@ -10,7 +10,7 @@ from costy.domain.exceptions.base import InvalidRequestError
 from costy.domain.models.operation import Operation
 
 logger = logging.getLogger("bankAPI: " + __name__)
-retort = Retort()
+retort = Retort(recipe=[loader(P[Operation].id, lambda _: None)])
 
 
 class MonobankAdapter(BankAdapter):
@@ -26,7 +26,6 @@ class MonobankAdapter(BankAdapter):
     ) -> None:
         self._web_session = web_session
         self._bank_conf = bank_conf["monobank"]
-        self._retort = retort.extend(recipe=[loader(P[Operation].id, lambda _: None)])
 
     async def fetch_operations(
         self,
@@ -83,7 +82,7 @@ class MonobankAdapter(BankAdapter):
             operation["user_id"] = user_id
             operation["bank_name"] = "monobank"
 
-        loaded_operations = self._retort.load(total_operations, list[Operation])
+        loaded_operations = retort.load(total_operations, list[Operation])
         return [
             MCCBankOperation(operation=loaded_operation, mcc=operation["mcc"])
             for loaded_operation, operation in zip(loaded_operations, total_operations)

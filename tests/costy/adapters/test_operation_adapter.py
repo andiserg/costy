@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation
-from tests.common.database import create_category
+from tests.common.crud import create_category
 
 
 async def create_operation_depends(
@@ -24,7 +24,7 @@ def create_operation(user_id, category_id) -> Operation:
 
 
 @pytest.mark.asyncio()
-async def test_save_operation(operation_gateway, db_session, db_tables):
+async def test_save_operation(operation_gateway, db_session):
     category_id = await create_operation_depends(db_session)
     operation = create_operation(1, category_id)
 
@@ -34,7 +34,7 @@ async def test_save_operation(operation_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio()
-async def test_get_operation(operation_gateway, db_session, db_tables):
+async def test_get_operation(operation_gateway, db_session):
     category_id = await create_operation_depends(db_session)
     operation = create_operation(1, category_id)
     await operation_gateway.save_operation(operation)
@@ -46,7 +46,7 @@ async def test_get_operation(operation_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio()
-async def test_delete_operation(operation_gateway, db_session, db_tables):
+async def test_delete_operation(operation_gateway, db_session):
     category_id = await create_operation_depends(db_session)
     operation = create_operation(1, category_id)
     await operation_gateway.save_operation(operation)
@@ -58,7 +58,7 @@ async def test_delete_operation(operation_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio()
-async def test_find_operations_by_user(operation_gateway, db_session, db_tables):
+async def test_find_operations_by_user(operation_gateway, db_session):
     category_id = await create_operation_depends(db_session)
     created_operations = []
     for i in range(5):
@@ -79,7 +79,7 @@ async def test_find_operations_by_user(operation_gateway, db_session, db_tables)
 
 
 @pytest.mark.asyncio()
-async def test_update_operation(operation_gateway, db_session, db_tables):
+async def test_update_operation(operation_gateway, db_session):
     category_id = await create_operation_depends(db_session)
     operation = create_operation(1, category_id)
     await operation_gateway.save_operation(operation)
