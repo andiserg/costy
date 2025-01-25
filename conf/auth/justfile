@@ -10,4 +10,4 @@ migrate:
     alembic upgrade head
 
 tests:
-    pytest --cov src ../../tests/auth
+    pytest --cov auth ../../tests/auth --module auth

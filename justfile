@@ -36,6 +36,6 @@ install-ci service:
 ci-tests service:
     mv pyproject.toml pyproject_tools.toml
     cp conf/{{service}}/pyproject.toml pyproject.toml
-    uv run coverage run --source=src/{{service}} -m pytest tests/{{service}}
+    uv run coverage run --source=src/{{service}} -m pytest tests/{{service}} --module {{service}}
     rm -f pyproject.toml
     mv pyproject_tools.toml pyproject.toml

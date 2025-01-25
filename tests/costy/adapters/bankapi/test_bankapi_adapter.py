@@ -9,7 +9,7 @@ from costy.infrastructure.db import tables
 
 
 @pytest.mark.asyncio()
-async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
+async def test_save_bankapi(bankapi_gateway, db_session):
     bankapi = BankAPIService().create("test", {}, 1)
 
     await bankapi_gateway.save_bankapi(bankapi)
@@ -18,7 +18,7 @@ async def test_save_bankapi(bankapi_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio()
-async def test_delete_bankapi(bankapi_gateway, db_session, db_tables):
+async def test_delete_bankapi(bankapi_gateway, db_session):
     bankapi = BankAPIService().create("test", {}, 1)
     await bankapi_gateway.save_bankapi(bankapi)
 
@@ -40,7 +40,7 @@ async def test_get_supported_banks(bankapi_gateway):
 
 
 @pytest.mark.asyncio()
-async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
+async def test_get_bankapi_list(bankapi_gateway, db_session):
     created_bankapis = [
         BankAPIService().create(f"test #{i}", {}, 1)
         for i in range(5)
@@ -55,7 +55,7 @@ async def test_get_bankapi_list(bankapi_gateway, db_session, db_tables):
 
 
 @pytest.mark.asyncio()
-async def test_update_bankapis(bankapi_gateway, db_session, db_tables):
+async def test_update_bankapis(bankapi_gateway, db_session):
     service = BankAPIService()
 
     created_bankapis = [

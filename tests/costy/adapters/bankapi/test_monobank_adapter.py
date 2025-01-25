@@ -1,19 +1,6 @@
-import os
-
 import pytest
-from pytest_asyncio import fixture
 
 from costy.adapters.bankapi.bank_gateway import MCCBankOperation
-
-
-@fixture
-async def monobank_access_data() -> dict[str, str]:
-    try:
-        token = os.environ["TEST_MONOBANK_TOKEN"]
-    except KeyError:
-        pytest.fail("Missing TEST_MONOBANK_TOKEN environment variable")
-
-    return {"X-Token": token}
 
 
 @pytest.mark.skip()

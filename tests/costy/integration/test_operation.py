@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from costy.domain.models.category import CategoryId
 from costy.domain.models.operation import Operation
 from costy.infrastructure.db import tables
-from tests.common.database import create_category
+from tests.common.crud import create_category
 
 
 async def create_depends(
@@ -35,7 +35,7 @@ async def test_create_operation(costy_app, db_session, db_tables, clean_up_db):
 
 @pytest.mark.asyncio()
 async def test_get_list_operations(
-        costy_app,
+    costy_app,
     db_session,
     db_tables,
     retort,
@@ -94,7 +94,7 @@ async def create_operation(user_id, category_id, session: AsyncSession, retort):
 
 @pytest.mark.asyncio()
 async def test_delete_operation_own(
-        costy_app,
+    costy_app,
     db_session,
     db_tables,
     retort,
@@ -119,7 +119,7 @@ async def test_delete_operation_own(
 @pytest.mark.asyncio()
 @pytest.mark.skip()
 async def test_delete_operation_someone(
-        costy_app,
+    costy_app,
     db_session,
     auth_sub,
     retort,
@@ -144,7 +144,7 @@ async def test_delete_operation_someone(
 @pytest.mark.skip()
 @pytest.mark.asyncio()
 async def test_delete_operation_not_exists(
-        costy_app,
+    costy_app,
     db_session,
     retort,
     clean_up_db,
