@@ -10,4 +10,4 @@ migrate:
     alembic upgrade head
 
 tests:
-    pytest --cov src ../../tests/costy --module costy
+    pytest --cov costy ../../tests/costy --module costy
