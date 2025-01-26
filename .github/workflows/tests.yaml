@@ -53,7 +53,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: AndrewSergienko/costy
-        files: conf/costy/.coverage
+        files: .coverage
         flags: costy
 
   auth:
@@ -110,5 +110,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: AndrewSergienko/costy
-          files: conf/auth/.coverage
+          files: .coverage
           flags: auth
