@@ -9,7 +9,7 @@ from auth.adapters.user_gateway import UserAdapter
 from auth.config import AuthSettings, get_auth_settings
 from costy.adapters.bankapi.bank_gateway import BankAdapter, MCCBankOperation
 from costy.adapters.bankapi.bankapi import BankAPIAdapter
-from costy.adapters.bankapi.monobank import MonobankAdapter
+from costy.adapters.bankapi.banks.monobank import MonobankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
 from costy.domain.models.operation import Operation, OperationId

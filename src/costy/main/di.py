@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from costy.adapters.auth.token import TokenIdProvider
 from costy.adapters.bankapi.bank_gateway import BankAdapter
 from costy.adapters.bankapi.bankapi import BankAPIAdapter
-from costy.adapters.bankapi.monobank import MonobankAdapter
+from costy.adapters.bankapi.banks.monobank import MonobankAdapter
 from costy.adapters.db.category_gateway import CategoryAdapter
 from costy.adapters.db.operation_gateway import OperationAdapter
 from costy.application.bankapi import (
